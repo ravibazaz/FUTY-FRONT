@@ -14,7 +14,7 @@ export async function loginAction(prevState, formData) {
   const password = formData.get("password");
 
   await connectDB();
-  const user = await User.findOne({ email });
+  const user = await User.findOne({ email:email,account_type:'Admin'});
 
   if (!user || !(await bcrypt.compare(password, user.password))) {
     return { error: "Invalid email or password" };
