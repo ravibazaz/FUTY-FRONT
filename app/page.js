@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 
 export default function Home() {
 
-  const [state, formAction] = useActionState(loginAction, {
+  const [state, formAction,isPending] = useActionState(loginAction, {
     error: null,
   });
 
@@ -78,8 +78,9 @@ export default function Home() {
             )}
               <div className="row">
                 <div className="col-4">
-                  <button type="submit" className="btn btn-primary btn-block">
-                    Sign In
+                  <button disabled={isPending} type="submit" className="btn btn-primary btn-block">
+                    {isPending ? "Loading..." : "Sign In"}
+                    
                   </button>
                 </div>
               </div>
