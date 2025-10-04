@@ -6,14 +6,12 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
-        {/* AdminLTE CSS */}
         <link
           rel="stylesheet"
           href="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/css/adminlte.min.css"
         />
-        {/* Font Awesome (optional) */}
         <link
           rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
@@ -21,7 +19,6 @@ export default function RootLayout({ children }) {
       </head>
       <body className="hold-transition sidebar-mini layout-fixed">
         {children}
-        {/* AdminLTE Scripts */}
         <Script
           src="https://cdn.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.min.js"
           strategy="afterInteractive"
