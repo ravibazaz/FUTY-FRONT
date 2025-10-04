@@ -8,9 +8,13 @@ import { z } from "zod";
 export const UserSchema = z.object({
   email: z.string().nonempty("Email is required").email("Invalid email format"),
   password: z.string().nonempty("Password is required").min(7, "Password must be at least 7 character"),
+  confirm_password: z.string().min(7, "Confirm password must be at least 7 characters long"),
   name: z.string().nonempty("Name is required").min(2, "Name must be at least 2 character"),
   telephone: z.string().nonempty("Telephone is required").min(2, "Telephone must be at least 2 character"),
   account_type: z.string().nonempty("Account Type is required").min(2, "Account Type must be at least 2 character"),
+}).refine((data) => data.password === data.confirm_password, {
+  message: "Passwords don't match",
+  path: ["confirm_password"],
 });
 
 export async function POST(req) {
@@ -18,7 +22,9 @@ export async function POST(req) {
     const data = await req.json();
     const email = data.email;
     const password = data.password;
+    const confirm_password = data.confirm_password;
     const name = data.name;
+    const surname = data.surname;
     const telephone = data.telephone;
     const account_type = data.account_type;
 
@@ -55,6 +61,7 @@ export async function POST(req) {
       email,
       password: hashedPassword,
       name,
+      surname,
       telephone,
       account_type,
     });
