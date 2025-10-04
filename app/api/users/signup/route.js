@@ -4,7 +4,7 @@ import User from "@/lib/models/Users";
 import bcrypt from "bcryptjs";
 import { NextResponse } from "next/server";
 import { z } from "zod";
-
+import nodemailer from "nodemailer";
 export const UserSchema = z.object({
   email: z.string().nonempty("Email is required").email("Invalid email format"),
   password: z.string().nonempty("Password is required").min(7, "Password must be at least 7 character"),
@@ -66,6 +66,39 @@ export async function POST(req) {
       account_type,
     });
 
+
+    try {
+      // Create transporter
+      const transporter = nodemailer.createTransport({
+        host: process.env.SMTP_HOST,
+        port: process.env.SMTP_PORT,
+        secure: false, // true for 465, false for other ports
+        auth: {
+          user: process.env.SMTP_USER,
+          pass: process.env.SMTP_PASS,
+        },
+      });
+
+      const min = 10000;
+      const max = 99999;
+
+      const randomNumber = Math.floor(Math.random() * (max - min + 1)) + min;
+      console.log(randomNumber);
+
+      // Send mail
+      await transporter.sendMail({
+        from: `"${process.env.MAIL_FROM_NAME}" <${process.env.SMTP_USER}>`,
+        to: email,
+        subject: "Login Code",
+        text: "We have sent a code to you :"+randomNumber,
+        html: `<p>We have sent a code to you.</p><p>Login Code : ${randomNumber}</p>`,
+      });
+
+      // return NextResponse.json({ success: true });
+    } catch (error) {
+      console.error("Email error:", error);
+      //return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+    }
     return NextResponse.json({
       success: true,
       message: "User created successfully",
