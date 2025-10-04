@@ -7,7 +7,7 @@ export default  function LogoutButton() {
   const handleLogout = async () => {
     try {
       await fetch('/api/logout', { method: 'GET' });
-      router.push('/'); // Redirect without refreshing
+      router.push('http://68.65.121.77:3000/'); // Redirect without refreshing
     } catch (error) {
       console.error('Logout failed:', error);
     }
