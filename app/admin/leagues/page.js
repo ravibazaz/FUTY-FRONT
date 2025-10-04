@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect,Suspense } from "react";
 import DeleteLeagueButton from "@/components/DeleteLeagueButton"; // adjust path
 import { deleteLeague } from "@/actions/leaguesActions";
 import Link from "next/link";
@@ -133,6 +133,7 @@ export default function LeagueTable() {
             </form>
           </div>
         </div>
+        <Suspense fallback={<p>Loading..</p>}>
         <div className="card-body">
           <table className="table table-bordered">
             <thead>
@@ -188,6 +189,7 @@ export default function LeagueTable() {
             </button>
           </div>
         </div>
+        </Suspense>
       </div>
     </>
   );
