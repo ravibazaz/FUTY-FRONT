@@ -1,21 +1,27 @@
 "use client";
-import Link from "next/link";
-import { useRouter } from 'next/navigation';
+import { useRouter } from "next/navigation";
 
-export default  function LogoutButton() {
+export default function LogoutButton() {
   const router = useRouter();
-  const handleLogout = async () => {
+
+  const handleLogout = async (e) => {
+    e.preventDefault(); // stop <a> default navigation
     try {
-      await fetch('/api/logout', { method: 'GET' });
-      router.push('/'); // Redirect without refreshing
+      const res = await fetch("/api/logout", { method: "GET" });
+
+      if (!res.ok) throw new Error("Logout failed");
+
+      // Now safely redirect on client
+      router.push("/");
     } catch (error) {
-      console.error('Logout failed:', error);
+      console.error("Logout failed:", error);
     }
   };
+
   return (
-    <Link href="#" onClick={handleLogout} className="nav-link">
+    <a href="#" onClick={handleLogout} className="nav-link">
       <i className="nav-icon fas fa-newspaper" />
       <p>Logout</p>
-    </Link>
+    </a>
   );
 }
