@@ -21,31 +21,31 @@ export default function Sidebar() {
                     <a className="nav-link active" aria-current="page" href="leagues.php"><span className="link-text">Leagues</span></a>
                 </li>
                 <li className="nav-item">
-                    <a className="nav-link" href="clubs.php"><span className="link-text">Clubs</span></a>
+                    <a className="nav-link" href="#"><span className="link-text">Clubs</span></a>
                 </li>
                 <li className="nav-item">
-                    <a className="nav-link" href="teams.php"><span className="link-text">Teams</span></a>
+                    <a className="nav-link" href="#"><span className="link-text">Teams</span></a>
                 </li>
                 <li className="nav-item">
-                    <a className="nav-link" href="managers.php"><span className="link-text">Managers</span></a>
+                    <a className="nav-link" href="#"><span className="link-text">Managers</span></a>
                 </li>
                 <li className="nav-item">
-                    <a className="nav-link" href="fans.php"><span className="link-text">Fans</span></a>
+                    <a className="nav-link" href="#"><span className="link-text">Fans</span></a>
                 </li>
                 <li className="nav-item">
-                    <a className="nav-link" href="grounds.php"><span className="link-text">Grounds</span></a>
+                    <a className="nav-link" href="#"><span className="link-text">Grounds</span></a>
                 </li>
                 <li className="nav-item">
-                    <a className="nav-link" href="friendlies.php"><span className="link-text">Friendlies</span></a>
+                    <a className="nav-link" href="#"><span className="link-text">Friendlies</span></a>
                 </li>
                 <li className="nav-item">
-                    <a className="nav-link" href="tournaments.php"><span className="link-text">Tournaments</span></a>
+                    <a className="nav-link" href="#"><span className="link-text">Tournaments</span></a>
                 </li>
                 <li className="nav-item">
-                    <a className="nav-link" href="adverts.php"><span className="link-text">Adverts</span></a>
+                    <a className="nav-link" href="#"><span className="link-text">Adverts</span></a>
                 </li>
                 <li className="nav-item">
-                    <a className="nav-link" href="store.php"><span className="link-text">Store</span></a>
+                    <a className="nav-link" href="#"><span className="link-text">Store</span></a>
                 </li>
                 
             </ul>

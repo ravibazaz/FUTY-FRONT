@@ -12,6 +12,7 @@ export default function RootLayout({ children }) {
       <head>
         <HeaderTop></HeaderTop>
         <HeaderBottom></HeaderBottom>
+         <link href="/css/login.css" rel="stylesheet" />
       </head>
       <body>
         {children}

@@ -18,10 +18,10 @@ export default async function AdminDashboard() {
         </div>
         <div className="body-title-bar d-flex flex-wrap justify-content-between align-items-center gap-20 mb-10">
           <div className="body-title-bar-left d-flex flex-wrap align-items-center gap-20-70">
-            <h1 className="page-title">Admin Dashboard {userId}</h1>
+            <h1 className="page-title">Admin Dashboard </h1>
           </div>
           <div className="card-body">
-            Welcome, Admin! You can manage content from here.
+            Welcome, Admin! You can manage content from here.{userId}
           </div>
         </div>
       </main>
