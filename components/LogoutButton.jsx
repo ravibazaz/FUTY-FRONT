@@ -19,9 +19,9 @@ export default function LogoutButton() {
   };
 
   return (
-    <a href="#" onClick={handleLogout} className="nav-link">
-      <i className="nav-icon fas fa-newspaper" />
-      <p>Logout</p>
-    </a>
+
+    <li className="nav-item">
+      <a className="nav-link" href="#" onClick={handleLogout} ><span className="link-text">Sign Out</span></a>
+    </li>
   );
 }
