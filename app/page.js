@@ -36,7 +36,7 @@ export default function Home() {
 
   return (
     <>
-      <link href="/css/login.css" rel="stylesheet" />
+      
       <div className="wrapper fadeInDown">
 
         <div id="formContent">
