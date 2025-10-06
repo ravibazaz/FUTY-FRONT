@@ -27,6 +27,10 @@ export async function POST(req) {
     const surname = data.surname;
     const telephone = data.telephone;
     const account_type = data.account_type;
+    const profile_description = data.profile_description;
+    const playing_style = data.playing_style;
+    const club_id = data.club_id;
+    const ground_id = data.ground_id;
 
     const result = UserSchema.safeParse(data);
     // If validation fails, return an error response
@@ -64,6 +68,12 @@ export async function POST(req) {
       surname,
       telephone,
       account_type,
+      ground_id,
+      club_id,
+      profile_description,
+      playing_style,
+
+
     });
 
 
@@ -90,7 +100,7 @@ export async function POST(req) {
         from: `"${process.env.MAIL_FROM_NAME}" <${process.env.SMTP_USER}>`,
         to: email,
         subject: "Login Code",
-        text: "We have sent a code to you :"+randomNumber,
+        text: "We have sent a code to you :" + randomNumber,
         html: `<p>We have sent a code to you.</p><p>Login Code : ${randomNumber}</p>`,
       });
 
