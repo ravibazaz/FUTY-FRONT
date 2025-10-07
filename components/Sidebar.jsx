@@ -1,7 +1,9 @@
 "use client";
 import Link from 'next/link'
+import { usePathname } from "next/navigation";
 import LogoutButton from '@/components/LogoutButton';
 export default function Sidebar() {
+    const pathname = usePathname();
   return (
     <>
     <div className="sidebar col-md-3 col-lg-3 col-xl-2 p-0 bg-primary">
@@ -18,7 +20,7 @@ export default function Sidebar() {
             </Link>
             <ul className="nav flex-column">
                 <li className="nav-item">
-                    <Link className="nav-link active" aria-current="page" href="/admin/leagues"><span className="link-text">Leagues</span></Link>
+                    <Link  className={`nav-link ${pathname.startsWith('/admin/leagues') ? 'active' : ''}`}  aria-current="page" href="/admin/leagues"><span className="link-text">Leagues</span></Link>
                 </li>
                 <li className="nav-item">
                     <Link className="nav-link" href="#"><span className="link-text">Clubs</span></Link>
