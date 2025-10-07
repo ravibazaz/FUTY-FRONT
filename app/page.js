@@ -56,10 +56,10 @@ export default function Home() {
             <input className="btn-login fadeIn fourth" type="submit" disabled={isPending} value= {isPending ? "Loading..." : "Sign In"} ></input>
           </form>
           {/* <!-- Remind Passowrd --> */}
-          <div id="formFooter">
+          {/* <div id="formFooter">
             <span className="forgot-password">Not a member? <a className="underlineHover" href="#">Register</a></span>
             <a className="forgot-password underlineHover" href="#">Forgot Password?</a>
-          </div>
+          </div> */}
         </div>
       </div>
 

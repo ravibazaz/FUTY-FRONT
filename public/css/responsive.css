@@ -1,4 +1,13 @@
 /*---- Sidebar ----*/
+@media screen and (max-width: 1199px) {
+  .right-info-box {
+    border-left: none;
+    padding-left: 0;
+    border-top: 4px solid var(--color-one);
+    margin-top: 20px;
+    padding-top: 30px;
+  }
+}
 @media (min-width: 768px) and (max-width: 991px) {
   .logo-sidebar {
     padding: 36px 20px 66px 20px;
@@ -28,6 +37,11 @@
   .for-mobile {
     display: inline-block!important;
   }
+  .btn-common {
+    border-radius: 8px;
+    font-size: 16px;
+    padding: 10px 30px;
+  }
   header {
     background-color: var(--color-primary);
   }
@@ -42,6 +56,16 @@
     background-color: var(--color-primary);
   }
   .main-body {
-    padding: 30px 20px;
+    padding: 30px 20px 60px 20px;
+  }
+  .page-title {
+    font-size: 26px;
+  }
+  .label-text {
+    padding: 4px 15px;
+    text-align: left;
+  }
+  .info-text {
+    padding: 10px 15px;
   }
 }

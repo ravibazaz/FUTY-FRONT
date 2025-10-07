@@ -21,6 +21,7 @@
   --color-three: #d8c8c8;
   --color-green: #11921C;
   --color-active-green: #07EF49;
+  --color-verify-red: #FF006F;
 }
 * {
   box-sizing: border-box;
@@ -43,6 +44,9 @@ body {
 }
 .bg-one {
   background-color: var(--color-one) !important;
+}
+.text-primary {
+  color: var(--color-primary) !important;
 }
 .text-body {
   color: var(--color-body) !important;
@@ -67,6 +71,16 @@ body {
   background-color: var(--color-primary-hover);
   color: #fff;
 }
+.btn-common-text {
+  background-color: transparent;
+  border: none;
+  color: var(--color-green);
+  text-decoration: none;
+  position: relative;
+}
+.btn-common-text:hover {
+  color: var(--color-primary);
+}
 .underline-hover {
   position: relative;
 }
@@ -86,46 +100,61 @@ body {
   width: 100%;
 }
 .gap-10 {
-  gap: 10px 10px;
+  gap: 10px 10px!important;
 }
 .gap-20 {
-  gap: 20px 20px;
+  gap: 20px 20px!important;
 }
 .gap-30 {
-  gap: 30px 30px;
+  gap: 30px 30px!important;
 }
 .gap-20-70 {
-  gap: 20px 70px;
+  gap: 20px 70px!important;
 }
 .gap-10-30 {
-  gap: 10px 30px;
+  gap: 10px 30px!important;
+}
+.mt-10 {
+  margin-top: 10px!important;
+}
+.mt-20 {
+  margin-top: 20px!important;
+}
+.mt-30 {
+  margin-top: 30px!important;
 }
 .mb-10 {
-  margin-bottom: 10px;
+  margin-bottom: 10px!important;
 }
 .mb-20 {
-  margin-bottom: 20px;
+  margin-bottom: 20px!important;
 }
 .mb-30 {
-  margin-bottom: 30px;
+  margin-bottom: 30px!important;
 }
 .fs-10 {
-  font-size: 10px;
+  font-size: 10px!important;
 }
 .fs-12 {
-  font-size: 12px;
+  font-size: 12px!important;
+}
+.fs-14 {
+  font-size: 14px!important;
 }
 .w-300 {
-  width: 300px;
-  max-width: 100%;
+  width: 300px!important;
+  max-width: 100%!important;
+}
+.form-label {
+  font-size: 14px;
 }
 .form-control {
-  font-size: 10px;
+  font-size: 14px;
   line-height: 1;
   color: var(--color-body);
   border: 1px solid var(--color-two);
   border-radius: 5px;
-  padding: 17px 15px;
+  padding: 12px 15px;
 }
 .form-control:focus {
   box-shadow: none;
@@ -299,8 +328,23 @@ table a.text-green:after {
   position: absolute;
   left: 0;
   top: 50%;
-  width: 7px;
-  height: 7px;
+  width: 10px;
+  height: 10px;
+  transform: translateY(-50%);
+}
+.user-verify {
+  position: relative;
+  padding-left: 15px!important;
+}
+.user-verify::before {
+  background-color: var(--color-verify-red);
+  border-radius: 50%;
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 10px;
+  height: 10px;
   transform: translateY(-50%);
 }
 /*---- Main Body CSS - END ----*/
@@ -319,6 +363,9 @@ table a.text-green:after {
 .common-datatable .dt-container>.row>* {
   padding-right: 0 !important;
   padding-left: 0 !important;
+}
+.common-datatable.no-search-bar .dt-container .row-first {
+  display: none!important;
 }
 .common-datatable .dt-container .row-first {
   position: relative;
@@ -344,12 +391,14 @@ table a.text-green:after {
 .common-datatable .dt-container .dt-search-bar .dt-search .form-control {
   background-color: var(--color-one) !important;
   margin-left: 0;
+  padding: 17px 15px;
   width: 300px;
   max-width: 100%;
 }
 .common-datatable .dt-container .dt-search-bar .dt-search .btn-search-reset {
   background-color: transparent;
   border: none;
+  font-size: 14px;
   padding: 0;
   /* margin-left: 30px; */
   margin-left: 0;
@@ -365,8 +414,19 @@ table a.text-green:after {
 .common-datatable .dt-container .row-second {
   margin-top: 20px!important;
 }
-.common-datatable .dt-type-numeric {
+.common-datatable .dt-column-header {
+  justify-content: flex-start!important;
+}
+.common-datatable .dt-column-header .dt-column-title {
+  flex-grow: 0!important;
+}
+.common-datatable .dt-type-numeric,
+.common-datatable .dt-type-date {
   text-align: left!important;
+}
+.common-datatable .dt-type-numeric .dt-column-header,
+.common-datatable .dt-type-date .dt-column-header {
+  flex-direction: unset!important;
 }
 .common-datatable .row-third {
   justify-content: flex-end!important;
@@ -385,3 +445,121 @@ table a.text-green:after {
   box-shadow: none;
 }
 /*---- Pagination CSS - END ----*/
+/*---- Toggle Switch CSS - START ----*/
+.toggle-switch-cont {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 45px;
+  height: 15px;
+}    
+.toggle-switch input { 
+  opacity: 0;
+  width: 0;
+  height: 0;
+}    
+.switch {
+  background-color: #D9D9D9;
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  -webkit-transition: .4s;
+  transition: .4s;
+}    
+.switch:before {
+  background-color: #fff;
+  position: absolute;
+  content: "";
+  height: 11px;
+  width: 11px;
+  left: 2px;
+  bottom: 2px;
+  -webkit-transition: .4s;
+  transition: .4s;
+}    
+input:checked + .switch {
+  /* background-color: var(--color-active-green); */
+}
+input:focus + .switch {
+  /* box-shadow: 0 0 1px var(--color-active-green); */
+}    
+input:checked + .switch:before {
+  background-color: var(--color-active-green);
+  -webkit-transform: translateX(30px);
+  -ms-transform: translateX(30px);
+  transform: translateX(30px);
+}    
+.switch.round {
+  border-radius: 15px;
+}    
+.switch.round:before {
+  border-radius: 50%;
+}
+/*---- Toggle Switch CSS - END ----*/
+/*---- Custom Input Type >File CSS - START ----*/
+.upload-box {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  cursor: pointer;
+  overflow: hidden;
+  width: 110px;
+}
+#fileInput {
+  display: none;
+}
+.inputPlaceholder {
+  color: var(--color-primary);
+  font-size: 14px;
+  font-weight: 700;
+  order: 2;
+  margin: 0;
+  transition: all 0.5s;
+}
+.inputPlaceholder:hover {
+  color: var(--color-green);
+}
+.upload-box img {
+  border-radius: 10px;
+  box-shadow: 0px 4px 4px 0px #00000040;
+  object-fit: cover;
+  object-position: center center;
+  order: 1;
+  margin-bottom: 10px;
+  height: 82px;
+  width: 82px;
+}
+/*---- Custom Input Type >File CSS - END ----*/
+/*---- Single Page CSS - START ----*/
+.label-text {
+  background-color: var(--color-one);
+  border-left: 1px solid var(--color-two);
+  border-right: 1px solid var(--color-two);
+  font-size: 14px;
+  padding: 15px 20px;
+  text-align: right;
+  height: 100%;
+}
+.info-text {
+  font-size: 14px;
+  padding: 15px 20px;
+}
+.right-info-box {
+  border-left: 4px solid var(--color-one);
+  padding-left: 30px;
+}
+.profile-img {
+  border-radius: 10px;
+  box-shadow: 0px 4px 4px 0px #00000040;
+  height: 82px;
+  object-fit: cover;
+  object-position: center center;
+}
+/*---- Single Page CSS - END ----*/
