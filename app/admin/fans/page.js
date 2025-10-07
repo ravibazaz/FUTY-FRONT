@@ -1,0 +1,138 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import DeleteLeagueButton from "@/components/DeleteLeagueButton"; // adjust path
+import { deleteLeague } from "@/actions/leaguesActions";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import Image from "next/image";
+import Swal from "sweetalert2";
+const Toast = Swal.mixin({
+  toast: true,
+  position: "top-end",
+  showConfirmButton: false,
+  timer: 3000,
+  timerProgressBar: true,
+  didOpen: (toast) => {
+    toast.onmouseenter = Swal.stopTimer;
+    toast.onmouseleave = Swal.resumeTimer;
+  },
+});
+
+export default function FanTable() {
+  const [fans, setFans] = useState([]);
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const res = await fetch("/api/fans");
+        const result = await res.json();
+        setFans(result.fans || []);
+      } catch (err) {
+        console.error("Failed to load data:", err);
+      }
+    }
+
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    if (typeof window !== "undefined" && window.$ && fans.length > 0) {
+      const $ = window.$;
+
+      // Destroy if already exists
+      if ($.fn.DataTable.isDataTable("#example")) {
+        $("#example").DataTable().destroy();
+      }
+
+      // Initialize new DataTable
+      const table = $("#example").DataTable({
+        language: { searchPlaceholder: "Search" },
+        initComplete: function () {
+          $(".common-datatable .dt-container .row").eq(0).addClass("row-first");
+          $(".common-datatable .dt-container .row").eq(1).addClass("row-second");
+          $(".common-datatable .dt-container .row").eq(2).addClass("row-third");
+
+          $(".dt-layout-start").addClass("dt-entries-per-page").removeClass("me-auto");
+          $(".dt-layout-end").addClass("dt-search-bar").removeClass("ms-auto");
+
+          const $searchInput = $(".dt-search-bar input.form-control")
+            .addClass("dt-search-fld")
+            .after('<input class="btn-search-reset" type="reset" value="Reset">');
+
+          $(document).on("click", ".btn-search-reset", function () {
+            table.search("").draw();
+          });
+        },
+      });
+
+      // Cleanup when component unmounts
+      return () => {
+        if ($.fn.DataTable.isDataTable("#example")) {
+          $("#example").DataTable().destroy();
+        }
+      };
+    }
+  }, [fans]);
+
+
+  return (
+    <>
+      <main className="main-body col-md-9 col-lg-9 col-xl-10">
+        <div className="body-top d-flex flex-wrap justify-content-between align-items-center gap-20 mb-10">
+          <div className="top-left">
+            <p className="top-breadcrumb mb-0">{'> Fans'}</p>
+          </div>
+          <div className="top-right d-flex justify-content-between align-items-center gap-10">
+            <a className="btn btn-common" href="fans-new.php">New</a>
+            <a href="#">
+              <Image src="/images/icon-setting.svg" width={33} height={33} alt="Settings" />
+            </a>
+          </div>
+        </div>
+        <div className="body-title-bar d-flex flex-wrap justify-content-between align-items-center gap-20 mb-10">
+          <div className="body-title-bar-left d-flex flex-wrap align-items-center gap-20-70">
+            <h1 className="page-title">Fans</h1>
+          </div>
+        </div>
+
+        <div className="body-main-cont">
+          <form>
+            <div className="table-responsive common-datatable">
+              <table id="example" className="table">
+                <thead>
+                  <tr>
+                    <th scope="col">Name</th>
+                    <th scope="col">Team</th>
+                    <th scope="col">Phone</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Last Activity</th>
+                    <th scope="col">Profile</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {fans.length > 0 ? (
+                    fans.map((l, index) => (
+                      <tr key={l._id}>
+                        <td className="text-nowrap user-active"><a href="fans-single.php">{l.name}</a></td>
+                        <td className="text-nowrap"><a href="teams-single.php">Pegasus U14</a></td>
+                        <td className="text-nowrap"><a href="tel:+44 07453 234258">+44 07453 234258</a></td>
+                        <td className="text-nowrap"><a href="mailto:csb9900@gmail.com">csb9900@gmail.com</a></td>
+                        <td className="text-nowrap">12 Nov</td>
+                        <td className="text-nowrap"><a className="text-green" href="fans-edit.php">Edit</a></td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="5" className="text-center">Loading...</td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </form>
+        </div>
+
+      </main>
+    </>
+  );
+}

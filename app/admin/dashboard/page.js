@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { cookies } from 'next/headers';
 export default async function AdminDashboard() {
   const cookieStore = await cookies();
@@ -12,7 +13,8 @@ export default async function AdminDashboard() {
           <div className="top-right d-flex justify-content-between align-items-center gap-10">
             <a className="btn btn-common" href="login.php">New</a>
             <a href="#">
-              <img src="/images/icon-setting.svg" alt="Settings" />
+               <Image src="/images/icon-setting.svg" width={33} height={33} alt="Settings" />
+              
             </a>
           </div>
         </div>

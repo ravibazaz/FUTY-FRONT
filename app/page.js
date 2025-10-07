@@ -4,7 +4,7 @@ import { useFormState } from 'react-dom';
 import { useActionState, useState, useEffect } from "react";
 import { loginAction } from "@/actions/loginAction";
 import { useRouter } from "next/navigation";
-
+import Image from "next/image";
 
 export default function Home() {
   const [state, formAction, isPending] = useActionState(loginAction, {
@@ -43,7 +43,7 @@ export default function Home() {
           {/* <!-- Tabs Titles --> */}
           {/* <!-- Icon --> */}
           <div className="fadeIn first">
-            <img id="icon" src="/images/logo-dark.png" alt="FUTY" />
+            <Image id="icon" src="/images/logo-dark.png" width={113} height={33} alt="FUTY" />
           </div>
 
           {/* <!-- Login Form --> */}
