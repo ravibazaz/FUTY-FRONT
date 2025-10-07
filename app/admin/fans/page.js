@@ -115,8 +115,8 @@ export default function FanTable() {
                       <tr key={l._id}>
                         <td className="text-nowrap user-active"><a href="fans-single.php">{l.name}</a></td>
                         <td className="text-nowrap"><a href="teams-single.php">Pegasus U14</a></td>
-                        <td className="text-nowrap"><a href="tel:+44 07453 234258">+44 07453 234258</a></td>
-                        <td className="text-nowrap"><a href="mailto:csb9900@gmail.com">csb9900@gmail.com</a></td>
+                        <td className="text-nowrap"><a href="tel:+44 07453 234258">{l.telephone}</a></td>
+                        <td className="text-nowrap"><a href="mailto:csb9900@gmail.com">{l.email}</a></td>
                         <td className="text-nowrap">12 Nov</td>
                         <td className="text-nowrap"><a className="text-green" href="fans-edit.php">Edit</a></td>
                       </tr>
@@ -131,7 +131,6 @@ export default function FanTable() {
             </div>
           </form>
         </div>
-
       </main>
     </>
   );
