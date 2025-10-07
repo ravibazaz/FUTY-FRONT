@@ -28,3 +28,20 @@ export default async function AdminDashboard() {
     </>
   );
 }
+
+// import { cookies } from 'next/headers';
+// import DataTable from "@/components/DataTable";
+// export default async function AdminDashboard() {
+//   const cookieStore = await cookies();
+//   const userId = cookieStore.get('user_id')?.value;
+//    const sampleData = [
+//     { name: "Player A", team: "Team X", points: 90 },
+//     { name: "Player B", team: "Team Y", points: 75 },
+//     { name: "Player C", team: "Team Z", points: 88 },
+//   ];
+//   return (
+//     <>
+//       <DataTable data={sampleData} />;
+//     </>
+//   );
+// }

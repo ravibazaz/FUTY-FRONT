@@ -19,176 +19,199 @@ const Toast = Swal.mixin({
 });
 
 export default function LeagueTable() {
-  const router = useRouter();
-  const [leagues, setLeagues] = useState([]);
-  const [q, setQ] = useState("");
-  const [filter, setFilter] = useState("");
-  const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-  const [Pages, setPages] = useState(1);
-  const [Limit, setLimit] = useState(1);
-
-  const fetchData = async (search = "", status = "", pageNo = 1) => {
-    const res = await fetch(
-      `/api/leagues?q=${search}&filter=${status}&page=${pageNo}`
-    );
-    const data = await res.json();
-
-    setLeagues(data.leagues);
-    setTotalPages(data.total);
-    setPages(data.pages);
-    setLimit(data.limit);
-  };
-
   useEffect(() => {
-    //fetchData(q, filter, page);
-    fetchData();
-    const toastMessage = document.cookie
-    .split("; ")
-    .find((row) => row.startsWith("toastMessage="));
-
-    if (toastMessage) {
-      Toast.fire({
-        icon: "success",
-        title: decodeURIComponent(toastMessage.split("=")[1]) ,
-      });
-      document.cookie = "toastMessage=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+    if (typeof window !== "undefined" && window.$) {
+      //console.log('test');
+      const $ = window.$;
+      const tableElement = $("#example");
+      if ($.fn.DataTable.isDataTable('#example')) {
+        $('#example').DataTable().destroy();
     }
+      if (tableElement.length) {
+        tableElement.DataTable({
+      search: {
+        // Enter Key to Search
+        // return: true
+      },
+      language: {
+        searchPlaceholder: "Search",
+      }, 
+          initComplete: function () {
+            // Add class to first row
+            $(".common-datatable .dt-container .row").eq(0).addClass("row-first");
 
-  }, [page]);
+            // Add class to second row
+            $(".common-datatable .dt-container .row").eq(1).addClass("row-second");
 
-  const handleSearch = (e) => {
-    e.preventDefault();
-    setPage(1); // Reset to page 1 when new search
-    fetchData(q, filter, 1);
-  };
+            // Add class to third row
+            $(".common-datatable .dt-container .row").eq(2).addClass("row-third");
 
-  const handleReset = async () => {
-    setQ("");
-    setFilter("");
-    fetchData();
-  };
+            // Add & Remove class under first row div
+            $(".dt-layout-start")
+              .addClass("dt-entries-per-page")
+              .removeClass("me-auto");
 
+            $(".dt-layout-end")
+              .addClass("dt-search-bar")
+              .removeClass("ms-auto");
 
+            // Add class to search input and append reset button
+            const $searchInput = $(".dt-search-bar input.form-control")
+              .addClass("dt-search-fld")
+              .after('<input class="btn-search-reset" type="reset" value="Reset">');
 
+            // Bind click event to reset button
+            $(document).on("click", ".btn-search-reset", function () {
+              const table = $("#example").DataTable();
+              table.search("").draw(); // Clear search and redraw
+            });
+          },
+        });
+      }
+    }
+  }, []);
 
 
   return (
     <>
-      
-      <div className="card">
-        <div className="card-header">
-          <h3 className="card-title">League List</h3>
-          <div className="card-tools">
-            <form
-              onSubmit={handleSearch}
-              id="create-course-form"
-              className="form-inline mb-3"
-            >
-              <div
-                className="input-group input-group-sm mr-2"
-                style={{ width: "200px" }}
-              >
-                <input
-                  value={q}
-                  onChange={(e) => setQ(e.target.value)}
-                  type="text"
-                  className="form-control"
-                  placeholder="Search..."
-                />
-              </div>
+      <main className="main-body col-md-9 col-lg-9 col-xl-10">
 
-              <div
-                className="input-group input-group-sm mr-2"
-                style={{ width: "150px" }}
-              >
-                <select
-                  value={filter}
-                  onChange={(e) => setFilter(e.target.value)}
-                  className="form-control"
-                >
-                  <option value="">All</option>
-                  <option value="active">Active</option>
-                  <option value="inactive">Inactive</option>
-                </select>
-              </div>
+        <div className="body-top d-flex flex-wrap justify-content-between align-items-center gap-20 mb-10">
+          <div className="top-left">
+            <p className="top-breadcrumb mb-0"> Leagues</p>
+          </div>
+          <div className="top-right d-flex justify-content-between align-items-center gap-10">
+            <a className="btn btn-common" href="login.php">New</a>
+            <a href="#">
+              <img src="/images/icon-setting.svg" alt="Settings" />
+            </a>
+          </div>
+        </div>
 
-              <button type="submit" className="btn btn-secondary btn-sm mr-2">
-                Search
-              </button>
-              <button
-                type="button"
-                onClick={handleReset}
-                className="btn btn-secondary btn-sm mr-2"
-              >
-                Reset Search
-              </button>
+        <div className="body-title-bar d-flex flex-wrap justify-content-between align-items-center gap-20 mb-10">
+          <div className="body-title-bar-left d-flex flex-wrap align-items-center gap-20-70">
+            <h1 className="page-title">Leagues</h1>
+            {/* <!-- <ul className="page-tab-links d-flex flex-wrap align-items-center gap-10-30 fs-12 list-unstyled mb-0">
+              <li><a className="underline-hover" href="#">All</a></li>
+              <li><a className="underline-hover" href="#">Active</a></li>
+              <li><a className="underline-hover" href="#">Club</a></li>
+              <li><a className="underline-hover" href="#">League</a></li>
+            </ul> --> */}
+          </div>
+        </div>
 
-              <Link
-                href="/admin/leagues/new"
-                className="btn btn-primary btn-sm ml-auto"
-              >
-                + New League
-              </Link>
+        <div className="body-main-cont">
+          {/* <!-- <div className="table-search-bar d-flex gap-10-30 mb-30">
+            <form className="d-flex gap-10-30">
+                <input className="form-control bg-one w-300" type="text" placeholder="Search" aria-label="Search" />
+                <input className="btn btn-link text-body text-decoration-none text-hover-primary fs-10" type="reset" value="Reset">
             </form>
           </div>
+          <p className="mb-10">Search results</p> --> */}
+          <form>
+            <div className="table-responsive common-datatable">
+              <table id="example" className="table">
+                <thead>
+                  <tr>
+                    <th scope="col">Team</th>
+                    <th scope="col">Secretary</th>
+                    <th scope="col">Telephone</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Edit</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td className="text-nowrap user-active"><a href="#">Peter Housman League</a></td>
+                    <td className="text-nowrap"><a href="#">Marc Waters</a></td>
+                    <td className="text-nowrap"><a href="#">+44 08564 346268</a></td>
+                    <td className="text-nowrap"><a href="#">u7@phyl.co.uk</a></td>
+                    <td className="text-nowrap"><a className="text-green" href="#">Edit</a></td>
+                  </tr>
+                  <tr>
+                    <td className="text-nowrap user-active"><a href="#">Freetown League</a></td>
+                    <td className="text-nowrap"><a href="#">Paul Tader</a></td>
+                    <td className="text-nowrap"><a href="#">+44 08932 251628</a></td>
+                    <td className="text-nowrap"><a href="#">u7@phyl.co.uk</a></td>
+                    <td className="text-nowrap"><a className="text-green" href="#">Edit</a></td>
+                  </tr>
+                  <tr>
+                    <td className="text-nowrap user-active"><a href="#">Newcastle six League</a></td>
+                    <td className="text-nowrap"><a href="#">Steve Green</a></td>
+                    <td className="text-nowrap"><a href="#">+44 01246 289571</a></td>
+                    <td className="text-nowrap"><a href="#">u7@phyl.co.uk</a></td>
+                    <td className="text-nowrap"><a className="text-green" href="#">Edit</a></td>
+                  </tr>
+                  <tr>
+                    <td className="text-nowrap user-active"><a href="#">Andover league</a></td>
+                    <td className="text-nowrap"><a href="#">Marc Waters</a></td>
+                    <td className="text-nowrap"><a href="#">+44 08564 346268</a></td>
+                    <td className="text-nowrap"><a href="#">u7@phyl.co.uk</a></td>
+                    <td className="text-nowrap"><a className="text-green" href="#">Edit</a></td>
+                  </tr>
+                  <tr>
+                    <td className="text-nowrap user-active"><a href="#">Peter Housman League</a></td>
+                    <td className="text-nowrap"><a href="#">Marc Waters</a></td>
+                    <td className="text-nowrap"><a href="#">+44 08564 346268</a></td>
+                    <td className="text-nowrap"><a href="#">u7@phyl.co.uk</a></td>
+                    <td className="text-nowrap"><a className="text-green" href="#">Edit</a></td>
+                  </tr>
+                  <tr>
+                    <td className="text-nowrap user-active"><a href="#">Freetown League</a></td>
+                    <td className="text-nowrap"><a href="#">Paul Tader</a></td>
+                    <td className="text-nowrap"><a href="#">+44 08932 251628</a></td>
+                    <td className="text-nowrap"><a href="#">u7@phyl.co.uk</a></td>
+                    <td className="text-nowrap"><a className="text-green" href="#">Edit</a></td>
+                  </tr>
+                  <tr>
+                    <td className="text-nowrap user-active"><a href="#">Newcastle six League</a></td>
+                    <td className="text-nowrap"><a href="#">Steve Green</a></td>
+                    <td className="text-nowrap"><a href="#">+44 01246 289571</a></td>
+                    <td className="text-nowrap"><a href="#">u7@phyl.co.uk</a></td>
+                    <td className="text-nowrap"><a className="text-green" href="#">Edit</a></td>
+                  </tr>
+                  <tr>
+                    <td className="text-nowrap user-active"><a href="#">Andover league</a></td>
+                    <td className="text-nowrap"><a href="#">Marc Waters</a></td>
+                    <td className="text-nowrap"><a href="#">+44 08564 346268</a></td>
+                    <td className="text-nowrap"><a href="#">u7@phyl.co.uk</a></td>
+                    <td className="text-nowrap"><a className="text-green" href="#">Edit</a></td>
+                  </tr>
+                  <tr>
+                    <td className="text-nowrap user-active"><a href="#">Peter Housman League</a></td>
+                    <td className="text-nowrap"><a href="#">Marc Waters</a></td>
+                    <td className="text-nowrap"><a href="#">+44 08564 346268</a></td>
+                    <td className="text-nowrap"><a href="#">u7@phyl.co.uk</a></td>
+                    <td className="text-nowrap"><a className="text-green" href="#">Edit</a></td>
+                  </tr>
+                  <tr>
+                    <td className="text-nowrap user-active"><a href="#">Freetown League</a></td>
+                    <td className="text-nowrap"><a href="#">Paul Tader</a></td>
+                    <td className="text-nowrap"><a href="#">+44 08932 251628</a></td>
+                    <td className="text-nowrap"><a href="#">u7@phyl.co.uk</a></td>
+                    <td className="text-nowrap"><a className="text-green" href="#">Edit</a></td>
+                  </tr>
+                  <tr>
+                    <td className="text-nowrap user-active"><a href="#">Newcastle six League</a></td>
+                    <td className="text-nowrap"><a href="#">Steve Green</a></td>
+                    <td className="text-nowrap"><a href="#">+44 01246 289571</a></td>
+                    <td className="text-nowrap"><a href="#">u7@phyl.co.uk</a></td>
+                    <td className="text-nowrap"><a className="text-green" href="#">Edit</a></td>
+                  </tr>
+                  <tr>
+                    <td className="text-nowrap user-active"><a href="#">Andover league</a></td>
+                    <td className="text-nowrap"><a href="#">Marc Waters</a></td>
+                    <td className="text-nowrap"><a href="#">+44 08564 346268</a></td>
+                    <td className="text-nowrap"><a href="#">u7@phyl.co.uk</a></td>
+                    <td className="text-nowrap"><a className="text-green" href="#">Edit</a></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </form>
         </div>
-        <div className="card-body">
-          <table className="table table-bordered">
-            <thead>
-              <tr>
-                <th style={{ width: "10px" }}>#</th>
-                <th>Name</th>
-                <th>Status</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {leagues.map((l, index) => (
-                <tr key={l._id}>
-                  <td>{(page - 1) * Limit + index + 1}</td>
-                  <td>{l.title}</td>
-                  <td>{l.isActive ? "Active" : "Inactive"}</td>
-                  <td>
-                    <div className="d-flex gap-2">
-                      <Link
-                        href={`/admin/leagues/${l._id}/edit`}
-                        className="btn btn-success btn-sm mr-2"
-                      >
-                        Edit
-                      </Link>
-                      <DeleteLeagueButton
-                        onDelete={deleteLeague.bind(null, l._id.toString())}
-                      />
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-          <div className="d-flex justify-content-between align-items-center mt-3">
-            <button
-              className="btn btn-sm btn-outline-secondary"
-              disabled={page === 1}
-              onClick={() => setPage((p) => p - 1)}
-            >
-              ⬅ Prev
-            </button>
 
-            <span>
-              Page {page} of {totalPages}
-            </span>
-
-            <button
-              className="btn btn-sm btn-outline-secondary"
-              disabled={page === Pages}
-              onClick={() => setPage((p) => p + 1)}
-            >
-              Next ➡
-            </button>
-          </div>
-        </div>
-      </div>
+      </main>
     </>
   );
 }
