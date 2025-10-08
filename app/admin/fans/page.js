@@ -34,19 +34,19 @@ export default function FanTable() {
 
     fetchData();
 
-        const toastMessage = document.cookie
-    .split("; ")
-    .find((row) => row.startsWith("toastMessage="));
+    const toastMessage = document.cookie
+      .split("; ")
+      .find((row) => row.startsWith("toastMessage="));
 
     if (toastMessage) {
       Toast.fire({
         icon: "success",
-        title: decodeURIComponent(toastMessage.split("=")[1]) ,
+        title: decodeURIComponent(toastMessage.split("=")[1]),
       });
       document.cookie = "toastMessage=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
     }
 
-    
+
   }, []);
 
   useEffect(() => {
@@ -127,7 +127,13 @@ export default function FanTable() {
                   {fans.length > 0 ? (
                     fans.map((l, index) => (
                       <tr key={l._id}>
-                        <td className="text-nowrap user-active"><a href="fans-single.php">{l.name}</a></td>
+                        <td className="text-nowrap user-active">
+                          <Link
+                            href={`/admin/fans/${l._id}/view`}
+                          >
+                            {l.name}
+                          </Link>
+                        </td>
                         <td className="text-nowrap"><a href="teams-single.php">Pegasus U14</a></td>
                         <td className="text-nowrap"><a href="tel:+44 07453 234258">{l.telephone}</a></td>
                         <td className="text-nowrap"><a href="mailto:csb9900@gmail.com">{l.email}</a></td>

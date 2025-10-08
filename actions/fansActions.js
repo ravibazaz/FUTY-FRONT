@@ -8,6 +8,7 @@ import { FansSchema } from "@/lib/validation/fans";
 import { v4 as uuidv4 } from "uuid";
 import path from "path";
 import { promises as fs } from "fs";
+import bcrypt from "bcryptjs";
 
 // Check if file exists asynchronously
 const fileExists = async (filePath) => {
@@ -26,10 +27,13 @@ export async function createFans(prevState, formData) {
 
   const raw = Object.fromEntries(formData.entries());
   const imageFile = formData.get("profile_image");
+  const password = formData.get("password");
   const result = FansSchema.safeParse({ ...raw, image: imageFile });
 
   if (!result.success)
     return { success: false, errors: result.error.flatten().fieldErrors };
+
+  const hashedPassword = await bcrypt.hash(password, 10);
 
   // Generate a unique filename and save the image
   const uniqueName = `${uuidv4()}${path.extname(imageFile.name)}`;
@@ -47,6 +51,7 @@ export async function createFans(prevState, formData) {
   await Users.create({
     ...result.data,
     account_type: 'Fan',
+    password: hashedPassword,
     profile_image: `/uploads/fans/${uniqueName}`, // Save relative path to the image
   });
 
