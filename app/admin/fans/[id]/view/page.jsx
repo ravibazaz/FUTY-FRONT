@@ -1,3 +1,4 @@
+import ChangeStatus from "@/components/ChangeStatus";
 import { connectDB } from "@/lib/db";
 import User from "@/lib/models/Users";
 import Image from "next/image";
@@ -34,15 +35,7 @@ export default async function ViewFansPage({ params }) {
         <div className="body-title-bar d-flex flex-wrap justify-content-between align-items-center gap-20 mb-20">
           <div className="body-title-bar-left d-flex flex-wrap align-items-center gap-20-70">
             <h1 className="page-title">{userdetails.name}</h1>
-            <div className="toggle-switch-cont">
-              <label className="toggle-switch">
-                <input type="checkbox" defaultChecked={(userdetails.isActive ? true : false)}></input>
-                <span className="switch round"></span>
-              </label>
-              <span className="switch-label-text fs-12">{
-                (userdetails.isActive ? 'Active' : 'Inactive')
-              }</span>
-            </div>
+            <ChangeStatus userdetails={userdetails.isActive} id={id}></ChangeStatus>
             <p className="last-activity-p mb-0">Last Activity: 12 Nov</p>
 
           </div>
