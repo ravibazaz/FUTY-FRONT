@@ -1,7 +1,7 @@
 "use client";
 
 import { useFormStatus } from "react-dom";
-import { useActionState, useState } from "react";
+import { useActionState, useState, useRef, useTransition } from "react";
 import { createFans } from "@/actions/fansActions";
 import { FansSchema } from "@/lib/validation/fans";
 import Image from "next/image";
@@ -20,7 +20,25 @@ export default function NewFanPage() {
   });
 
   const [clientErrors, setClientErrors] = useState({});
+  const [preview, setPreview] = useState("/images/profile-picture.jpg");
+  const fileInputRef = useRef(null);
 
+  const handleUploadClick = () => {
+    fileInputRef.current.click();
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file && file.type.startsWith("image/")) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        setPreview(event.target.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const [isPending, startTransition] = useTransition();
   const handleSubmit = async (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
@@ -44,7 +62,10 @@ export default function NewFanPage() {
 
     // 3️⃣ If all good, submit to main API
     setClientErrors({});
-    e.target.submit()
+
+    startTransition(() => {
+      formAction(formData);
+    });
 
   };
 
@@ -179,9 +200,9 @@ export default function NewFanPage() {
                     <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
                       <div className="info-text px-0">
                         <div className="mb-0">
-                          <div className="upload-box" id="uploadBox">
+                          <div className="upload-box" id="uploadBox" onClick={handleUploadClick}>
                             <Image
-                              src="/images/profile-picture.jpg"
+                              src={preview}
                               width={82}
                               height={82}
                               alt="Profile Image"
@@ -190,6 +211,10 @@ export default function NewFanPage() {
                               type="file"
                               id="fileInput"
                               accept="image/*"
+                              name="profile_image"
+                              ref={fileInputRef}
+                              onChange={handleFileChange}
+                              style={{ display: "none" }}
                             ></input>
                             <p
                               className="inputPlaceholder"
@@ -198,6 +223,12 @@ export default function NewFanPage() {
                               Profile image
                             </p>
                           </div>
+                          {state.errors?.profile_image && (
+                            <span className="invalid-feedback" style={{ display: "block" }}>{state.errors.profile_image}</span>
+                          )}
+                          {clientErrors.profile_image && (
+                            <span className="invalid-feedback" style={{ display: "block" }} >{clientErrors.profile_image}</span>
+                          )}
                         </div>
                       </div>
                     </div>

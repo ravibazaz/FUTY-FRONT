@@ -33,6 +33,20 @@ export default function FanTable() {
     }
 
     fetchData();
+
+        const toastMessage = document.cookie
+    .split("; ")
+    .find((row) => row.startsWith("toastMessage="));
+
+    if (toastMessage) {
+      Toast.fire({
+        icon: "success",
+        title: decodeURIComponent(toastMessage.split("=")[1]) ,
+      });
+      document.cookie = "toastMessage=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+    }
+
+    
   }, []);
 
   useEffect(() => {

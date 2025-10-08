@@ -25,7 +25,7 @@ export async function createFans(prevState, formData) {
   const userId = cookieStore.get("user_id")?.value;
 
   const raw = Object.fromEntries(formData.entries());
-  const imageFile = formData.get("image");
+  const imageFile = formData.get("profile_image");
   const result = FansSchema.safeParse({ ...raw, image: imageFile });
 
   if (!result.success)
@@ -33,7 +33,7 @@ export async function createFans(prevState, formData) {
 
   // Generate a unique filename and save the image
   const uniqueName = `${uuidv4()}${path.extname(imageFile.name)}`;
-  const filePath = path.join(process.cwd(), "uploads", uniqueName);
+  const filePath = path.join(process.cwd(), "public","uploads/fans", uniqueName);
 
   // Ensure the uploads directory exists
   await fs.mkdir(path.dirname(filePath), { recursive: true });
@@ -46,11 +46,11 @@ export async function createFans(prevState, formData) {
   await connectDB();
   await Users.create({
     ...result.data,
-    user: userId,
-    image: `/uploads/${uniqueName}`, // Save relative path to the image
+    account_type: 'Fan',
+    profile_image: `/uploads/fans/${uniqueName}`, // Save relative path to the image
   });
 
-  cookieStore.set("toastMessage", "Added");
+  cookieStore.set("toastMessage", "Fans Added");
   redirect("/admin/fans");
 }
 
