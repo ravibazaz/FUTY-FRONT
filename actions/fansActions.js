@@ -28,7 +28,7 @@ export async function createFans(prevState, formData) {
   const raw = Object.fromEntries(formData.entries());
   const imageFile = formData.get("profile_image");
   const password = formData.get("password");
-  const result = FansSchema.safeParse({ ...raw, image: imageFile });
+  const result = FansSchema(false).safeParse({ ...raw, image: imageFile });
 
   if (!result.success)
     return { success: false, errors: result.error.flatten().fieldErrors };
@@ -37,7 +37,7 @@ export async function createFans(prevState, formData) {
 
   // Generate a unique filename and save the image
   const uniqueName = `${uuidv4()}${path.extname(imageFile.name)}`;
-  const filePath = path.join(process.cwd(), "public","uploads/fans", uniqueName);
+  const filePath = path.join(process.cwd(), "public", "uploads/fans", uniqueName);
 
   // Ensure the uploads directory exists
   await fs.mkdir(path.dirname(filePath), { recursive: true });
@@ -59,27 +59,29 @@ export async function createFans(prevState, formData) {
   redirect("/admin/fans");
 }
 
-export async function updateLeague(id, prevState, formData) {
+export async function updateFan(id, prevState, formData) {
   const raw = Object.fromEntries(formData.entries());
-  const result = FansSchema.safeParse(raw);
+  const result = FansSchema(true).safeParse(raw);
   const cookieStore = await cookies();
   if (!result.success) {
     return { success: false, errors: result.error.flatten().fieldErrors };
   }
-  const { title, isActive } = result.data;
-  const imageFile = formData.get("image");
+  const { name, email, telephone } = result.data;
+  const imageFile = formData.get("profile_image");
+  const password = formData.get("password");
 
   await connectDB();
   // Find the existing league in the database
-  const league = await Leagues.findById(id);
+  const user = await Users.findById(id);
 
-  if (!league) {
-    return { success: false, error: "League not found" };
+  if (!user) {
+    return { success: false, error: "User not found" };
   }
+
 
   // Handle image update if a new image is uploaded
   if (imageFile && imageFile.size > 0) {
-    const uploadsFolder = path.join(process.cwd(),  "uploads");
+    const uploadsFolder = path.join(process.cwd(), "public", "uploads/fans");
 
     // Ensure the uploads folder exists
     await fileExists(uploadsFolder);
@@ -89,42 +91,52 @@ export async function updateLeague(id, prevState, formData) {
     // Write image file asynchronously
     const imageBuffer = Buffer.from(await imageFile.arrayBuffer());
 
- // Using callback version of writeFile
-      fs.writeFile(imagePath, imageBuffer, (err) => {
-        if (err) {
-          console.error('Error writing file:', err);
-          return { success: false, error: 'Failed to save image' };
-        }
-        console.log('File written successfully');
-      });
+    // Using callback version of writeFile
+    fs.writeFile(imagePath, imageBuffer, (err) => {
+      if (err) {
+        console.error('Error writing file:', err);
+        return { success: false, error: 'Failed to save image' };
+      }
+      console.log('File written successfully');
+    });
 
     // Delete the old image if it exists
-    if (league.image) {
-      const oldImagePath = path.join(process.cwd(),  league.image);
-     // console.log(oldImagePath);
+    if (user.profile_image) {
+      const oldImagePath = path.join(process.cwd(), "public", user.profile_image);
+      // console.log(oldImagePath);
       try {
         await fs.unlink(oldImagePath).catch((err) => {
           console.warn(`Failed to delete image: ${err.message}`);
         });
-       
+
       } catch (err) {
         console.warn(`Failed to delete old image: ${err.message}`);
       }
     }
 
+    const updateData = {
+      name,
+      email,
+      telephone,
+      profile_image: `/uploads/fans/${imageName}`, // Save relative path to the image
+    };
+
+    if (password) {
+      updateData.password = await bcrypt.hash(password, 10);
+    }
     // Update the league document with the new image name
-    await Leagues.findByIdAndUpdate(id, {
-      title,
-      isActive,
-      image: `/uploads/${imageName}`, // Save relative path to the image
-     
-    });
+    await Users.findByIdAndUpdate(id, updateData);
   } else {
+    const updateData = {
+      name,
+      email,
+      telephone,
+    };
+    if (password) {
+      updateData.password = await bcrypt.hash(password, 10);
+    }
     // If no new image is uploaded, just update the title and isActive fields
-    await Leagues.findByIdAndUpdate(id, {
-      title,
-      isActive,
-    });
+    await Users.findByIdAndUpdate(id, updateData);
   }
 
   cookieStore.set({
@@ -135,7 +147,7 @@ export async function updateLeague(id, prevState, formData) {
 
 
 
-  redirect("/admin/leagues");
+  redirect("/admin/fans");
 }
 
 export async function deleteLeague(id) {
@@ -150,7 +162,7 @@ export async function deleteLeague(id) {
   }
   if (league.image) {
     // Construct the file path for the image
-    const imagePath = path.join(process.cwd(),league.image);
+    const imagePath = path.join(process.cwd(), league.image);
     // Delete the image file from the folder
     await fs.unlink(imagePath).catch((err) => {
       console.warn(`Failed to delete image: ${err.message}`);

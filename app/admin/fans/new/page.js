@@ -44,7 +44,7 @@ export default function NewFanPage() {
     const formData = new FormData(e.target);
     const raw = Object.fromEntries(formData.entries());
 
-    const result = FansSchema.safeParse(raw);
+    const result = FansSchema(false).safeParse(raw);
 
     if (!result.success) {
       setClientErrors(result.error.flatten().fieldErrors);

@@ -6,7 +6,17 @@ export async function GET(req) {
   await connectDB();
   const { searchParams } = new URL(req.url);
   const email = searchParams.get("email");
+  const id = searchParams.get("id");
 
-  const existing = await User.findOne({ email });
+  if (!email) {
+    return NextResponse.json({ exists: false });
+  }
+
+  const query = id
+    ? { email, _id: { $ne: id } }
+    : { email };
+
+  const existing = await User.findOne(query);
+
   return NextResponse.json({ exists: !!existing });
 }

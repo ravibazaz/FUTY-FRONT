@@ -1,11 +1,11 @@
 import { connectDB } from "@/lib/db";
-import Leagues from "@/lib/models/Leagues";
-import EditLeagueForm from "@/components/EditLeagueForm"; // move your current component to a separate file
+import User from "@/lib/models/Users";
+import EditFanForm from "@/components/EditFanForm"; // move your current component to a separate file
 
 export default async function EditLeaguePage({ params }) {
   const id = (await params).id;
 
   await connectDB();
-  const league = await Leagues.findById(id).lean();
-  return <EditLeagueForm league={JSON.parse(JSON.stringify(league))} />;
+  const user = await User.findById(id).lean();
+  return <EditFanForm user={JSON.parse(JSON.stringify(user))} />;
 }

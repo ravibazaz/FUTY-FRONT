@@ -1,6 +1,8 @@
 import { connectDB } from "@/lib/db";
 import User from "@/lib/models/Users";
 import Image from "next/image";
+import Link from "next/link";
+
 export default async function ViewFansPage({ params }) {
   const id = (await params).id;
   let preview = "/images/profile-picture.jpg";
@@ -20,12 +22,12 @@ export default async function ViewFansPage({ params }) {
           <div className="top-right d-flex justify-content-between align-items-center gap-10">
             <a className="btn btn-common" href="fans-new.php">New</a>
             <a href="#">
-               <Image
-                              src="/images/icon-setting.svg"
-                              width={33}
-                              height={33}
-                              alt="Settings"
-                            />
+              <Image
+                src="/images/icon-setting.svg"
+                width={33}
+                height={33}
+                alt="Settings"
+              />
             </a>
           </div>
         </div>
@@ -74,7 +76,7 @@ export default async function ViewFansPage({ params }) {
                   <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
                     <div className="info-text">
                       <p className="mb-0">
-                        <a className="btn-common-text" href="fans-edit.php">Edit</a>
+                        <Link className="btn-common-text" href={`/admin/fans/${userdetails._id}/edit`}>Edit</Link>
                         {/* <!-- <input className="btn-common-text" type="submit" value="Edit"> --> */}
                       </p>
                     </div>
@@ -97,27 +99,29 @@ export default async function ViewFansPage({ params }) {
                   </p>
                 </div>
                 <div className="right-info mb-30">
-                  <a href="#">
+                  <Link href={`/admin/fans/${userdetails._id}/edit`}>
                     <Image
                       src={preview}
                       width={82}
                       height={82}
                       alt="Profile Image"
                     />
-                  </a>
+                  </Link>
                   <p className="mb-0">
-                    <a className="text-decoration-none fs-14 fw-bold text-primary underline-hover" href="fans-edit.php">Profile Image</a>
+                    <Link className="text-decoration-none fs-14 fw-bold text-primary underline-hover" href={`/admin/fans/${userdetails._id}/edit`}>Profile Image</Link>
                   </p>
                 </div>
                 <div className="right-info">
                   <div className="form-group row">
                     <label className="form-label col-md-4 col-xl-2 col-form-label fs-14">
                       <strong className="text-start">Password</strong>
-                      <p className="mt-10 mb-0"><a className="text-primary text-decoration-none underline-hover" href="fans-edit.php">Change</a></p>
+                      <p className="mt-10 mb-0">
+                         <Link className="text-primary text-decoration-none underline-hover" href={`/admin/fans/${userdetails._id}/edit`}>Change</Link>
+                        </p>
                     </label>
-                    <div className=" col-md-8 col-xl-10">
+                    {/* <div className=" col-md-8 col-xl-10">
                       <input className="form-control" type="password" ></input>
-                    </div>
+                    </div> */}
                   </div>
                 </div>
               </div>

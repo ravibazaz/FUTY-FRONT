@@ -138,7 +138,15 @@ export default function FanTable() {
                         <td className="text-nowrap"><a href="tel:+44 07453 234258">{l.telephone}</a></td>
                         <td className="text-nowrap"><a href="mailto:csb9900@gmail.com">{l.email}</a></td>
                         <td className="text-nowrap">12 Nov</td>
-                        <td className="text-nowrap"><a className="text-green" href="fans-edit.php">Edit</a></td>
+                        <td className="text-nowrap">
+                           <Link className="text-green"
+                            href={`/admin/fans/${l._id}/edit`}
+                          >
+                            Edit
+                          </Link>
+                          
+                          
+                          </td>
                       </tr>
                     ))
                   ) : (
