@@ -102,6 +102,9 @@ body {
 .gap-10 {
   gap: 10px 10px!important;
 }
+.gap-15 {
+  gap: 15px 15px!important;
+}
 .gap-20 {
   gap: 20px 20px!important;
 }
@@ -132,6 +135,24 @@ body {
 .mb-30 {
   margin-bottom: 30px!important;
 }
+.pt-10 {
+  padding-top: 10px!important;
+}
+.pt-20 {
+  padding-top: 20px!important;
+}
+.pt-30 {
+  padding-top: 30px!important;
+}
+.pb-10 {
+  padding-bottom: 10px!important;
+}
+.pb-20 {
+  padding-bottom: 20px!important;
+}
+.pb-30 {
+  padding-bottom: 30px!important;
+}
 .fs-10 {
   font-size: 10px!important;
 }
@@ -150,11 +171,11 @@ body {
 }
 .form-control {
   font-size: 14px;
-  line-height: 1;
+  line-height: 1.5;
   color: var(--color-body);
   border: 1px solid var(--color-two);
   border-radius: 5px;
-  padding: 12px 15px;
+  padding: 9.5px 15px;
 }
 .form-control:focus {
   box-shadow: none;
@@ -162,6 +183,9 @@ body {
 }
 .form-control::placeholder {
   color: var(--color-body);
+}
+textarea.form-control {
+  min-height: 120px;
 }
 /*---- Dashboard Default Bootstrap CSS - START ----*/
 .bi {
@@ -510,9 +534,10 @@ input:checked + .switch:before {
   align-items: flex-start;
   cursor: pointer;
   overflow: hidden;
-  width: 110px;
+   width: fit-content;
+  /* width: 110px; */
 }
-#fileInput {
+.upload-box #fileInput {
   display: none;
 }
 .inputPlaceholder {
@@ -523,7 +548,7 @@ input:checked + .switch:before {
   margin: 0;
   transition: all 0.5s;
 }
-.inputPlaceholder:hover {
+.upload-box .inputPlaceholder:hover {
   color: var(--color-green);
 }
 .upload-box img {
@@ -533,8 +558,23 @@ input:checked + .switch:before {
   object-position: center center;
   order: 1;
   margin-bottom: 10px;
-  height: 82px;
-  width: 82px;
+  height: 100px;
+  width: 100px;
+}
+.upload-box .previews {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+  order: 1;
+  margin-bottom: 10px;
+}
+.upload-box .previews img {
+  border-radius: 10px;
+  box-shadow: 0px 4px 4px 0px #00000040;
+  object-fit: cover;
+  object-position: center center;
+  height: 100px;
+  width: 100px;
 }
 /*---- Custom Input Type >File CSS - END ----*/
 /*---- Single Page CSS - START ----*/
@@ -551,6 +591,10 @@ input:checked + .switch:before {
   font-size: 14px;
   padding: 15px 20px;
 }
+.info-text.px-0 {
+  padding-top: 6px;
+  padding-bottom: 6px;
+}
 .right-info-box {
   border-left: 4px solid var(--color-one);
   padding-left: 30px;
@@ -558,7 +602,7 @@ input:checked + .switch:before {
 .profile-img {
   border-radius: 10px;
   box-shadow: 0px 4px 4px 0px #00000040;
-  height: 82px;
+  height: 100px;
   object-fit: cover;
   object-position: center center;
 }
