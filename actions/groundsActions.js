@@ -8,7 +8,7 @@ import { GroundSchema } from "@/lib/validation/grounds";
 import { v4 as uuidv4 } from "uuid";
 import path from "path";
 import { promises as fs } from "fs";
-import bcrypt from "bcryptjs";
+
 
 // Check if file exists asynchronously
 const fileExists = async (filePath) => {
@@ -26,37 +26,41 @@ export async function createGrounds(prevState, formData) {
   const userId = cookieStore.get("user_id")?.value;
 
   const raw = Object.fromEntries(formData.entries());
-  const imageFile = formData.get("profile_image");
-  const password = formData.get("password");
-  const result = GroundSchema(false).safeParse({ ...raw, image: imageFile });
+  const imageFiles = formData.getAll("images");
+  const result = GroundSchema(false).safeParse({ ...raw, images: imageFiles });
 
   if (!result.success)
     return { success: false, errors: result.error.flatten().fieldErrors };
-
-  const hashedPassword = await bcrypt.hash(password, 10);
-
-  // Generate a unique filename and save the image
-  const uniqueName = `${uuidv4()}${path.extname(imageFile.name)}`;
-  const filePath = path.join(process.cwd(), "public", "uploads/fans", uniqueName);
-
-  // Ensure the uploads directory exists
-  await fs.mkdir(path.dirname(filePath), { recursive: true });
-
-  // Convert file to Buffer and save it
-  const arrayBuffer = await imageFile.arrayBuffer();
-  const buffer = Buffer.from(arrayBuffer);
-  await fs.writeFile(filePath, buffer);
-
+  // console.log(result.data);
+  // return false;
   await connectDB();
+  // ensure upload directory exists
+  const uploadDir = path.join(process.cwd(), "public/uploads/grounds");
+  await fs.mkdir(uploadDir, { recursive: true });
+
+  const uploadedFiles = [];
+
+  // loop through all valid images
+  for (const file of imageFiles) {
+
+    const uniqueName = `${Date.now()}-${uuidv4()}${path.extname(file.name)}`;
+    const filePath = path.join(process.cwd(), "public/uploads/grounds", uniqueName);
+
+    await fs.mkdir(path.dirname(filePath), { recursive: true });
+
+    const arrayBuffer = await file.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
+    await fs.writeFile(filePath, buffer);
+    // push info for DB
+    uploadedFiles.push(`/uploads/grounds/${uniqueName}`);
+  }
   await Grounds.create({
     ...result.data,
-    account_type: 'Fan',
-    password: hashedPassword,
-    profile_image: `/uploads/fans/${uniqueName}`, // Save relative path to the image
+    images: uploadedFiles,
   });
 
-  cookieStore.set("toastMessage", "Fans Added");
-  redirect("/admin/fans");
+  cookieStore.set("toastMessage", "Ground Added");
+  redirect("/admin/grounds");
 }
 
 export async function updateGround(id, prevState, formData) {
@@ -66,75 +70,84 @@ export async function updateGround(id, prevState, formData) {
   if (!result.success) {
     return { success: false, errors: result.error.flatten().fieldErrors };
   }
-  const { name, email, telephone } = result.data;
-  const imageFile = formData.get("profile_image");
-  const password = formData.get("password");
+  const { name, add1, add2, add3, pin, content } = result.data;
+  const imageFiles = formData.getAll("images");
 
+  // console.log(imageFiles);
+  
+  
   await connectDB();
   // Find the existing league in the database
-  const user = await Grounds.findById(id);
+  const ground = await Grounds.findById(id);
 
-  if (!user) {
-    return { success: false, error: "User not found" };
+  if (!ground) {
+    return { success: false, error: "Ground not found" };
   }
-
-
   // Handle image update if a new image is uploaded
-  if (imageFile && imageFile.size > 0) {
-    const uploadsFolder = path.join(process.cwd(), "public", "uploads/fans");
 
-    // Ensure the uploads folder exists
-    await fileExists(uploadsFolder);
-    const imageName = `${Date.now()}_${imageFile.name}`;
-    const imagePath = path.join(uploadsFolder, imageName);
+  if (imageFiles && imageFiles.length > 0) {
 
-    // Write image file asynchronously
-    const imageBuffer = Buffer.from(await imageFile.arrayBuffer());
+    const uploadDir = path.join(process.cwd(), "public/uploads/grounds");
+    await fs.mkdir(uploadDir, { recursive: true });
 
-    // Using callback version of writeFile
-    fs.writeFile(imagePath, imageBuffer, (err) => {
-      if (err) {
-        console.error('Error writing file:', err);
-        return { success: false, error: 'Failed to save image' };
-      }
-      console.log('File written successfully');
-    });
+    const uploadedFiles = [];
+    for (const file of imageFiles) {
+      const uniqueName = `${Date.now()}-${uuidv4()}${path.extname(file.name)}`;
+      const filePath = path.join(process.cwd(), "public/uploads/grounds", uniqueName);
+
+      await fs.mkdir(path.dirname(filePath), { recursive: true });
+
+      const arrayBuffer = await file.arrayBuffer();
+      const buffer = Buffer.from(arrayBuffer);
+
+      fs.writeFile(filePath, buffer, (err) => {
+        if (err) {
+          console.error('Error writing file:', err);
+          return { success: false, error: 'Failed to save image' };
+        }
+        console.log('File written successfully');
+      });
+      // push info for DB
+      uploadedFiles.push(`/uploads/grounds/${uniqueName}`);
+    }
 
     // Delete the old image if it exists
-    if (user.profile_image) {
-      const oldImagePath = path.join(process.cwd(), "public", user.profile_image);
-      // console.log(oldImagePath);
-      try {
-        await fs.unlink(oldImagePath).catch((err) => {
-          console.warn(`Failed to delete image: ${err.message}`);
-        });
+    if (ground.images) {
+      ground.images.map((l, index) => {
+        const oldImagePath = path.join(process.cwd(), "public", l);
+        // console.log(oldImagePath);
+        try {
+          fs.unlink(oldImagePath).catch((err) => {
+            console.warn(`Failed to delete image: ${err.message}`);
+          });
 
-      } catch (err) {
-        console.warn(`Failed to delete old image: ${err.message}`);
-      }
+        } catch (err) {
+          console.warn(`Failed to delete old image: ${err.message}`);
+        }
+      })
     }
 
     const updateData = {
       name,
-      email,
-      telephone,
-      profile_image: `/uploads/fans/${imageName}`, // Save relative path to the image
+      add1,
+      add2,
+      add3,
+      pin,
+      content,
+      images: uploadedFiles,
     };
 
-    if (password) {
-      updateData.password = await bcrypt.hash(password, 10);
-    }
     // Update the league document with the new image name
     await Grounds.findByIdAndUpdate(id, updateData);
   } else {
     const updateData = {
       name,
-      email,
-      telephone,
+      add1,
+      add2,
+      add3,
+      pin,
+      content,
     };
-    if (password) {
-      updateData.password = await bcrypt.hash(password, 10);
-    }
     // If no new image is uploaded, just update the title and isActive fields
     await Grounds.findByIdAndUpdate(id, updateData);
   }
@@ -144,10 +157,7 @@ export async function updateGround(id, prevState, formData) {
     value: "Updated",
     path: "/",
   });
-
-
-
-  redirect("/admin/fans");
+  redirect("/admin/grounds");
 }
 
 export async function deleteLeague(id) {

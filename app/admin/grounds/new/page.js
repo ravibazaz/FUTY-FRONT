@@ -20,20 +20,33 @@ export default function NewGroundPage() {
   const [clientErrors, setClientErrors] = useState({});
   const [preview, setPreview] = useState("/images/club-badge.jpg");
   const fileInputRef = useRef(null);
+  const previewsRef = useRef(null);
 
   const handleUploadClick = () => {
     fileInputRef.current.click();
   };
 
   const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (file && file.type.startsWith("image/")) {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        setPreview(event.target.result);
-      };
-      reader.readAsDataURL(file);
+    // const files = e.target.files;
+    let allFiles = [];
+    for (let file of e.target.files) {
+      // Check for duplicate files if needed
+      if (!allFiles.some(f => f.name === file.name && f.size === file.size)) {
+        allFiles.push(file);
+      }
     }
+    previewsRef.current.innerHTML = '';
+    allFiles.forEach(file => {
+      if (file && file.type.startsWith("image/")) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          const img = document.createElement('img');
+          img.src = e.target.result;
+          previewsRef.current.appendChild(img)
+        }
+         reader.readAsDataURL(file);
+      }
+    });
   };
 
   const [isPending, startTransition] = useTransition();
@@ -224,8 +237,8 @@ export default function NewGroundPage() {
                               ref={fileInputRef}
                               onChange={handleFileChange}
                               style={{ display: "none" }}
-                               multiple></input>
-                            <div className="previews" id="previews" >
+                              multiple></input>
+                            <div className="previews" id="previews" ref={previewsRef} >
                               <Image
                                 src={preview}
                                 width={82}
