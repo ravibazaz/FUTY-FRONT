@@ -23,7 +23,7 @@ export default function Sidebar() {
                     <Link  className={`nav-link ${pathname.startsWith('/admin/leagues') ? 'active' : ''}`}  aria-current="page" href="/admin/leagues"><span className="link-text">Leagues</span></Link>
                 </li>
                 <li className="nav-item">
-                    <Link className="nav-link" href="#"><span className="link-text">Clubs</span></Link>
+                    <Link className={`nav-link ${pathname.startsWith('/admin/clubs') ? 'active' : ''}`} href="/admin/clubs"><span className="link-text">Clubs</span></Link>
                 </li>
                 <li className="nav-item">
                     <Link className="nav-link" href="#"><span className="link-text">Teams</span></Link>
