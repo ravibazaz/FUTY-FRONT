@@ -26,40 +26,32 @@ export async function createClub(prevState, formData) {
   const userId = cookieStore.get("user_id")?.value;
 
   const raw = Object.fromEntries(formData.entries());
-  const imageFiles = formData.getAll("images");
-  const result = ClubSchema(false).safeParse({ ...raw, images: imageFiles });
+  const imageFile = formData.get("image");
+  const result = ClubSchema(false).safeParse({ ...raw, image: imageFile });
 
   if (!result.success)
     return { success: false, errors: result.error.flatten().fieldErrors };
-  // console.log(result.data);
-  // return false;
+
+  // Generate a unique filename and save the image
+  const uniqueName = `${uuidv4()}${path.extname(imageFile.name)}`;
+  const filePath = path.join(process.cwd(), "public", "uploads/clubs", uniqueName);
+
+  // Ensure the uploads directory exists
+  await fs.mkdir(path.dirname(filePath), { recursive: true });
+
+  // Convert file to Buffer and save it
+  const arrayBuffer = await imageFile.arrayBuffer();
+  const buffer = Buffer.from(arrayBuffer);
+  await fs.writeFile(filePath, buffer);
+
   await connectDB();
-  // ensure upload directory exists
-  const uploadDir = path.join(process.cwd(), "public/uploads/clubs");
-  await fs.mkdir(uploadDir, { recursive: true });
 
-  const uploadedFiles = [];
-
-  // loop through all valid images
-  for (const file of imageFiles) {
-
-    const uniqueName = `${Date.now()}-${uuidv4()}${path.extname(file.name)}`;
-    const filePath = path.join(process.cwd(), "public/uploads/clubs", uniqueName);
-
-    await fs.mkdir(path.dirname(filePath), { recursive: true });
-
-    const arrayBuffer = await file.arrayBuffer();
-    const buffer = Buffer.from(arrayBuffer);
-    await fs.writeFile(filePath, buffer);
-    // push info for DB
-    uploadedFiles.push(`/uploads/clubs/${uniqueName}`);
-  }
   await Clubs.create({
     ...result.data,
-    images: uploadedFiles,
+    image: `/uploads/clubs/${uniqueName}`,
   });
 
-  cookieStore.set("toastMessage", "Ground Added");
+  cookieStore.set("toastMessage", "Club Added");
   redirect("/admin/clubs");
 }
 
@@ -70,83 +62,68 @@ export async function updateClub(id, prevState, formData) {
   if (!result.success) {
     return { success: false, errors: result.error.flatten().fieldErrors };
   }
-  const { name, add1, add2, add3, pin, content } = result.data;
-  const imageFiles = formData.getAll("images");
+  const { name, secretary_name, phone, email } = result.data;
+  const imageFile = formData.get("image");
 
   // console.log(imageFiles);
-  
-  
+
+
   await connectDB();
   // Find the existing league in the database
   const club = await Clubs.findById(id);
 
   if (!club) {
-    return { success: false, error: "Ground not found" };
+    return { success: false, error: "Club not found" };
   }
   // Handle image update if a new image is uploaded
 
-  if (imageFiles && imageFiles.length > 0) {
+  if (imageFile && imageFile.size > 0) {
 
-    const uploadDir = path.join(process.cwd(), "public/uploads/clubs");
-    await fs.mkdir(uploadDir, { recursive: true });
+    const uploadsFolder = path.join(process.cwd(), "public", "uploads/clubs");
 
-    const uploadedFiles = [];
-    for (const file of imageFiles) {
-      const uniqueName = `${Date.now()}-${uuidv4()}${path.extname(file.name)}`;
-      const filePath = path.join(process.cwd(), "public/uploads/clubs", uniqueName);
+    // Ensure the uploads folder exists
+    await fileExists(uploadsFolder);
+    const imageName = `${Date.now()}_${imageFile.name}`;
+    const imagePath = path.join(uploadsFolder, imageName);
+    // Write image file asynchronously
+    const imageBuffer = Buffer.from(await imageFile.arrayBuffer());
 
-      await fs.mkdir(path.dirname(filePath), { recursive: true });
-
-      const arrayBuffer = await file.arrayBuffer();
-      const buffer = Buffer.from(arrayBuffer);
-
-      fs.writeFile(filePath, buffer, (err) => {
-        if (err) {
-          console.error('Error writing file:', err);
-          return { success: false, error: 'Failed to save image' };
-        }
-        console.log('File written successfully');
-      });
-      // push info for DB
-      uploadedFiles.push(`/uploads/clubs/${uniqueName}`);
-    }
-
+    // Using callback version of writeFile
+    fs.writeFile(imagePath, imageBuffer, (err) => {
+      if (err) {
+        console.error('Error writing file:', err);
+        return { success: false, error: 'Failed to save image' };
+      }
+      console.log('File written successfully');
+    });
     // Delete the old image if it exists
-    if (club.images) {
-      club.images.map((l, index) => {
-        const oldImagePath = path.join(process.cwd(), "public", l);
-        // console.log(oldImagePath);
-        try {
-          fs.unlink(oldImagePath).catch((err) => {
-            console.warn(`Failed to delete image: ${err.message}`);
-          });
+    if (club.image) {
+      const oldImagePath = path.join(process.cwd(), "public", club.image);
+      // console.log(oldImagePath);
+      try {
+        await fs.unlink(oldImagePath).catch((err) => {
+          console.warn(`Failed to delete image: ${err.message}`);
+        });
 
-        } catch (err) {
-          console.warn(`Failed to delete old image: ${err.message}`);
-        }
-      })
+      } catch (err) {
+        console.warn(`Failed to delete old image: ${err.message}`);
+      }
     }
-
     const updateData = {
       name,
-      add1,
-      add2,
-      add3,
-      pin,
-      content,
-      images: uploadedFiles,
+      secretary_name,
+      phone,
+      email,
+      image: `/uploads/clubs/${imageName}`, // Save relative path to the image
     };
-
     // Update the league document with the new image name
     await Clubs.findByIdAndUpdate(id, updateData);
   } else {
     const updateData = {
       name,
-      add1,
-      add2,
-      add3,
-      pin,
-      content,
+      secretary_name,
+      phone,
+      email,
     };
     // If no new image is uploaded, just update the title and isActive fields
     await Clubs.findByIdAndUpdate(id, updateData);
@@ -154,7 +131,7 @@ export async function updateClub(id, prevState, formData) {
 
   cookieStore.set({
     name: "toastMessage",
-    value: "Updated",
+    value: "Club Updated",
     path: "/",
   });
   redirect("/admin/clubs");

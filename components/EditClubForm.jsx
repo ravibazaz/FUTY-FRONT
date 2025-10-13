@@ -21,26 +21,14 @@ export default function EditClubForm({ club }) {
   };
 
   const handleFileChange = (e) => {
-    // const files = e.target.files;
-    let allFiles = [];
-    for (let file of e.target.files) {
-      // Check for duplicate files if needed
-      if (!allFiles.some(f => f.name === file.name && f.size === file.size)) {
-        allFiles.push(file);
-      }
+    const file = e.target.files[0];
+    if (file && file.type.startsWith("image/")) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        setPreview(event.target.result);
+      };
+      reader.readAsDataURL(file);
     }
-    previewsRef.current.innerHTML = '';
-    allFiles.forEach(file => {
-      if (file && file.type.startsWith("image/")) {
-        const reader = new FileReader();
-        reader.onload = function (e) {
-          const img = document.createElement('img');
-          img.src = e.target.result;
-          previewsRef.current.appendChild(img)
-        }
-        reader.readAsDataURL(file);
-      }
-    });
   };
 
   const [state, formAction] = useActionState(
@@ -52,7 +40,8 @@ export default function EditClubForm({ club }) {
   );
 
   const [clientErrors, setClientErrors] = useState({});
-  // const [preview, setPreview] = useState([]);
+  const [preview, setPreview] = useState(club.image ? club.image : '/images/club-badge.jpg');
+
   // if (club.images)
   // setPreview(club.images);
   // const arrayLength = club.images;
@@ -61,6 +50,14 @@ export default function EditClubForm({ club }) {
     e.preventDefault();
     const formData = new FormData(e.target);
     const raw = Object.fromEntries(formData.entries());
+
+    // Check if a new image was uploaded
+    const imageFile = e.target.image.files[0];
+    if (imageFile) {
+      formData.set("image", imageFile); // Append the new file
+    } else {
+      formData.delete("image"); // Remove the image key if no new file is uploaded
+    }
 
     const result = ClubSchema(true).safeParse(
       Object.fromEntries(formData.entries())
@@ -134,7 +131,12 @@ export default function EditClubForm({ club }) {
                   <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
                     <div className="info-text px-0">
                       <p className="mb-0">
-                        <input className="form-control" type="text" ></input>
+                        <input className="form-control" defaultValue={club.secretary_name} name="secretary_name" type="text" ></input>
+                        {clientErrors.secretary_name && (
+                          <span className="invalid-feedback" style={{ display: "block" }}>
+                            {clientErrors.secretary_name}
+                          </span>
+                        )}
                       </p>
                     </div>
                   </div>
@@ -198,7 +200,13 @@ export default function EditClubForm({ club }) {
                   <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
                     <div className="info-text px-0">
                       <p className="mb-0">
-                        <input className="form-control" type="email"></input>
+                        <input className="form-control" defaultValue={club.email} name="email" type="email"></input>
+                        {clientErrors.email && (
+                          <span className="invalid-feedback" style={{ display: "block" }}>
+                            {clientErrors.email}
+                          </span>
+                        )}
+
                         <span className="user-verify d-inline-block mt-10">Verify</span>
                       </p>
                     </div>
@@ -215,7 +223,12 @@ export default function EditClubForm({ club }) {
                   <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
                     <div className="info-text px-0">
                       <p className="mb-0">
-                        <input className="form-control" type="text"></input>
+                        <input className="form-control" name="phone" defaultValue={club.phone} type="text"></input>
+                        {clientErrors.phone && (
+                          <span className="invalid-feedback" style={{ display: "block" }}>
+                            {clientErrors.phone}
+                          </span>
+                        )}
                         <span className="user-verify d-inline-block mt-10">Verify</span>
                       </p>
                     </div>
@@ -226,17 +239,30 @@ export default function EditClubForm({ club }) {
                 <div className="left-row row">
                   <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
                     <div className="label-text mb-0">
-                      <p className="mb-0">Profile image</p>
+                      <p className="mb-0">Club image</p>
                     </div>
                   </div>
                   <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
                     <div className="info-text px-0">
                       <div className="mb-0">
-                        <div className="upload-box" id="uploadBox">
-                          <img src="/images/club-badge.jpg" alt="Club Badge" />
-                          <input type="file" id="fileInput" accept="image/*"></input>
+                        <div className="upload-box" id="uploadBox" onClick={handleUploadClick}>
+                          <Image
+                            src={preview}
+                            width={82}
+                            height={82}
+                            alt="Club Badge"
+                          />
+                          <input type="file" id="fileInput" accept="image/*" ref={fileInputRef}
+                            name="image"
+                            onChange={handleFileChange}
+                            style={{ display: "none" }} ></input>
                           <p className="inputPlaceholder" id="placeholderText">Club Badge</p>
                         </div>
+                        {clientErrors.image && (
+                          <span className="invalid-feedback" style={{ display: "block" }}>
+                            {clientErrors.image}
+                          </span>
+                        )}
                       </div>
                     </div>
                   </div>

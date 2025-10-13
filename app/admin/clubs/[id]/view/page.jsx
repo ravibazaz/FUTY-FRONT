@@ -1,4 +1,5 @@
 import ChangeStatus from "@/components/ChangeStatus";
+import ClubDropdown from "@/components/ClubDropdown";
 import { connectDB } from "@/lib/db";
 import Clubs from "@/lib/models/Clubs";
 import Image from "next/image";
@@ -6,9 +7,11 @@ import Link from "next/link";
 
 export default async function ViewFansPage({ params }) {
     const id = (await params).id;
-    let preview = "/images/profile-picture.jpg";
+    let preview = "/images/club-badge.jpg";
     await connectDB();
     const club = await Clubs.findById(id).lean();
+    if (club.image)
+        preview = club.image;
 
     return (
         <>
@@ -44,7 +47,7 @@ export default async function ViewFansPage({ params }) {
                                     <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
                                         <div className="info-text">
                                             <p className="mb-0">
-                                                <a className="text-primary text-decoration-none" href="#">Corky Towers</a>
+                                                <a className="text-primary text-decoration-none" href="#">{club.secretary_name}</a>
                                             </p>
                                         </div>
                                     </div>
@@ -119,19 +122,25 @@ export default async function ViewFansPage({ params }) {
                                 <h2 className="info-box-title fs-14 fw-bold mb-30">Contact Details</h2>
                                 <div className="right-info mb-30">
                                     <p className="mb-0 fs-14 d-flex align-items-center gap-30">
-                                        <span className="info-span">E-mail: <a className="text-decoration-none text-body underline-hover" href="mailto:csb9900@gmail.com">csb9900@gmail.com</a></span>
+                                        <span className="info-span">E-mail: <a className="text-decoration-none text-body underline-hover" href={'mailto:' + club.email}>{club.email}</a></span>
                                     </p>
                                 </div>
                                 <div className="right-info mb-30">
                                     <p className="mb-0 fs-14 d-flex align-items-center gap-30">
-                                        <span className="info-span">Tel: <a className="text-decoration-none text-body underline-hover" href="tel:+44 07453 234258">+44 07453 234258</a></span>
+                                        <span className="info-span">Tel: <a className="text-decoration-none text-body underline-hover" href={'tel:' + club.phone}>{club.phone}</a></span>
                                         <span className="user-active">Verified</span>
                                     </p>
                                 </div>
                                 <div className="right-info mb-30">
-                                    <a href="#">
-                                        <img className="profile-img mb-10" src="/images/club-badge.jpg" alt="Club Badge" />
-                                    </a>
+                                <Link href={`/admin/clubs/${club._id}/edit`}>
+                                <Image
+                                    src={preview}
+                                    width={82}
+                                    height={82}
+                                    className={'profile-img mb-10'}
+                                    alt="Club Badge"
+                                />
+                                </Link>
                                     <p className="mb-0">
                                         <a className="text-decoration-none fs-14 fw-bold text-primary underline-hover" href="clubs-edit.php">Club Badge</a>
                                     </p>

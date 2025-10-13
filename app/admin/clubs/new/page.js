@@ -27,26 +27,14 @@ export default function NewGroundPage() {
   };
 
   const handleFileChange = (e) => {
-    // const files = e.target.files;
-    let allFiles = [];
-    for (let file of e.target.files) {
-      // Check for duplicate files if needed
-      if (!allFiles.some(f => f.name === file.name && f.size === file.size)) {
-        allFiles.push(file);
-      }
+    const file = e.target.files[0];
+    if (file && file.type.startsWith("image/")) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        setPreview(event.target.result);
+      };
+      reader.readAsDataURL(file);
     }
-    previewsRef.current.innerHTML = '';
-    allFiles.forEach(file => {
-      if (file && file.type.startsWith("image/")) {
-        const reader = new FileReader();
-        reader.onload = function (e) {
-          const img = document.createElement('img');
-          img.src = e.target.result;
-          previewsRef.current.appendChild(img)
-        }
-        reader.readAsDataURL(file);
-      }
-    });
   };
 
   const [isPending, startTransition] = useTransition();
@@ -63,7 +51,6 @@ export default function NewGroundPage() {
     }
     // 3️⃣ If all good, submit to main API
     setClientErrors({});
-
     startTransition(() => {
       formAction(formData);
     });
@@ -78,7 +65,7 @@ export default function NewGroundPage() {
             <p className="top-breadcrumb mb-0">{'> Clubs'}</p>
           </div>
           <div className="top-right d-flex justify-content-between align-items-center gap-10">
-            <a className="btn btn-common" href="clubs-new.php">New</a>
+            <a className="btn btn-common" href="#">New</a>
             <a href="#">
               <Image
                 src="/images/icon-setting.svg"
@@ -134,7 +121,13 @@ export default function NewGroundPage() {
                     <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
                       <div className="info-text px-0">
                         <p className="mb-0">
-                          <input className="form-control" type="text"></input>
+                          <input className="form-control" name="secretary_name" type="text"></input>
+                          {state.errors?.secretary_name && (
+                            <span className="invalid-feedback" style={{ display: "block" }}>{state.errors.secretary_name}</span>
+                          )}
+                          {clientErrors.secretary_name && (
+                            <span className="invalid-feedback" style={{ display: "block" }} >{clientErrors.secretary_name}</span>
+                          )}
                         </p>
                       </div>
                     </div>
@@ -198,8 +191,15 @@ export default function NewGroundPage() {
                     <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
                       <div className="info-text px-0">
                         <p className="mb-0">
-                          <input className="form-control" type="email"></input>
+                          <input className="form-control" name="email" type="email"></input>
+                          {state.errors?.email && (
+                            <span className="invalid-feedback" style={{ display: "block" }}>{state.errors.email}</span>
+                          )}
+                          {clientErrors.email && (
+                            <span className="invalid-feedback" style={{ display: "block" }} >{clientErrors.email}</span>
+                          )}
                           <span className="user-verify d-inline-block mt-10">Verify</span>
+
                         </p>
                       </div>
                     </div>
@@ -215,7 +215,13 @@ export default function NewGroundPage() {
                     <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
                       <div className="info-text px-0">
                         <p className="mb-0">
-                          <input className="form-control" type="text"></input>
+                          <input className="form-control" name="phone" type="text"></input>
+                          {state.errors?.phone && (
+                            <span className="invalid-feedback" style={{ display: "block" }}>{state.errors.phone}</span>
+                          )}
+                          {clientErrors.phone && (
+                            <span className="invalid-feedback" style={{ display: "block" }} >{clientErrors.phone}</span>
+                          )}
                           <span className="user-verify d-inline-block mt-10">Verify</span>
                         </p>
                       </div>
@@ -226,17 +232,35 @@ export default function NewGroundPage() {
                   <div className="left-row row">
                     <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
                       <div className="label-text mb-0">
-                        <p className="mb-0">Profile image</p>
+                        <p className="mb-0">Club image</p>
                       </div>
                     </div>
                     <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
                       <div className="info-text px-0">
                         <div className="mb-0">
-                          <div className="upload-box" id="uploadBox">
-                            <img src="/images/club-badge.jpg" alt="Club Badge" />
-                            <input type="file" id="fileInput" accept="image/*"></input>
+                          <div className="upload-box" id="uploadBox" onClick={handleUploadClick}>
+
+                            <Image
+                              src={preview}
+                              width={82}
+                              height={82}
+                              alt="Profile Image"
+                            />
+                            <input type="file" id="fileInput" 
+                              accept="image/*"
+                              name="image"
+                              ref={fileInputRef}
+                              onChange={handleFileChange}
+                              style={{ display: "none" }}
+                              ></input>
                             <p className="inputPlaceholder" id="placeholderText">Club Badge</p>
                           </div>
+                          {state.errors?.image && (
+                            <span className="invalid-feedback" style={{ display: "block" }}>{state.errors.image}</span>
+                          )}
+                          {clientErrors.image && (
+                            <span className="invalid-feedback" style={{ display: "block" }} >{clientErrors.image}</span>
+                          )}
                         </div>
                       </div>
                     </div>
