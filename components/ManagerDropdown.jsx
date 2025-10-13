@@ -2,16 +2,16 @@
 
 import { useState, useEffect } from "react";
 
-export default function ClubDropdown(props) {
-  const [clubs, setClubs] = useState([]);
-  const [selectedClub, setSelectedClub] = useState("");
+export default function ManagerDropdown(props) {
+  const [managers, setManagers] = useState([]);
 
+  
   useEffect(() => {
     const fetchClubs = async () => {
       try {
-        const response = await fetch("/api/clubs");
+        const response = await fetch("/api/managers");
         const data = await response.json();
-        setClubs(data.clubs);
+        setManagers(data.managers);
       } catch (error) {
         console.error("Error fetching clubs:", error);
       }
@@ -25,7 +25,7 @@ export default function ClubDropdown(props) {
       <div className="left-row row">
         <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
           <div className="label-text">
-            <p className="mb-0">Club</p>
+            <p className="mb-0">Manager</p>
           </div>
         </div>
         <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
@@ -34,20 +34,19 @@ export default function ClubDropdown(props) {
 
               <select
                 className="form-control"
-                name="club"
-                value={selectedClub}
-                onChange={(e) => setSelectedClub(e.target.value)}
+                name="manager"
               >
-                <option value="">Choose a club</option>
-                {clubs.map((club) => (
-                  <option key={club._id} value={club._id}>
-                    {club.name}
+                <option value="">Choose a Mansger</option>
+                {managers.map((manager) => (
+                  <option key={manager._id} value={manager._id}>
+                    {manager.name}
                   </option>
                 ))}
               </select>
                {props.clienterror && <span className="invalid-feedback" style={{ display: "block" }} >{props.clienterror}</span>}
             </p>
           </div>
+         
         </div>
       </div>
     </div>

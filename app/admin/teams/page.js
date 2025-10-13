@@ -119,9 +119,10 @@ export default function GroundTable() {
                 <thead>
                   <tr>
                     <th scope="col">Team</th>
-                    <th scope="col">Secretary</th>
+                    <th scope="col">Manager</th>
                     <th scope="col">Telephone</th>
                     <th scope="col">Email</th>
+                    <th scope="col">Ground</th>
                     <th scope="col">Edit</th>
                   </tr>
                 </thead>
@@ -138,6 +139,7 @@ export default function GroundTable() {
                         </td>
                         <td className="text-nowrap"><a href="#">Marc Waters</a></td>
                         <td className="text-nowrap"><a href="tel:+44 08564 346268">{l.phone}</a></td>
+                        <td className="text-nowrap"><a href="mailto:u7@phyl.co.uk">{l.email}</a></td>
                         <td className="text-nowrap"><a href="mailto:u7@phyl.co.uk">{l.email}</a></td>
                         <td className="text-nowrap">
                           <Link className="text-green"

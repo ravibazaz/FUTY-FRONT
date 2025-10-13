@@ -26,37 +26,31 @@ export async function createTeam(prevState, formData) {
   const userId = cookieStore.get("user_id")?.value;
 
   const raw = Object.fromEntries(formData.entries());
-  const imageFiles = formData.getAll("images");
-  const result = TeamSchema(false).safeParse({ ...raw, images: imageFiles });
+  const imageFile = formData.get("image");
+  const result = TeamSchema(false).safeParse({ ...raw, image: imageFile });
 
   if (!result.success)
     return { success: false, errors: result.error.flatten().fieldErrors };
   // console.log(result.data);
   // return false;
+
+  // Generate a unique filename and save the image
+  const uniqueName = `${uuidv4()}${path.extname(imageFile.name)}`;
+  const filePath = path.join(process.cwd(), "public", "uploads/teams", uniqueName);
+
+  // Ensure the uploads directory exists
+  await fs.mkdir(path.dirname(filePath), { recursive: true });
+
+  // Convert file to Buffer and save it
+  const arrayBuffer = await imageFile.arrayBuffer();
+  const buffer = Buffer.from(arrayBuffer);
+  await fs.writeFile(filePath, buffer);
+
   await connectDB();
-  // ensure upload directory exists
-  const uploadDir = path.join(process.cwd(), "public/uploads/teams");
-  await fs.mkdir(uploadDir, { recursive: true });
 
-  const uploadedFiles = [];
-
-  // loop through all valid images
-  for (const file of imageFiles) {
-
-    const uniqueName = `${Date.now()}-${uuidv4()}${path.extname(file.name)}`;
-    const filePath = path.join(process.cwd(), "public/uploads/teams", uniqueName);
-
-    await fs.mkdir(path.dirname(filePath), { recursive: true });
-
-    const arrayBuffer = await file.arrayBuffer();
-    const buffer = Buffer.from(arrayBuffer);
-    await fs.writeFile(filePath, buffer);
-    // push info for DB
-    uploadedFiles.push(`/uploads/teams/${uniqueName}`);
-  }
   await Teams.create({
     ...result.data,
-    images: uploadedFiles,
+    image: `/uploads/teams/${uniqueName}`,
   });
 
   cookieStore.set("toastMessage", "Team Added");
@@ -71,11 +65,11 @@ export async function updateTeam(id, prevState, formData) {
     return { success: false, errors: result.error.flatten().fieldErrors };
   }
   const { name, add1, add2, add3, pin, content } = result.data;
-  const imageFiles = formData.getAll("images");
+  const imageFile = formData.get("image");
 
   // console.log(imageFiles);
-  
-  
+
+
   await connectDB();
   // Find the existing league in the database
   const team = await Teams.findById(id);
@@ -85,73 +79,60 @@ export async function updateTeam(id, prevState, formData) {
   }
   // Handle image update if a new image is uploaded
 
-  if (imageFiles && imageFiles.length > 0) {
+  if (imageFile && imageFile.size > 0) {
 
-    const uploadDir = path.join(process.cwd(), "public/uploads/teams");
-    await fs.mkdir(uploadDir, { recursive: true });
+    const uploadsFolder = path.join(process.cwd(), "public", "uploads/teams");
 
-    const uploadedFiles = [];
-    for (const file of imageFiles) {
-      const uniqueName = `${Date.now()}-${uuidv4()}${path.extname(file.name)}`;
-      const filePath = path.join(process.cwd(), "public/uploads/teams", uniqueName);
+    // Ensure the uploads folder exists
+    await fileExists(uploadsFolder);
+    const imageName = `${Date.now()}_${imageFile.name}`;
+    const imagePath = path.join(uploadsFolder, imageName);
+    // Write image file asynchronously
+    const imageBuffer = Buffer.from(await imageFile.arrayBuffer());
 
-      await fs.mkdir(path.dirname(filePath), { recursive: true });
-
-      const arrayBuffer = await file.arrayBuffer();
-      const buffer = Buffer.from(arrayBuffer);
-
-      fs.writeFile(filePath, buffer, (err) => {
-        if (err) {
-          console.error('Error writing file:', err);
-          return { success: false, error: 'Failed to save image' };
-        }
-        console.log('File written successfully');
-      });
-      // push info for DB
-      uploadedFiles.push(`/uploads/teams/${uniqueName}`);
-    }
-
+    // Using callback version of writeFile
+    fs.writeFile(imagePath, imageBuffer, (err) => {
+      if (err) {
+        console.error('Error writing file:', err);
+        return { success: false, error: 'Failed to save image' };
+      }
+      console.log('File written successfully');
+    });
     // Delete the old image if it exists
-    if (team.images) {
-      team.images.map((l, index) => {
-        const oldImagePath = path.join(process.cwd(), "public", l);
-        // console.log(oldImagePath);
-        try {
-          fs.unlink(oldImagePath).catch((err) => {
-            console.warn(`Failed to delete image: ${err.message}`);
-          });
+    if (team.image) {
+      const oldImagePath = path.join(process.cwd(), "public", team.image);
+      // console.log(oldImagePath);
+      try {
+        await fs.unlink(oldImagePath).catch((err) => {
+          console.warn(`Failed to delete image: ${err.message}`);
+        });
 
-        } catch (err) {
-          console.warn(`Failed to delete old image: ${err.message}`);
-        }
-      })
+      } catch (err) {
+        console.warn(`Failed to delete old image: ${err.message}`);
+      }
     }
-
     const updateData = {
       name,
-      add1,
-      add2,
-      add3,
-      pin,
-      content,
-      images: uploadedFiles,
+      secretary_name,
+      secretary_name,
+      secretary_name,
+      secretary_name,
+      phone,
+      email,
+      image: `/uploads/teams/${imageName}`, // Save relative path to the image
     };
-
     // Update the league document with the new image name
     await Teams.findByIdAndUpdate(id, updateData);
   } else {
     const updateData = {
       name,
-      add1,
-      add2,
-      add3,
-      pin,
-      content,
+      secretary_name,
+      phone,
+      email,
     };
     // If no new image is uploaded, just update the title and isActive fields
     await Teams.findByIdAndUpdate(id, updateData);
   }
-
   cookieStore.set({
     name: "toastMessage",
     value: "Updated",
