@@ -26,7 +26,7 @@ export default function Sidebar() {
                     <Link className={`nav-link ${pathname.startsWith('/admin/clubs') ? 'active' : ''}`} href="/admin/clubs"><span className="link-text">Clubs</span></Link>
                 </li>
                 <li className="nav-item">
-                    <Link className="nav-link" href="#"><span className="link-text">Teams</span></Link>
+                    <Link className={`nav-link ${pathname.startsWith('/admin/teams') ? 'active' : ''}`} href="/admin/teams"><span className="link-text">Teams</span></Link>
                 </li>
                 <li className="nav-item">
                     <Link className={`nav-link ${pathname.startsWith('/admin/managers') ? 'active' : ''}`} href="/admin/managers"><span className="link-text">Managers</span></Link>
