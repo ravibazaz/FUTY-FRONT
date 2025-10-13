@@ -11,7 +11,7 @@ export default async function AdminDashboard() {
             <p className="top-breadcrumb mb-0">Dashboard</p>
           </div>
           <div className="top-right d-flex justify-content-between align-items-center gap-10">
-            <a className="btn btn-common" href="login.php">New</a>
+            <a className="btn btn-common" href="#">New</a>
             <a href="#">
                <Image src="/images/icon-setting.svg" width={33} height={33} alt="Settings" />
               
