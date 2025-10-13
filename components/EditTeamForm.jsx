@@ -8,11 +8,11 @@ import Image from "next/image";
 function SubmitButton() {
   const { pending } = useFormStatus();
   return (
-    <input className="btn-common-text mt-30 mb-30" disabled={pending} type="submit" value={pending ? "Editing" : "Edit Club"}></input>
+    <input className="btn-common-text mt-30 mb-30" disabled={pending} type="submit" value={pending ? "Editing" : "Edit Team"}></input>
   );
 }
 
-export default function EditClubForm({ team }) {
+export default function EditTeamForm({ team }) {
 
   const fileInputRef = useRef(null);
   const previewsRef = useRef(null);
@@ -233,9 +233,9 @@ export default function EditClubForm({ team }) {
                     <div className="info-text px-0">
                       <div className="mb-0">
                         <div className="upload-box" id="uploadBox">
-                          <img src="/images/club-badge.jpg" alt="Club Badge" />
+                          <img src="/images/club-badge.jpg" alt="Team Badge" />
                           <input type="file" id="fileInput" accept="image/*"></input>
-                          <p className="inputPlaceholder" id="placeholderText">Club Badge</p>
+                          <p className="inputPlaceholder" id="placeholderText">Team Badge</p>
                         </div>
                       </div>
                     </div>

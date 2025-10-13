@@ -20,7 +20,7 @@ export default async function ViewFansPage({ params }) {
                     <div className="top-right d-flex justify-content-between align-items-center gap-10">
                         <a className="btn btn-common" href="clubs-new.php">New</a>
                         <a href="#">
-                            <img src="images/icon-setting.svg" alt="Settings" />
+                            <img src="/images/icon-setting.svg" alt="Settings" />
                         </a>
                     </div>
                 </div>
@@ -130,7 +130,7 @@ export default async function ViewFansPage({ params }) {
                                 </div>
                                 <div className="right-info mb-30">
                                     <a href="#">
-                                        <img className="profile-img mb-10" src="images/club-badge.jpg" alt="Club Badge" />
+                                        <img className="profile-img mb-10" src="/images/club-badge.jpg" alt="Club Badge" />
                                     </a>
                                     <p className="mb-0">
                                         <a className="text-decoration-none fs-14 fw-bold text-primary underline-hover" href="clubs-edit.php">Club Badge</a>
