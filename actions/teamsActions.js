@@ -64,7 +64,7 @@ export async function updateTeam(id, prevState, formData) {
   if (!result.success) {
     return { success: false, errors: result.error.flatten().fieldErrors };
   }
-  const { name, add1, add2, add3, pin, content } = result.data;
+  const { name, phone, email, shirt, shorts, socks, attack, midfield, defence, ground, club, manager, league, user } = result.data;
   const imageFile = formData.get("image");
 
   // console.log(imageFiles);
@@ -113,12 +113,19 @@ export async function updateTeam(id, prevState, formData) {
     }
     const updateData = {
       name,
-      secretary_name,
-      secretary_name,
-      secretary_name,
-      secretary_name,
+      shirt,
+      shorts,
+      socks,
+      attack,
+      midfield,
+      defence,
+      ground,
+      club,
+      manager,
+      league,
       phone,
       email,
+      user:userId,
       image: `/uploads/teams/${imageName}`, // Save relative path to the image
     };
     // Update the league document with the new image name
@@ -126,9 +133,19 @@ export async function updateTeam(id, prevState, formData) {
   } else {
     const updateData = {
       name,
-      secretary_name,
+      shirt,
+      shorts,
+      socks,
+      attack,
+      midfield,
+      defence,
+      ground,
+      club,
+      manager,
+      league,
       phone,
       email,
+      user:userId,
     };
     // If no new image is uploaded, just update the title and isActive fields
     await Teams.findByIdAndUpdate(id, updateData);
