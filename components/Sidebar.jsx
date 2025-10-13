@@ -38,16 +38,16 @@ export default function Sidebar() {
                     <Link className={`nav-link ${pathname.startsWith('/admin/grounds') ? 'active' : ''}`} href="/admin/grounds"><span className="link-text">Grounds</span></Link>
                 </li>
                 <li className="nav-item">
-                    <Link className="nav-link" href="#"><span className="link-text">Friendlies</span></Link>
+                    <Link className={`nav-link ${pathname.startsWith('/admin/friendlies') ? 'active' : ''}`} href="/admin/friendlies"><span className="link-text">Friendlies</span></Link>
                 </li>
                 <li className="nav-item">
-                    <Link className="nav-link" href="#"><span className="link-text">Tournaments</span></Link>
+                    <Link className={`nav-link ${pathname.startsWith('/admin/tournaments') ? 'active' : ''}`} href="/admin/tournaments"><span className="link-text">Tournaments</span></Link>
                 </li>
                 <li className="nav-item">
-                    <Link className="nav-link" href="#"><span className="link-text">Adverts</span></Link>
+                    <Link className={`nav-link ${pathname.startsWith('/admin/adverts') ? 'active' : ''}`} href="/admin/adverts"><span className="link-text">Adverts</span></Link>
                 </li>
                 <li className="nav-item">
-                    <Link className="nav-link" href="#"><span className="link-text">Store</span></Link>
+                    <Link className={`nav-link ${pathname.startsWith('/admin/stores') ? 'active' : ''}`} href="/admin/stores"><span className="link-text">Store</span></Link>
                 </li>
                 
             </ul>
