@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 
 export default function GroundDropdown(props) {
   const [grounds, setGrounds] = useState([]);
-
+ const [selectedClub, setSelectedClub] = useState(props.ground ? props.ground : '');
 
   useEffect(() => {
     const fetchClubs = async () => {
@@ -34,6 +34,8 @@ export default function GroundDropdown(props) {
               <select
                 className="form-control"
                 name="ground"
+                 value={selectedClub}
+                onChange={(e) => setSelectedClub(e.target.value)}
               >
                 <option value="">Choose a Ground</option>
                 {grounds.map((ground) => (

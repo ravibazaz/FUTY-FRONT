@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 
 export default function LeagueDropdown(props) {
   const [leagues, setLeagues] = useState([]);
+  const [selectedClub, setSelectedClub] = useState(props.league ? props.league : '');
   useEffect(() => {
     const fetchClubs = async () => {
       try {
@@ -33,6 +34,8 @@ export default function LeagueDropdown(props) {
               <select
                 className="form-control"
                 name="league"
+                value={selectedClub}
+                onChange={(e) => setSelectedClub(e.target.value)}
               >
                 <option value="">Choose a League</option>
                 {leagues.map((league) => (

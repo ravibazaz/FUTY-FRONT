@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 
 export default function ManagerDropdown(props) {
   const [managers, setManagers] = useState([]);
-
+  const [selectedClub, setSelectedClub] = useState(props.manager ? props.manager : '');
   
   useEffect(() => {
     const fetchClubs = async () => {
@@ -31,10 +31,11 @@ export default function ManagerDropdown(props) {
         <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
           <div className="info-text px-0">
             <p className="mb-0">
-
               <select
                 className="form-control"
                 name="manager"
+                value={selectedClub}
+                onChange={(e) => setSelectedClub(e.target.value)}
               >
                 <option value="">Choose a Mansger</option>
                 {managers.map((manager) => (

@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 
 export default function ClubDropdown(props) {
   const [clubs, setClubs] = useState([]);
-  const [selectedClub, setSelectedClub] = useState("");
+  const [selectedClub, setSelectedClub] = useState(props.club ? props.club : '');
 
   useEffect(() => {
     const fetchClubs = async () => {

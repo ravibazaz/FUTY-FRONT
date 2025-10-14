@@ -5,6 +5,10 @@ import { TeamSchema } from "@/lib/validation/teams";
 import { useFormStatus } from "react-dom";
 import { useActionState, useState, startTransition, useRef } from "react";
 import Image from "next/image";
+import ClubDropdown from "@/components/ClubDropdown";
+import ManagerDropdown from "@/components/ManagerDropdown";
+import LeagueDropdown from "@/components/LeagueDropdown";
+import GroundDropdown from "@/components/GroundDropdown";
 function SubmitButton() {
   const { pending } = useFormStatus();
   return (
@@ -21,26 +25,14 @@ export default function EditTeamForm({ team }) {
   };
 
   const handleFileChange = (e) => {
-    // const files = e.target.files;
-    let allFiles = [];
-    for (let file of e.target.files) {
-      // Check for duplicate files if needed
-      if (!allFiles.some(f => f.name === file.name && f.size === file.size)) {
-        allFiles.push(file);
-      }
+    const file = e.target.files[0];
+    if (file && file.type.startsWith("image/")) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        setPreview(event.target.result);
+      };
+      reader.readAsDataURL(file);
     }
-    previewsRef.current.innerHTML = '';
-    allFiles.forEach(file => {
-      if (file && file.type.startsWith("image/")) {
-        const reader = new FileReader();
-        reader.onload = function (e) {
-          const img = document.createElement('img');
-          img.src = e.target.result;
-          previewsRef.current.appendChild(img)
-        }
-        reader.readAsDataURL(file);
-      }
-    });
   };
 
   const [state, formAction] = useActionState(
@@ -52,6 +44,7 @@ export default function EditTeamForm({ team }) {
   );
 
   const [clientErrors, setClientErrors] = useState({});
+  const [preview, setPreview] = useState(team.image ? team.image : '/images/profile-picture.jpg');
   // const [preview, setPreview] = useState([]);
   // if (team.images)
   // setPreview(team.images);
@@ -62,10 +55,19 @@ export default function EditTeamForm({ team }) {
     const formData = new FormData(e.target);
     const raw = Object.fromEntries(formData.entries());
 
+    const imageFile = e.target.image.files[0];
+    if (imageFile) {
+      formData.set("image", imageFile); // Append the new file
+    } else {
+      formData.delete("image"); // Remove the image key if no new file is uploaded
+    }
+
     const result = TeamSchema(true).safeParse(
       Object.fromEntries(formData.entries())
     );
 
+    //console.log(result);
+    
     if (!result.success) {
       setClientErrors(result.error.flatten().fieldErrors);
       return;
@@ -74,31 +76,34 @@ export default function EditTeamForm({ team }) {
     startTransition(() => {
       formAction(formData);
     });
-
-
-
   };
 
   return (
-    <main className="main-body col-md-9 col-lg-9 col-xl-10">
-      <div className="body-top d-flex flex-wrap justify-content-between align-items-center gap-20 mb-10">
-        <div className="top-left">
-          <p className="top-breadcrumb mb-0">{'> Teams'}</p>
+    <>
+      <main className="main-body col-md-9 col-lg-9 col-xl-10">
+        <div className="body-top d-flex flex-wrap justify-content-between align-items-center gap-20 mb-10">
+          <div className="top-left">
+            <p className="top-breadcrumb mb-0">{'> Teams'}</p>
+          </div>
+          <div className="top-right d-flex justify-content-between align-items-center gap-10">
+            <a className="btn btn-common" href="teams-new.php">New</a>
+            <a href="#">
+              <Image
+                src="/images/icon-setting.svg"
+                width={33}
+                height={33}
+                alt="Settings"
+              />
+            </a>
+          </div>
         </div>
-        <div className="top-right d-flex justify-content-between align-items-center gap-10">
-          <a className="btn btn-common" href="clubs-new.php">New</a>
-          <a href="#">
-            <img src="/images/icon-setting.svg" alt="Settings" />
-          </a>
+        <div className="body-title-bar d-flex flex-wrap justify-content-between align-items-center gap-20 mb-20">
+          <div className="body-title-bar-left d-flex flex-wrap align-items-center gap-20-70">
+            <h1 className="page-title">Edit Teams</h1>
+          </div>
         </div>
-      </div>
-      <div className="body-title-bar d-flex flex-wrap justify-content-between align-items-center gap-20 mb-20">
-        <div className="body-title-bar-left d-flex flex-wrap align-items-center gap-20-70">
-          <h1 className="page-title">Edit Teams</h1>
-        </div>
-      </div>
 
-      <form action={formAction} onSubmit={handleSubmit}>
+        <form action={formAction} onSubmit={handleSubmit}>
         <div className="body-main-cont">
           <div className="single-body-row row">
             <div className="single-body-left col-lg-12 col-xl-7">
@@ -106,13 +111,13 @@ export default function EditTeamForm({ team }) {
                 <div className="left-row row">
                   <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
                     <div className="label-text">
-                      <p className="mb-0">Name</p>
+                      <p className="mb-0">Team Name</p>
                     </div>
                   </div>
                   <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
                     <div className="info-text px-0">
                       <p className="mb-0">
-                        <input className="form-control" name="name" defaultValue={team.name} type="text" ></input>
+                        <input className="form-control" name="name" defaultValue={team.name} type="text"></input>
                         {clientErrors.name && (
                           <span className="invalid-feedback" style={{ display: "block" }}>
                             {clientErrors.name}
@@ -123,18 +128,83 @@ export default function EditTeamForm({ team }) {
                   </div>
                 </div>
               </div>
+              <ManagerDropdown clienterror={clientErrors.manager} manager={team.manager}  ></ManagerDropdown>
+              <ClubDropdown clienterror={clientErrors.club} club={team.club}></ClubDropdown>
+              <LeagueDropdown clienterror={clientErrors.league} league={team.league} ></LeagueDropdown>
+              <GroundDropdown clienterror={clientErrors.ground} ground={team.ground}></GroundDropdown>
+              <div className="left-info-box-group">
+                <div className="left-info-box">
+                  <div className="left-row row">
+                    <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
+                      <div className="label-text mb-0 pb-0">
+                        <p className="fw-bold mb-0">Home Kit</p>
+                      </div>
+                    </div>
+                    <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
 
+                    </div>
+                  </div>
+                </div>
+                <div className="left-info-box">
+                  <div className="left-row row">
+                    <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
+                      <div className="label-text mb-0 pt-0">
+                        <p className="mb-0">Shirt:</p>
+                      </div>
+                    </div>
+                    <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
+                      <div className="info-text px-0 pt-0">
+                        <p className="mb-0">
+                          <input className="form-control" name="shirt" defaultValue={team.shirt} type="text"></input>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="left-info-box">
+                  <div className="left-row row">
+                    <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
+                      <div className="label-text mb-0 pt-0">
+                        <p className="mb-0">Shorts:</p>
+                      </div>
+                    </div>
+                    <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
+                      <div className="info-text px-0 pt-0">
+                        <p className="mb-0">
+                          <input className="form-control" name="shorts" defaultValue={team.shorts} type="text"></input>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="left-info-box">
+                  <div className="left-row row">
+                    <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
+                      <div className="label-text mb-0 pt-0">
+                        <p className="mb-0">Socks:</p>
+                      </div>
+                    </div>
+                    <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
+                      <div className="info-text px-0 pt-0">
+                        <p className="mb-0">
+                          <input className="form-control" name="socks" defaultValue={team.socks} type="text"></input>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
               <div className="left-info-box">
                 <div className="left-row row">
                   <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
-                    <div className="label-text">
-                      <p className="mb-0">Secretary</p>
+                    <div className="label-text mb-0">
+                      <p className="mb-0">Attack</p>
                     </div>
                   </div>
                   <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
                     <div className="info-text px-0">
                       <p className="mb-0">
-                        <input className="form-control" type="text" ></input>
+                        <input className="form-control" name="attack" defaultValue={team.attack}  type="text"></input>
                       </p>
                     </div>
                   </div>
@@ -143,14 +213,14 @@ export default function EditTeamForm({ team }) {
               <div className="left-info-box">
                 <div className="left-row row">
                   <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
-                    <div className="label-text">
-                      <p className="mb-0">League</p>
+                    <div className="label-text mb-0">
+                      <p className="mb-0">Midfield</p>
                     </div>
                   </div>
                   <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
                     <div className="info-text px-0">
                       <p className="mb-0">
-                        <input className="form-control" type="text" ></input>
+                        <input className="form-control" name="midfield" defaultValue={team.midfield} type="text"></input>
                       </p>
                     </div>
                   </div>
@@ -159,30 +229,14 @@ export default function EditTeamForm({ team }) {
               <div className="left-info-box">
                 <div className="left-row row">
                   <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
-                    <div className="label-text">
-                      <p className="mb-0">Home Ground</p>
+                    <div className="label-text mb-0">
+                      <p className="mb-0">Defence</p>
                     </div>
                   </div>
                   <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
                     <div className="info-text px-0">
                       <p className="mb-0">
-                        <input className="form-control" type="text" ></input>
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="left-info-box">
-                <div className="left-row row">
-                  <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
-                    <div className="label-text">
-                      <p className="mb-0">Number of Friendlies</p>
-                    </div>
-                  </div>
-                  <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
-                    <div className="info-text px-0">
-                      <p className="mb-0">
-                        <input className="form-control" type="text" ></input>
+                        <input className="form-control" name="defence" defaultValue={team.defence} type="text"></input>
                       </p>
                     </div>
                   </div>
@@ -198,7 +252,12 @@ export default function EditTeamForm({ team }) {
                   <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
                     <div className="info-text px-0">
                       <p className="mb-0">
-                        <input className="form-control" type="email"></input>
+                        <input className="form-control" name="email" defaultValue={team.email} type="email"></input>
+                        {clientErrors.email && (
+                          <span className="invalid-feedback" style={{ display: "block" }}>
+                            {clientErrors.email}
+                          </span>
+                        )}
                         <span className="user-verify d-inline-block mt-10">Verify</span>
                       </p>
                     </div>
@@ -215,7 +274,12 @@ export default function EditTeamForm({ team }) {
                   <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
                     <div className="info-text px-0">
                       <p className="mb-0">
-                        <input className="form-control" type="text"></input>
+                        <input className="form-control" name="phone" defaultValue={team.phone} type="text"></input>
+                         {clientErrors.phone && (
+                          <span className="invalid-feedback" style={{ display: "block" }}>
+                            {clientErrors.phone}
+                          </span>
+                        )}
                         <span className="user-verify d-inline-block mt-10">Verify</span>
                       </p>
                     </div>
@@ -232,11 +296,27 @@ export default function EditTeamForm({ team }) {
                   <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
                     <div className="info-text px-0">
                       <div className="mb-0">
-                        <div className="upload-box" id="uploadBox">
-                          <img src="/images/club-badge.jpg" alt="Team Badge" />
-                          <input type="file" id="fileInput" accept="image/*"></input>
-                          <p className="inputPlaceholder" id="placeholderText">Team Badge</p>
+                        <div className="upload-box" id="uploadBox" onClick={handleUploadClick}>
+                          <Image
+                            src={preview}
+                            width={82}
+                            height={82}
+                            alt="Profile Image"
+                          />
+                          <input type="file" id="fileInput"
+                            accept="image/*"
+                            ref={fileInputRef}
+                            name="image"
+                            onChange={handleFileChange}
+                            style={{ display: "none" }}
+                          ></input>
+                          <p className="inputPlaceholder" id="placeholderText">Profile image</p>
                         </div>
+                        {clientErrors.image && (
+                          <span className="invalid-feedback" style={{ display: "block" }}>
+                            {clientErrors.image}
+                          </span>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -253,7 +333,6 @@ export default function EditTeamForm({ team }) {
                     <div className="info-text px-0">
                       <p className="mb-0">
                         <SubmitButton />
-
                       </p>
                     </div>
                   </div>
@@ -262,10 +341,12 @@ export default function EditTeamForm({ team }) {
             </div>
 
           </div>
-
         </div>
-      </form>
+        </form>
+      </main>
 
-    </main>
+
+    </>
+
   );
 }

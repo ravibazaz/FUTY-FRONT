@@ -58,9 +58,11 @@ export async function createTeam(prevState, formData) {
 }
 
 export async function updateTeam(id, prevState, formData) {
+  const cookieStore = await cookies();
+  const userId = cookieStore.get("user_id")?.value;
   const raw = Object.fromEntries(formData.entries());
   const result = TeamSchema(true).safeParse(raw);
-  const cookieStore = await cookies();
+  //const cookieStore = await cookies();
   if (!result.success) {
     return { success: false, errors: result.error.flatten().fieldErrors };
   }
@@ -125,7 +127,7 @@ export async function updateTeam(id, prevState, formData) {
       league,
       phone,
       email,
-      user:userId,
+      user: userId,
       image: `/uploads/teams/${imageName}`, // Save relative path to the image
     };
     // Update the league document with the new image name
@@ -145,7 +147,7 @@ export async function updateTeam(id, prevState, formData) {
       league,
       phone,
       email,
-      user:userId,
+      user: userId,
     };
     // If no new image is uploaded, just update the title and isActive fields
     await Teams.findByIdAndUpdate(id, updateData);
