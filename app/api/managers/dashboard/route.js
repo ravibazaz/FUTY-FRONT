@@ -15,6 +15,6 @@ export async function GET(req) {
   return NextResponse.json({
     success: true,
     message: "Welcome to the profile page!",
-    data:user,
+    user,
   });
 }
