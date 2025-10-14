@@ -193,13 +193,13 @@ export default function NewFanPage() {
                                         <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
                                             <div className="info-text px-0">
                                                 <p className="mb-0">
-                                                    <input className="form-control" type="text"></input>
+                                                    <input name="travel_distance" className="form-control" type="text"></input>
                                                 </p>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div className="left-info-box">
+                                {/* <div className="left-info-box">
                                     <div className="left-row row">
                                         <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
                                             <div className="label-text mb-0">
@@ -246,7 +246,7 @@ export default function NewFanPage() {
                                             </div>
                                         </div>
                                     </div>
-                                </div>
+                                </div> */}
                                 <div className="left-info-box">
                                     <div className="left-row row">
                                         <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
@@ -289,7 +289,7 @@ export default function NewFanPage() {
                                         <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
                                             <div className="info-text px-0">
                                                 <p className="mb-0">
-                                                    <input className="form-control" type="text"></input>
+                                                    <input name="win" className="form-control" type="text"></input>
                                                 </p>
                                             </div>
                                         </div>
@@ -299,13 +299,13 @@ export default function NewFanPage() {
                                     <div className="left-row row">
                                         <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
                                             <div className="label-text mb-0">
-                                                <p className="mb-0">Style</p>
+                                                <p className="mb-0">Style %</p>
                                             </div>
                                         </div>
                                         <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
                                             <div className="info-text px-0">
                                                 <p className="mb-0">
-                                                    <input className="form-control" type="text"></input>
+                                                    <input name="style" className="form-control" type="text"></input>
                                                 </p>
                                             </div>
                                         </div>
@@ -315,13 +315,13 @@ export default function NewFanPage() {
                                     <div className="left-row row">
                                         <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
                                             <div className="label-text mb-0">
-                                                <p className="mb-0">Trophies</p>
+                                                <p className="mb-0">Trophies %</p>
                                             </div>
                                         </div>
                                         <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
                                             <div className="info-text px-0">
                                                 <p className="mb-0">
-                                                    <input className="form-control" type="text"></input>
+                                                    <input name="trophy" className="form-control" type="text"></input>
                                                 </p>
                                             </div>
                                         </div>

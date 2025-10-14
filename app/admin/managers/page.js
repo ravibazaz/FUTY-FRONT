@@ -114,9 +114,9 @@ export default function FanTable() {
                 <thead>
                   <tr>
                     <th scope="col">Name</th>
-                    <th scope="col">Team</th>
+                    {/* <th scope="col">Team</th>
                     <th scope="col">Club</th>
-                    <th scope="col">League</th>
+                    <th scope="col">League</th> */}
                     <th scope="col">Phone</th>
                     <th scope="col">Email</th>
                     <th scope="col">Friendleys</th>
@@ -135,9 +135,9 @@ export default function FanTable() {
                             {l.name}
                           </Link>
                         </td>
-                        <td className="text-nowrap"><a href="teams-single.php">Pegasus U14</a></td>
+                        {/* <td className="text-nowrap"><a href="teams-single.php">Pegasus U14</a></td>
                         <td className="text-nowrap"><a href="clubs-single.php">Pegasus FC</a></td>
-                        <td className="text-nowrap"><a href="leagues-single.php">Peter Housman</a></td>
+                        <td className="text-nowrap"><a href="leagues-single.php">Peter Housman</a></td> */}
                         <td className="text-nowrap"><a href="tel:+44 07453 234258">{l.telephone}</a></td>
                         <td className="text-nowrap"><a href="mailto:csb9900@gmail.com">{l.email}</a></td>
                         <td className="text-nowrap"><a href="#">6</a></td>

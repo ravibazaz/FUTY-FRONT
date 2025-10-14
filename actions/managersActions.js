@@ -26,9 +26,26 @@ export async function createManagers(prevState, formData) {
   const userId = cookieStore.get("user_id")?.value;
 
   const raw = Object.fromEntries(formData.entries());
-  
+
   const imageFile = formData.get("profile_image");
   const password = formData.get("password");
+  const win = formData.get("win");
+  const style = formData.get("style");
+  const trophy = formData.get("trophy");
+  const playing_style = {
+    win: {
+      value: '',
+      percentage: Number(win) || 0,
+    },
+    style: {
+      value: '',
+      percentage: Number(style) || 0,
+    },
+    trophy: {
+      value: '',
+      percentage: Number(trophy) || 0,
+    },
+  };
   const result = ManagersSchema(false).safeParse({ ...raw, image: imageFile });
 
   if (!result.success)
@@ -52,6 +69,7 @@ export async function createManagers(prevState, formData) {
   await Users.create({
     ...result.data,
     account_type: 'Manager',
+    playing_style: playing_style,
     password: hashedPassword,
     profile_image: `/uploads/managers/${uniqueName}`, // Save relative path to the image
   });
@@ -67,9 +85,28 @@ export async function updateManager(id, prevState, formData) {
   if (!result.success) {
     return { success: false, errors: result.error.flatten().fieldErrors };
   }
-  const { name, email, telephone, nick_name, post_code, profile_description } = result.data;
+  const { name, email, telephone, nick_name, post_code, profile_description,travel_distance } = result.data;
   const imageFile = formData.get("profile_image");
   const password = formData.get("password");
+
+  const win = formData.get("win");
+  const style = formData.get("style");
+  const trophy = formData.get("trophy");
+  const playing_style = {
+    win: {
+      value: '',
+      percentage: Number(win) || 0,
+    },
+    style: {
+      value: '',
+      percentage: Number(style) || 0,
+    },
+    trophy: {
+      value: '',
+      percentage: Number(trophy) || 0,
+    },
+  };
+
 
   await connectDB();
   // Find the existing league in the database
@@ -119,9 +156,11 @@ export async function updateManager(id, prevState, formData) {
       name,
       email,
       telephone,
-      nick_name, 
-      post_code, 
+      nick_name,
+      post_code,
       profile_description,
+      travel_distance,
+      playing_style: playing_style,
       profile_image: `/uploads/managers/${imageName}`, // Save relative path to the image
     };
 
@@ -135,9 +174,11 @@ export async function updateManager(id, prevState, formData) {
       name,
       email,
       telephone,
-      nick_name, 
-      post_code, 
+      nick_name,
+      post_code,
       profile_description,
+      travel_distance,
+      playing_style: playing_style,
     };
     if (password) {
       updateData.password = await bcrypt.hash(password, 10);

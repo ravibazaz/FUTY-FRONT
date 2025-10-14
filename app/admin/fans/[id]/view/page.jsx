@@ -44,7 +44,7 @@ export default async function ViewFansPage({ params }) {
         <div className="body-main-cont">
           <div className="single-body-row row">
             <div className="single-body-left col-lg-12 col-xl-7">
-              <div className="left-info-box">
+              {/* <div className="left-info-box">
                 <div className="left-row row">
                   <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
                     <div className="label-text">
@@ -57,7 +57,7 @@ export default async function ViewFansPage({ params }) {
                     </div>
                   </div>
                 </div>
-              </div>
+              </div> */}
 
               <div className="left-info-box">
                 <div className="left-row row">

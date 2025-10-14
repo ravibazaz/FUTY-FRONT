@@ -35,7 +35,7 @@ export async function POST(req) {
       );
     }
     await connectDB();
-    const user = await User.findOne({ email: result.data.email });
+    const user = await User.findOne({ email: result.data.email }).select("-__v").lean();
     if (!user || !(await bcrypt.compare(result.data.password, user.password))) {
       return NextResponse.json(
         {

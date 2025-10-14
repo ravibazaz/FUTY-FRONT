@@ -116,7 +116,7 @@ export default function FanTable() {
                 <thead>
                   <tr>
                     <th scope="col">Name</th>
-                    <th scope="col">Team</th>
+                    {/* <th scope="col">Team</th> */}
                     <th scope="col">Phone</th>
                     <th scope="col">Email</th>
                     <th scope="col">Last Activity</th>
@@ -134,7 +134,7 @@ export default function FanTable() {
                             {l.name}
                           </Link>
                         </td>
-                        <td className="text-nowrap"><a href="teams-single.php">Pegasus U14</a></td>
+                        {/* <td className="text-nowrap"><a href="teams-single.php">Pegasus U14</a></td> */}
                         <td className="text-nowrap"><a href="tel:+44 07453 234258">{l.telephone}</a></td>
                         <td className="text-nowrap"><a href="mailto:csb9900@gmail.com">{l.email}</a></td>
                         <td className="text-nowrap">12 Nov</td>
