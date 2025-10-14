@@ -1,14 +1,19 @@
 import ChangeStatus from "@/components/ChangeStatus";
 import { connectDB } from "@/lib/db";
 import Teams from "@/lib/models/Teams";
+import Clubs from "@/lib/models/Clubs";
+import Leagues from "@/lib/models/Leagues";
+import Grounds from "@/lib/models/Grounds";
 import Image from "next/image";
 import Link from "next/link";
 
 export default async function ViewFansPage({ params }) {
     const id = (await params).id;
-    let preview = "/images/profile-picture.jpg";
+    let preview = "/images/club-badge.jpg";
     await connectDB();
-    const team = await Teams.findById(id).lean();
+    const team = await Teams.findById(id).populate("manager","name").populate("club","name").populate("ground","name").populate("league","title").lean();
+    if (team.image)
+        preview = team.image;
 
     return (
         <>
@@ -18,9 +23,9 @@ export default async function ViewFansPage({ params }) {
                         <p className="top-breadcrumb mb-0">{'> Teams'}</p>
                     </div>
                     <div className="top-right d-flex justify-content-between align-items-center gap-10">
-                        <a className="btn btn-common" href="clubs-new.php">New</a>
+                        <a className="btn btn-common" href="teams-new.php">New</a>
                         <a href="#">
-                            <img src="/images/icon-setting.svg" alt="Settings" />
+                            <img src="images/icon-setting.svg" alt="Settings" />
                         </a>
                     </div>
                 </div>
@@ -38,13 +43,29 @@ export default async function ViewFansPage({ params }) {
                                 <div className="left-row row">
                                     <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
                                         <div className="label-text">
-                                            <p className="mb-0">Secretary</p>
+                                            <p className="mb-0">Manager</p>
                                         </div>
                                     </div>
                                     <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
                                         <div className="info-text">
                                             <p className="mb-0">
-                                                <a className="text-primary text-decoration-none" href="#">Corky Towers</a>
+                                                <a className="text-primary text-decoration-none" href="teams-single.php">{team.manager?.name}</a>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="left-info-box">
+                                <div className="left-row row">
+                                    <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
+                                        <div className="label-text">
+                                            <p className="mb-0">Club</p>
+                                        </div>
+                                    </div>
+                                    <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
+                                        <div className="info-text">
+                                            <p className="mb-0">
+                                                <a className="text-primary text-decoration-none" href="clubs-single.php">{team.club?.name}</a>
                                             </p>
                                         </div>
                                     </div>
@@ -60,7 +81,7 @@ export default async function ViewFansPage({ params }) {
                                     <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
                                         <div className="info-text">
                                             <p className="mb-0">
-                                                <a className="text-primary text-decoration-none" href="#">Peter Housman</a>
+                                                <a className="text-primary text-decoration-none" href="leagues-single.php">{team.league?.title}</a>
                                             </p>
                                         </div>
                                     </div>
@@ -76,8 +97,80 @@ export default async function ViewFansPage({ params }) {
                                     <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
                                         <div className="info-text">
                                             <p className="mb-0">
-                                                <a className="text-primary text-decoration-none" href="#">Waterend, List Field</a>
+                                                <a className="text-primary text-decoration-none" href="grounds-single.php">{team.ground?.name}</a>
                                             </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="left-info-box-group">
+                                <div className="left-info-box">
+                                    <div className="left-row row">
+                                        <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
+                                            <div className="label-text mb-0 pb-0">
+                                                <p className="fw-bold mb-0">Home Kit</p>
+                                            </div>
+                                        </div>
+                                        <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="left-info-box">
+                                    <div className="left-row row">
+                                        <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
+                                            <div className="label-text mb-0 pt-0 pb-0">
+                                                <p className="mb-0">Shirt:</p>
+                                            </div>
+                                        </div>
+                                        <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
+                                            <div className="info-text pt-0 pb-0">
+                                                <p className="mb-0">{team.shirt}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="left-info-box">
+                                    <div className="left-row row">
+                                        <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
+                                            <div className="label-text mb-0 pt-0 pb-0">
+                                                <p className="mb-0">Shorts:</p>
+                                            </div>
+                                        </div>
+                                        <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
+                                            <div className="info-text pt-0 pb-0">
+                                                <p className="mb-0">{team.shorts}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="left-info-box">
+                                    <div className="left-row row">
+                                        <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
+                                            <div className="label-text mb-0 pt-0">
+                                                <p className="mb-0">Socks:</p>
+                                            </div>
+                                        </div>
+                                        <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
+                                            <div className="info-text pt-0">
+                                                <p className="mb-0">{team.socks}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="left-info-box">
+                                <div className="left-row row">
+                                    <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
+                                        <div className="label-text mb-0">
+                                            <p className="mb-0">Attack</p>
+                                        </div>
+                                    </div>
+                                    <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
+                                        <div className="info-text">
+                                            <p className="mb-0">{team.attack}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -85,13 +178,27 @@ export default async function ViewFansPage({ params }) {
                             <div className="left-info-box">
                                 <div className="left-row row">
                                     <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
-                                        <div className="label-text">
-                                            <p className="mb-0">Number of Friendlies</p>
+                                        <div className="label-text mb-0">
+                                            <p className="mb-0">Midfield</p>
                                         </div>
                                     </div>
                                     <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
                                         <div className="info-text">
-                                            <p className="mb-0">5</p>
+                                            <p className="mb-0">{team.midfield}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="left-info-box">
+                                <div className="left-row row">
+                                    <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
+                                        <div className="label-text mb-0">
+                                            <p className="mb-0">Defence</p>
+                                        </div>
+                                    </div>
+                                    <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
+                                        <div className="info-text">
+                                            <p className="mb-0">{team.defence}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -106,8 +213,7 @@ export default async function ViewFansPage({ params }) {
                                     <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
                                         <div className="info-text">
                                             <p className="mb-0">
-                                                <a className="btn-common-text" href="clubs-edit.php">Edit</a>
-
+                                                <Link className="btn-common-text" href={`/admin/teams/${team._id}/edit`}>Edit</Link>
                                             </p>
                                         </div>
                                     </div>
@@ -119,85 +225,36 @@ export default async function ViewFansPage({ params }) {
                                 <h2 className="info-box-title fs-14 fw-bold mb-30">Contact Details</h2>
                                 <div className="right-info mb-30">
                                     <p className="mb-0 fs-14 d-flex align-items-center gap-30">
-                                        <span className="info-span">E-mail: <a className="text-decoration-none text-body underline-hover" href="mailto:csb9900@gmail.com">csb9900@gmail.com</a></span>
+                                        <span className="info-span">E-mail: <a className="text-decoration-none text-body underline-hover" href={`mailto:${team.email}`} >{team.email}</a></span>
                                     </p>
                                 </div>
                                 <div className="right-info mb-30">
                                     <p className="mb-0 fs-14 d-flex align-items-center gap-30">
-                                        <span className="info-span">Tel: <a className="text-decoration-none text-body underline-hover" href="tel:+44 07453 234258">+44 07453 234258</a></span>
+                                        <span className="info-span">Tel: <a className="text-decoration-none text-body underline-hover" href={`tel:${team.phone}`}>{team.phone}</a></span>
                                         <span className="user-active">Verified</span>
                                     </p>
                                 </div>
                                 <div className="right-info mb-30">
-                                    <a href="#">
-                                        <img className="profile-img mb-10" src="/images/club-badge.jpg" alt="Club Badge" />
-                                    </a>
+                                    <Link href={`/admin/teams/${team._id}/edit`}>
+                                        <Image
+                                            src={preview}
+                                            width={82}
+                                            height={82}
+                                            className={'profile-img mb-10'}
+                                            alt="Profile Image"
+                                        />
+                                    </Link>
                                     <p className="mb-0">
-                                        <a className="text-decoration-none fs-14 fw-bold text-primary underline-hover" href="clubs-edit.php">Club Badge</a>
+                                        <Link className="text-decoration-none fs-14 fw-bold text-primary underline-hover" href={`/admin/teams/${team._id}/edit`}>Team Badge</Link>
                                     </p>
                                 </div>
+
                             </div>
                         </div>
                     </div>
 
-
                     <div className="single-bottom-table-cont mt-30">
-                        <h2 className="fs-14 fw-bold mb-20">Teams</h2>
-                        <form>
-
-                            <div className="table-responsive common-datatable">
-                                <table id="example" className="table">
-                                    <thead>
-                                        <tr>
-                                            <th scope="col">Team</th>
-                                            <th scope="col">Manager</th>
-                                            <th scope="col">Telephone</th>
-                                            <th scope="col">Email</th>
-                                            <th scope="col">Ground</th>
-                                            <th scope="col">Edit</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td className="text-nowrap">Pegasus U10s</td>
-                                            <td className="text-nowrap"><a href="#">Marc Waters</a></td>
-                                            <td className="text-nowrap"><a href="tel:+44 08564 346268">+44 08564 346268</a></td>
-                                            <td className="text-nowrap"><a href="mailto:u7@phyl.co.uk">u7@phyl.co.uk</a></td>
-                                            <td className="text-nowrap"><a href="#">Waterend</a></td>
-                                            <td className="text-nowrap"><a className="text-green" href="clubs-edit.php">Edit</a></td>
-                                        </tr>
-                                        <tr>
-                                            <td className="text-nowrap">Pegasus U10s</td>
-                                            <td className="text-nowrap"><a href="#">Marc Waters</a></td>
-                                            <td className="text-nowrap"><a href="tel:+44 08564 346268">+44 08564 346268</a></td>
-                                            <td className="text-nowrap"><a href="mailto:u7@phyl.co.uk">u7@phyl.co.uk</a></td>
-                                            <td className="text-nowrap"><a href="#">Waterend</a></td>
-                                            <td className="text-nowrap"><a className="text-green" href="clubs-edit.php">Edit</a></td>
-                                        </tr>
-                                        <tr>
-                                            <td className="text-nowrap">Pegasus U10s</td>
-                                            <td className="text-nowrap"><a href="#">Marc Waters</a></td>
-                                            <td className="text-nowrap"><a href="tel:+44 08564 346268">+44 08564 346268</a></td>
-                                            <td className="text-nowrap"><a href="mailto:u7@phyl.co.uk">u7@phyl.co.uk</a></td>
-                                            <td className="text-nowrap"><a href="#">Waterend</a></td>
-                                            <td className="text-nowrap"><a className="text-green" href="clubs-edit.php">Edit</a></td>
-                                        </tr>
-                                        <tr>
-                                            <td className="text-nowrap">Pegasus U10s</td>
-                                            <td className="text-nowrap"><a href="#">Marc Waters</a></td>
-                                            <td className="text-nowrap"><a href="tel:+44 08564 346268">+44 08564 346268</a></td>
-                                            <td className="text-nowrap"><a href="mailto:u7@phyl.co.uk">u7@phyl.co.uk</a></td>
-                                            <td className="text-nowrap"><a href="#">Waterend</a></td>
-                                            <td className="text-nowrap"><a className="text-green" href="clubs-edit.php">Edit</a></td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </form>
-                    </div>
-
-                    <div className="single-bottom-table-cont mt-30">
-                        <h2 className="fs-14 fw-bold mb-20">Friendlies</h2>
+                        <h2 className="fs-14 fw-bold mb-20">Schedules Friendlies</h2>
                         <form>
 
                             <div className="table-responsive common-datatable">
@@ -225,7 +282,7 @@ export default async function ViewFansPage({ params }) {
                                             <td className="text-nowrap"><a href="#">Paul Tader</a></td>
                                             <td className="text-nowrap">1-0</td>
                                             <td className="text-nowrap">Loss</td>
-                                            <td className="text-nowrap"><a className="text-green" href="clubs-edit.php">Edit</a></td>
+                                            <td className="text-nowrap"><a className="text-green" href="teams-edit.php">Edit</a></td>
                                         </tr>
                                         <tr>
                                             <td className="text-nowrap">12.02.24</td>
@@ -236,7 +293,43 @@ export default async function ViewFansPage({ params }) {
                                             <td className="text-nowrap"><a href="#">Marc Waters</a></td>
                                             <td className="text-nowrap">3-2</td>
                                             <td className="text-nowrap">Win</td>
-                                            <td className="text-nowrap"><a className="text-green" href="clubs-edit.php">Edit</a></td>
+                                            <td className="text-nowrap"><a className="text-green" href="teams-edit.php">Edit</a></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div className="single-bottom-table-cont mt-30">
+                        <h2 className="fs-14 fw-bold mb-20">Archive</h2>
+                        <form>
+                            <div className="table-responsive common-datatable">
+                                <table id="example" className="table">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">Date</th>
+                                            <th scope="col">Time</th>
+                                            <th scope="col">Opposition</th>
+                                            <th scope="col">Ground</th>
+                                            <th scope="col">Status</th>
+                                            <th scope="col">Opp Manager</th>
+                                            <th scope="col">Score</th>
+                                            <th scope="col">Outcome</th>
+                                            <th scope="col">Edit</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td className="text-nowrap">12.02.24</td>
+                                            <td className="text-nowrap">3pm</td>
+                                            <td className="text-nowrap"><a href="#">CPR U14s</a></td>
+                                            <td className="text-nowrap"><a href="#">Waterend</a></td>
+                                            <td className="text-nowrap">Complete</td>
+                                            <td className="text-nowrap"><a href="#">Marc Waters</a></td>
+                                            <td className="text-nowrap">3-2</td>
+                                            <td className="text-nowrap">Win</td>
+                                            <td className="text-nowrap"><a className="text-green" href="teams-edit.php">Edit</a></td>
                                         </tr>
                                         <tr>
                                             <td className="text-nowrap">11.01.24</td>
@@ -247,25 +340,13 @@ export default async function ViewFansPage({ params }) {
                                             <td className="text-nowrap"><a href="#">Paul Tader</a></td>
                                             <td className="text-nowrap">1-0</td>
                                             <td className="text-nowrap">Loss</td>
-                                            <td className="text-nowrap"><a className="text-green" href="clubs-edit.php">Edit</a></td>
-                                        </tr>
-                                        <tr>
-                                            <td className="text-nowrap">12.02.24</td>
-                                            <td className="text-nowrap">3pm</td>
-                                            <td className="text-nowrap"><a href="#">CPR U14s</a></td>
-                                            <td className="text-nowrap"><a href="#">Waterend</a></td>
-                                            <td className="text-nowrap">Complete</td>
-                                            <td className="text-nowrap"><a href="#">Marc Waters</a></td>
-                                            <td className="text-nowrap">3-2</td>
-                                            <td className="text-nowrap">Win</td>
-                                            <td className="text-nowrap"><a className="text-green" href="clubs-edit.php">Edit</a></td>
+                                            <td className="text-nowrap"><a className="text-green" href="teams-edit.php">Edit</a></td>
                                         </tr>
                                     </tbody>
                                 </table>
                             </div>
                         </form>
                     </div>
-
                 </div>
 
             </main>
