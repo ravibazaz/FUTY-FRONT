@@ -274,7 +274,7 @@ export default function EditGroundForm({ ground }) {
                               ground.images.map((l, index) => (
                                 <Image
                                   key={index}
-                                  src={l}
+                                  src={'/api'+l}
                                   width={82}
                                   height={82}
                                   alt="Profile Image"

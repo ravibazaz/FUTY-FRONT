@@ -105,7 +105,7 @@ export default async function ViewFansPage({ params }) {
                                             userdetails.images.map((l, index) => (
                                                 <Image
                                                     key={index}
-                                                    src={l}
+                                                    src={'/api'+l}
                                                     width={82}
                                                     height={82}
                                                     alt="Profile Image"

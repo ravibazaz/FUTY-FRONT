@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 import { protectApiRoute } from "@/lib/middleware";
+import { connectDB } from '@/lib/db';
+import Users from '@/lib/models/Users';
 
 export async function GET(req) {
   const authResult = await protectApiRoute(req);
@@ -10,11 +12,17 @@ export async function GET(req) {
   }
 
   // Otherwise, it means the user is authenticated
-  const { user } = authResult;
+  await connectDB();
+  const managers = await Users.find({ account_type: "Manager" },"profile_image name surname").lean();
+
+
+
 
   return NextResponse.json({
     success: true,
-    message: "Welcome to the profile page!",
-    user,
+    message: "Welcome to the Manager Dashboard!",
+    data: managers
+
+
   });
 }

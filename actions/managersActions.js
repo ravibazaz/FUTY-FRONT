@@ -55,7 +55,7 @@ export async function createManagers(prevState, formData) {
 
   // Generate a unique filename and save the image
   const uniqueName = `${uuidv4()}${path.extname(imageFile.name)}`;
-  const filePath = path.join(process.cwd(), "public", "uploads/managers", uniqueName);
+  const filePath = path.join(process.cwd(), "uploads/managers", uniqueName);
 
   // Ensure the uploads directory exists
   await fs.mkdir(path.dirname(filePath), { recursive: true });
@@ -119,7 +119,7 @@ export async function updateManager(id, prevState, formData) {
 
   // Handle image update if a new image is uploaded
   if (imageFile && imageFile.size > 0) {
-    const uploadsFolder = path.join(process.cwd(), "public", "uploads/managers");
+    const uploadsFolder = path.join(process.cwd(), "uploads/managers");
 
     // Ensure the uploads folder exists
     await fileExists(uploadsFolder);
@@ -140,7 +140,7 @@ export async function updateManager(id, prevState, formData) {
 
     // Delete the old image if it exists
     if (user.profile_image) {
-      const oldImagePath = path.join(process.cwd(), "public", user.profile_image);
+      const oldImagePath = path.join(process.cwd(), user.profile_image);
       // console.log(oldImagePath);
       try {
         await fs.unlink(oldImagePath).catch((err) => {

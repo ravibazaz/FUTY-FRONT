@@ -34,7 +34,7 @@ export async function createClub(prevState, formData) {
 
   // Generate a unique filename and save the image
   const uniqueName = `${uuidv4()}${path.extname(imageFile.name)}`;
-  const filePath = path.join(process.cwd(), "public", "uploads/clubs", uniqueName);
+  const filePath = path.join(process.cwd(), "uploads/clubs", uniqueName);
 
   // Ensure the uploads directory exists
   await fs.mkdir(path.dirname(filePath), { recursive: true });
@@ -79,7 +79,7 @@ export async function updateClub(id, prevState, formData) {
 
   if (imageFile && imageFile.size > 0) {
 
-    const uploadsFolder = path.join(process.cwd(), "public", "uploads/clubs");
+    const uploadsFolder = path.join(process.cwd(),"uploads/clubs");
 
     // Ensure the uploads folder exists
     await fileExists(uploadsFolder);
@@ -98,7 +98,7 @@ export async function updateClub(id, prevState, formData) {
     });
     // Delete the old image if it exists
     if (club.image) {
-      const oldImagePath = path.join(process.cwd(), "public", club.image);
+      const oldImagePath = path.join(process.cwd(), club.image);
       // console.log(oldImagePath);
       try {
         await fs.unlink(oldImagePath).catch((err) => {

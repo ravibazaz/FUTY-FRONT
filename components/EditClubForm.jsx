@@ -40,7 +40,7 @@ export default function EditClubForm({ club }) {
   );
 
   const [clientErrors, setClientErrors] = useState({});
-  const [preview, setPreview] = useState(club.image ? club.image : '/images/club-badge.jpg');
+  const [preview, setPreview] = useState(club.image ? '/api'+club.image : '/images/club-badge.jpg');
 
   // if (club.images)
   // setPreview(club.images);
