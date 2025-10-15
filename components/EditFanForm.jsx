@@ -43,7 +43,7 @@ export default function EditFanForm({ user }) {
   );
 
   const [clientErrors, setClientErrors] = useState({});
-  const [preview, setPreview] = useState(user.profile_image ? user.profile_image : '/images/profile-picture.jpg');
+  const [preview, setPreview] = useState(user.profile_image ? '/api'+user.profile_image : '/images/profile-picture.jpg');
   // if (user.profile_image)
   // setPreview(user.profile_image);
 

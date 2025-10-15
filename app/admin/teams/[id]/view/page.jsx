@@ -13,7 +13,7 @@ export default async function ViewFansPage({ params }) {
     await connectDB();
     const team = await Teams.findById(id).populate("manager","name").populate("club","name").populate("ground","name").populate("league","title").lean();
     if (team.image)
-        preview = team.image;
+        preview = '/api'+team.image;
 
     return (
         <>

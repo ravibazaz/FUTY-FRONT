@@ -35,7 +35,7 @@ export async function createGrounds(prevState, formData) {
   // return false;
   await connectDB();
   // ensure upload directory exists
-  const uploadDir = path.join(process.cwd(), "public/uploads/grounds");
+  const uploadDir = path.join(process.cwd(), "uploads/grounds");
   await fs.mkdir(uploadDir, { recursive: true });
 
   const uploadedFiles = [];
@@ -44,7 +44,7 @@ export async function createGrounds(prevState, formData) {
   for (const file of imageFiles) {
 
     const uniqueName = `${Date.now()}-${uuidv4()}${path.extname(file.name)}`;
-    const filePath = path.join(process.cwd(), "public/uploads/grounds", uniqueName);
+    const filePath = path.join(process.cwd(), "uploads/grounds", uniqueName);
 
     await fs.mkdir(path.dirname(filePath), { recursive: true });
 
@@ -87,13 +87,13 @@ export async function updateGround(id, prevState, formData) {
 
   if (imageFiles && imageFiles.length > 0) {
 
-    const uploadDir = path.join(process.cwd(), "public/uploads/grounds");
+    const uploadDir = path.join(process.cwd(), "uploads/grounds");
     await fs.mkdir(uploadDir, { recursive: true });
 
     const uploadedFiles = [];
     for (const file of imageFiles) {
       const uniqueName = `${Date.now()}-${uuidv4()}${path.extname(file.name)}`;
-      const filePath = path.join(process.cwd(), "public/uploads/grounds", uniqueName);
+      const filePath = path.join(process.cwd(), "uploads/grounds", uniqueName);
 
       await fs.mkdir(path.dirname(filePath), { recursive: true });
 
@@ -114,7 +114,7 @@ export async function updateGround(id, prevState, formData) {
     // Delete the old image if it exists
     if (ground.images) {
       ground.images.map((l, index) => {
-        const oldImagePath = path.join(process.cwd(), "public", l);
+        const oldImagePath = path.join(process.cwd(), l);
         // console.log(oldImagePath);
         try {
           fs.unlink(oldImagePath).catch((err) => {

@@ -36,7 +36,7 @@ export async function createTeam(prevState, formData) {
 
   // Generate a unique filename and save the image
   const uniqueName = `${uuidv4()}${path.extname(imageFile.name)}`;
-  const filePath = path.join(process.cwd(), "public", "uploads/teams", uniqueName);
+  const filePath = path.join(process.cwd(), "uploads/teams", uniqueName);
 
   // Ensure the uploads directory exists
   await fs.mkdir(path.dirname(filePath), { recursive: true });
@@ -83,7 +83,7 @@ export async function updateTeam(id, prevState, formData) {
 
   if (imageFile && imageFile.size > 0) {
 
-    const uploadsFolder = path.join(process.cwd(), "public", "uploads/teams");
+    const uploadsFolder = path.join(process.cwd(),"uploads/teams");
 
     // Ensure the uploads folder exists
     await fileExists(uploadsFolder);
@@ -102,8 +102,8 @@ export async function updateTeam(id, prevState, formData) {
     });
     // Delete the old image if it exists
     if (team.image) {
-      const oldImagePath = path.join(process.cwd(), "public", team.image);
-      // console.log(oldImagePath);
+      const oldImagePath = path.join(process.cwd(), team.image);
+      //console.log(oldImagePath);
       try {
         await fs.unlink(oldImagePath).catch((err) => {
           console.warn(`Failed to delete image: ${err.message}`);

@@ -10,7 +10,7 @@ export default async function ViewFansPage({ params }) {
   await connectDB();
   const userdetails = await User.findById(id).lean();
   if (userdetails.profile_image)
-    preview = userdetails.profile_image;
+    preview = '/api'+userdetails.profile_image;
 
   return (
 

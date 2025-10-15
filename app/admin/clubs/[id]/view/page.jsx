@@ -11,7 +11,7 @@ export default async function ViewFansPage({ params }) {
     await connectDB();
     const club = await Clubs.findById(id).lean();
     if (club.image)
-        preview = club.image;
+        preview = '/api'+club.image;
 
     return (
         <>

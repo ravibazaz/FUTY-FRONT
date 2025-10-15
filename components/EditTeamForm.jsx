@@ -44,7 +44,7 @@ export default function EditTeamForm({ team }) {
   );
 
   const [clientErrors, setClientErrors] = useState({});
-  const [preview, setPreview] = useState(team.image ? team.image : '/images/profile-picture.jpg');
+  const [preview, setPreview] = useState(team.image ? '/api'+team.image : '/images/profile-picture.jpg');
   // const [preview, setPreview] = useState([]);
   // if (team.images)
   // setPreview(team.images);
