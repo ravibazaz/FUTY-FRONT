@@ -20,8 +20,8 @@ export default function RootLayout({ children }) {
       <body>
          <NextTopLoader></NextTopLoader>
         {children}
-        <Script src="/js/dataTables.js" strategy="afterInteractive" />
-        <Script src="/js/dataTables.bootstrap5.js" strategy="afterInteractive" />
+        <Script src="/js/dataTables.js" strategy="beforeInteractive" />
+        <Script src="/js/dataTables.bootstrap5.js" strategy="beforeInteractive" />
         <Footer></Footer>
       </body>
     </html>
