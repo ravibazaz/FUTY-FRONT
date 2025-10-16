@@ -2,8 +2,8 @@
 
 import { useFormStatus } from "react-dom";
 import { useActionState, useState, useRef, useTransition } from "react";
-import { createManagers } from "@/actions/managersActions";
-import { ManagersSchema } from "@/lib/validation/managers";
+import { createReferees } from "@/actions/refereesActions";
+import { RefereesSchema } from "@/lib/validation/referees";
 import Image from "next/image";
 function SubmitButton() {
     const { pending } = useFormStatus();
@@ -14,7 +14,7 @@ function SubmitButton() {
     );
 }
 export default function NewFanPage() {
-    const [state, formAction] = useActionState(createManagers, {
+    const [state, formAction] = useActionState(createReferees, {
         success: null,
         errors: {},
     });
@@ -44,7 +44,7 @@ export default function NewFanPage() {
         const formData = new FormData(e.target);
         const raw = Object.fromEntries(formData.entries());
 
-        const result = ManagersSchema(false).safeParse(raw);
+        const result = RefereesSchema(false).safeParse(raw);
 
         if (!result.success) {
             setClientErrors(result.error.flatten().fieldErrors);
@@ -74,7 +74,7 @@ export default function NewFanPage() {
             <main className="main-body col-md-9 col-lg-9 col-xl-10">
                 <div className="body-top d-flex flex-wrap justify-content-between align-items-center gap-20 mb-10">
                     <div className="top-left">
-                        <p className="top-breadcrumb mb-0">{'> Managers'}</p>
+                        <p className="top-breadcrumb mb-0">{'> Referee'}</p>
                     </div>
                     <div className="top-right d-flex justify-content-between align-items-center gap-10">
                         <a className="btn btn-common" href="managers-new.php">New</a>
@@ -90,7 +90,7 @@ export default function NewFanPage() {
                 </div>
                 <div className="body-title-bar d-flex flex-wrap justify-content-between align-items-center gap-20 mb-20">
                     <div className="body-title-bar-left d-flex flex-wrap align-items-center gap-20-70">
-                        <h1 className="page-title">Add New Manager</h1>
+                        <h1 className="page-title">Add New Referee</h1>
 
                     </div>
                 </div>
@@ -273,7 +273,7 @@ export default function NewFanPage() {
                                         <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
                                             <div className="info-text px-0">
                                                 <p className="mb-0">
-                                                    <input name="nick_name" placeholder="Nickname" className="form-control" type="text"></input>
+                                                    <input name="nick_name"  className="form-control" type="text"></input>
                                                 </p>
                                             </div>
                                         </div>
@@ -283,13 +283,13 @@ export default function NewFanPage() {
                                     <div className="left-row row">
                                         <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
                                             <div className="label-text mb-0">
-                                                <p className="mb-0">Win %</p>
+                                                <p className="mb-0">Referee Lavel</p>
                                             </div>
                                         </div>
                                         <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
                                             <div className="info-text px-0">
                                                 <p className="mb-0">
-                                                    <input name="win" className="form-control" type="text"></input>
+                                                    <input name="referee_lavel" className="form-control" type="text"></input>
                                                 </p>
                                             </div>
                                         </div>
@@ -299,34 +299,19 @@ export default function NewFanPage() {
                                     <div className="left-row row">
                                         <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
                                             <div className="label-text mb-0">
-                                                <p className="mb-0">Style %</p>
+                                                <p className="mb-0">Referee Fee</p>
                                             </div>
                                         </div>
                                         <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
                                             <div className="info-text px-0">
                                                 <p className="mb-0">
-                                                    <input name="style" className="form-control" type="text"></input>
+                                                    <input name="referee_fee" className="form-control" type="text"></input>
                                                 </p>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div className="left-info-box">
-                                    <div className="left-row row">
-                                        <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
-                                            <div className="label-text mb-0">
-                                                <p className="mb-0">Trophies %</p>
-                                            </div>
-                                        </div>
-                                        <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
-                                            <div className="info-text px-0">
-                                                <p className="mb-0">
-                                                    <input name="trophy" className="form-control" type="text"></input>
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+
                                 <div className="left-info-box">
                                     <div className="left-row row">
                                         <div className="left-label-col col-md-5 col-lg-4 col-xl-4">

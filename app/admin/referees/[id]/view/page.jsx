@@ -18,7 +18,7 @@ export default async function ViewFansPage({ params }) {
       <main className="main-body col-md-9 col-lg-9 col-xl-10">
         <div className="body-top d-flex flex-wrap justify-content-between align-items-center gap-20 mb-10">
           <div className="top-left">
-            <p className="top-breadcrumb mb-0">{'> Managers'}</p>
+            <p className="top-breadcrumb mb-0">{'> Referee'}</p>
           </div>
           <div className="top-right d-flex justify-content-between align-items-center gap-10">
             <a className="btn btn-common" href="managers-new.php">New</a>
@@ -58,20 +58,6 @@ export default async function ViewFansPage({ params }) {
                   </div>
                 </div>
               </div> */}
-              <div className="left-info-box">
-                <div className="left-row row">
-                  <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
-                    <div className="label-text">
-                      <p className="mb-0">Number of Friendlies</p>
-                    </div>
-                  </div>
-                  <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
-                    <div className="info-text">
-                      <p className="mb-0">6</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
               {/* <div className="left-info-box">
                 <div className="left-row row">
                   <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
@@ -132,12 +118,12 @@ export default async function ViewFansPage({ params }) {
                 <div className="left-row row">
                   <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
                     <div className="label-text mb-0">
-                      <p className="mb-0">Win %</p>
+                      <p className="mb-0">Referee Lavel</p>
                     </div>
                   </div>
                   <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
                     <div className="info-text">
-                      <p className="mb-0">{userdetails.playing_style.win.percentage}</p>
+                      <p className="mb-0">{userdetails.referee_lavel}</p>
                     </div>
                   </div>
                 </div>
@@ -146,30 +132,17 @@ export default async function ViewFansPage({ params }) {
                 <div className="left-row row">
                   <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
                     <div className="label-text mb-0">
-                      <p className="mb-0">Style</p>
+                      <p className="mb-0">Referee Fee</p>
                     </div>
                   </div>
                   <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
                     <div className="info-text">
-                      <p className="mb-0">{userdetails.playing_style.style.percentage}</p>
+                      <p className="mb-0">{userdetails.referee_fee}</p>
                     </div>
                   </div>
                 </div>
               </div>
-              <div className="left-info-box">
-                <div className="left-row row">
-                  <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
-                    <div className="label-text mb-0">
-                      <p className="mb-0">Trophies Won</p>
-                    </div>
-                  </div>
-                  <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
-                    <div className="info-text">
-                      <p className="mb-0">{userdetails.playing_style.trophy.percentage}</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
+
               <div className="left-info-box">
                 <div className="left-row row">
                   <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
@@ -255,7 +228,7 @@ export default async function ViewFansPage({ params }) {
                       <th scope="col">Opposition</th>
                       <th scope="col">Ground</th>
                       <th scope="col">Status</th>
-                      <th scope="col">Opp Manager</th>
+                      <th scope="col">Opp Referee</th>
                       <th scope="col">Score</th>
                       <th scope="col">Outcome</th>
                       <th scope="col">Edit</th>
@@ -303,7 +276,7 @@ export default async function ViewFansPage({ params }) {
                       <th scope="col">Opposition</th>
                       <th scope="col">Ground</th>
                       <th scope="col">Status</th>
-                      <th scope="col">Opp Manager</th>
+                      <th scope="col">Opp Referee</th>
                       <th scope="col">Score</th>
                       <th scope="col">Outcome</th>
                       <th scope="col">Edit</th>

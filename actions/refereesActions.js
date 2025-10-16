@@ -4,7 +4,7 @@ import { connectDB } from "@/lib/db";
 import { cookies } from "next/headers";
 import Users from "@/lib/models/Users";
 import { redirect } from "next/navigation";
-import { ManagersSchema } from "@/lib/validation/managers";
+import { RefereesSchema } from "@/lib/validation/referees";
 import { v4 as uuidv4 } from "uuid";
 import path from "path";
 import { promises as fs } from "fs";
@@ -21,7 +21,7 @@ const fileExists = async (filePath) => {
   }
 };
 
-export async function createManagers(prevState, formData) {
+export async function createReferees(prevState, formData) {
   const cookieStore = await cookies();
   const userId = cookieStore.get("user_id")?.value;
 
@@ -29,24 +29,9 @@ export async function createManagers(prevState, formData) {
 
   const imageFile = formData.get("profile_image");
   const password = formData.get("password");
-  const win = formData.get("win");
-  const style = formData.get("style");
-  const trophy = formData.get("trophy");
-  const playing_style = {
-    win: {
-      value: '',
-      percentage: Number(win) || 0,
-    },
-    style: {
-      value: '',
-      percentage: Number(style) || 0,
-    },
-    trophy: {
-      value: '',
-      percentage: Number(trophy) || 0,
-    },
-  };
-  const result = ManagersSchema(false).safeParse({ ...raw, image: imageFile });
+
+
+  const result = RefereesSchema(false).safeParse({ ...raw, image: imageFile });
 
   if (!result.success)
     return { success: false, errors: result.error.flatten().fieldErrors };
@@ -55,7 +40,7 @@ export async function createManagers(prevState, formData) {
 
   // Generate a unique filename and save the image
   const uniqueName = `${uuidv4()}${path.extname(imageFile.name)}`;
-  const filePath = path.join(process.cwd(), "uploads/managers", uniqueName);
+  const filePath = path.join(process.cwd(), "uploads/referees", uniqueName);
 
   // Ensure the uploads directory exists
   await fs.mkdir(path.dirname(filePath), { recursive: true });
@@ -68,45 +53,25 @@ export async function createManagers(prevState, formData) {
   await connectDB();
   await Users.create({
     ...result.data,
-    account_type: 'Manager',
-    playing_style: playing_style,
+    account_type: 'Refreee',
     password: hashedPassword,
-    profile_image: `/uploads/managers/${uniqueName}`, // Save relative path to the image
+    profile_image: `/uploads/referees/${uniqueName}`, // Save relative path to the image
   });
 
-  cookieStore.set("toastMessage", "Manager Added");
-  redirect("/admin/managers");
+  cookieStore.set("toastMessage", "Refreee Added");
+  redirect("/admin/referees");
 }
 
-export async function updateManager(id, prevState, formData) {
+export async function updateRefreee(id, prevState, formData) {
   const raw = Object.fromEntries(formData.entries());
-  const result = ManagersSchema(true).safeParse(raw);
+  const result = RefereesSchema(true).safeParse(raw);
   const cookieStore = await cookies();
   if (!result.success) {
     return { success: false, errors: result.error.flatten().fieldErrors };
   }
-  const { name, email, telephone, nick_name, post_code, profile_description,travel_distance } = result.data;
+  const { name, email, telephone, nick_name, post_code, profile_description,travel_distance,referee_lavel,referee_fee } = result.data;
   const imageFile = formData.get("profile_image");
   const password = formData.get("password");
-
-  const win = formData.get("win");
-  const style = formData.get("style");
-  const trophy = formData.get("trophy");
-  const playing_style = {
-    win: {
-      value: '',
-      percentage: Number(win) || 0,
-    },
-    style: {
-      value: '',
-      percentage: Number(style) || 0,
-    },
-    trophy: {
-      value: '',
-      percentage: Number(trophy) || 0,
-    },
-  };
-
 
   await connectDB();
   // Find the existing league in the database
@@ -119,7 +84,7 @@ export async function updateManager(id, prevState, formData) {
 
   // Handle image update if a new image is uploaded
   if (imageFile && imageFile.size > 0) {
-    const uploadsFolder = path.join(process.cwd(), "uploads/managers");
+    const uploadsFolder = path.join(process.cwd(), "uploads/referees");
 
     // Ensure the uploads folder exists
     await fileExists(uploadsFolder);
@@ -160,8 +125,9 @@ export async function updateManager(id, prevState, formData) {
       post_code,
       profile_description,
       travel_distance,
-      playing_style: playing_style,
-      profile_image: `/uploads/managers/${imageName}`, // Save relative path to the image
+      referee_lavel,
+      referee_fee,
+      profile_image: `/uploads/referees/${imageName}`, // Save relative path to the image
     };
 
     if (password) {
@@ -177,8 +143,7 @@ export async function updateManager(id, prevState, formData) {
       nick_name,
       post_code,
       profile_description,
-      travel_distance,
-      playing_style: playing_style,
+     referee_lavel,referee_fee
     };
     if (password) {
       updateData.password = await bcrypt.hash(password, 10);
@@ -195,7 +160,7 @@ export async function updateManager(id, prevState, formData) {
 
 
 
-  redirect("/admin/managers");
+  redirect("/admin/referees");
 }
 
 export async function deleteLeague(id) {

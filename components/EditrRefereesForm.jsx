@@ -1,7 +1,7 @@
 "use client";
 
-import { updateManager } from "@/actions/managersActions";
-import { ManagersSchema } from "@/lib/validation/managers";
+import { updateRefreee } from "@/actions/refereesActions";
+import { RefereesSchema } from "@/lib/validation/referees";
 import { useFormStatus } from "react-dom";
 import { useActionState, useState, startTransition, useRef } from "react";
 import Image from "next/image";
@@ -9,13 +9,13 @@ function SubmitButton() {
   const { pending } = useFormStatus();
   return (
     <button type="submit" className="btn-common-text" disabled={pending}>
-      {pending ? "Editing" : "Edit Manager"}
+      {pending ? "Editing" : "Edit Referee"}
     </button>
 
   );
 }
 
-export default function EditMangerForm({ user }) {
+export default function EditRefereeForm({ user }) {
 
   //console.log(user);
   
@@ -37,7 +37,7 @@ export default function EditMangerForm({ user }) {
 
 
   const [state, formAction] = useActionState(
-    updateManager.bind(null, user._id),
+    updateRefreee.bind(null, user._id),
     {
       success: null,
       errors: {},
@@ -63,7 +63,7 @@ export default function EditMangerForm({ user }) {
       formData.delete("profile_image"); // Remove the image key if no new file is uploaded
     }
 
-    const result = ManagersSchema(true).safeParse(
+    const result = RefereesSchema(true).safeParse(
       Object.fromEntries(formData.entries())
     );
 
@@ -96,7 +96,7 @@ export default function EditMangerForm({ user }) {
     <main className="main-body col-md-9 col-lg-9 col-xl-10">
       <div className="body-top d-flex flex-wrap justify-content-between align-items-center gap-20 mb-10">
         <div className="top-left">
-          <p className="top-breadcrumb mb-0">{'> Managers'}</p>
+          <p className="top-breadcrumb mb-0">{'> Referee'}</p>
         </div>
         <div className="top-right d-flex justify-content-between align-items-center gap-10">
           <a className="btn btn-common" href="managers-new.php">New</a>
@@ -112,7 +112,7 @@ export default function EditMangerForm({ user }) {
       </div>
       <div className="body-title-bar d-flex flex-wrap justify-content-between align-items-center gap-20 mb-20">
         <div className="body-title-bar-left d-flex flex-wrap align-items-center gap-20-70">
-          <h1 className="page-title">Edit Managers</h1>
+          <h1 className="page-title">Edit Referee</h1>
         </div>
       </div>
       <form action={formAction} onSubmit={handleSubmit}>
@@ -296,13 +296,13 @@ export default function EditMangerForm({ user }) {
                 <div className="left-row row">
                   <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
                     <div className="label-text mb-0">
-                      <p className="mb-0">Win %</p>
+                      <p className="mb-0">Referee Lavel</p>
                     </div>
                   </div>
                   <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
                     <div className="info-text px-0">
                       <p className="mb-0">
-                        <input className="form-control" name="win" defaultValue={user.playing_style.win.percentage} type="text" ></input>
+                        <input className="form-control" name="referee_lavel" defaultValue={user.referee_lavel} type="text" ></input>
                       </p>
                     </div>
                   </div>
@@ -312,34 +312,19 @@ export default function EditMangerForm({ user }) {
                 <div className="left-row row">
                   <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
                     <div className="label-text mb-0">
-                      <p className="mb-0">Style %</p>
+                      <p className="mb-0">Referee Fee</p>
                     </div>
                   </div>
                   <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
                     <div className="info-text px-0">
                       <p className="mb-0">
-                        <input className="form-control" name="style" defaultValue={user.playing_style.style.percentage} type="text" ></input>
+                        <input className="form-control" name="referee_fee" defaultValue={user.referee_fee} type="text" ></input>
                       </p>
                     </div>
                   </div>
                 </div>
               </div>
-              <div className="left-info-box">
-                <div className="left-row row">
-                  <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
-                    <div className="label-text mb-0">
-                      <p className="mb-0">Trophies %</p>
-                    </div>
-                  </div>
-                  <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
-                    <div className="info-text px-0">
-                      <p className="mb-0">
-                        <input className="form-control" name="trophy" defaultValue={user.playing_style.trophy.percentage} type="text" ></input>
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              
               <div className="left-info-box">
                 <div className="left-row row">
                   <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
