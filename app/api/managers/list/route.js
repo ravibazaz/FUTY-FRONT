@@ -20,8 +20,8 @@ export async function GET(req) {
 
   return NextResponse.json({
     success: true,
-    message: "Welcome to the Manager Dashboard!",
-    data: null
+    message: "Welcome to the Manager List!",
+    data: managers
 
 
   });

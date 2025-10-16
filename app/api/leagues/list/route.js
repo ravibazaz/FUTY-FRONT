@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { protectApiRoute } from "@/lib/middleware";
 import { connectDB } from '@/lib/db';
-import Users from '@/lib/models/Users';
+import Leagues from "@/lib/models/Leagues";
 
 export async function GET(req) {
   const authResult = await protectApiRoute(req);
@@ -13,15 +13,15 @@ export async function GET(req) {
 
   // Otherwise, it means the user is authenticated
   await connectDB();
-  const managers = await Users.find({ account_type: "Manager" },"profile_image name surname").lean();
+  const leagues = await Leagues.find({},"title image").lean();
 
 
 
 
   return NextResponse.json({
     success: true,
-    message: "Welcome to the Manager Dashboard!",
-    data: null
+    message: "Welcome to the League List!",
+    data: leagues
 
 
   });
