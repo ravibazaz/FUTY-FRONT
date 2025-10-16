@@ -5,6 +5,9 @@ import bcrypt from "bcryptjs";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import nodemailer from "nodemailer";
+import { v4 as uuidv4 } from "uuid";
+import path from "path";
+import { promises as fs } from "fs";
 export const UserSchema = z.object({
   email: z.string().nonempty("Email is required").email("Invalid email format"),
   password: z.string().nonempty("Password is required").min(7, "Password must be at least 7 character"),
@@ -12,6 +15,12 @@ export const UserSchema = z.object({
   name: z.string().nonempty("Name is required").min(2, "Name must be at least 2 character"),
   telephone: z.string().nonempty("Telephone is required").min(2, "Telephone must be at least 2 character"),
   account_type: z.string().nonempty("Account Type is required").min(2, "Account Type must be at least 2 character"),
+  profile_image: z
+    .string()
+    .nonempty("Profile image is required")
+    .refine((val) => /^data:image\/(png|jpg|jpeg|gif|webp);base64,/.test(val), {
+      message: "Invalid image format. Must be a valid Base64-encoded image.",
+    })
 }).refine((data) => data.password === data.confirm_password, {
   message: "Passwords don't match",
   path: ["confirm_password"],
@@ -31,6 +40,9 @@ export async function POST(req) {
     const playing_style = data.playing_style;
     const club_id = data.club_id;
     const ground_id = data.ground_id;
+    const profile_image = data.profile_image;
+
+
 
     const result = UserSchema.safeParse(data);
     // If validation fails, return an error response
@@ -60,6 +72,29 @@ export async function POST(req) {
       );
     }
 
+    const matches = profile_image.match(/^data:(.+);base64,(.+)$/);
+    const mimeType = matches[1];
+    const base64Data = matches[2];
+    const extension = mimeType.split("/")[1];
+    const fileName = `${uuidv4()}.${extension}`;
+
+    // Save to /public/uploads
+    let uploadtype = "";
+    if (account_type == "Manager")
+      uploadtype = "uploads/managers";
+    if (account_type == "Fan")
+      uploadtype = "uploads/fans";
+    if (account_type == "Refreee")
+      uploadtype = "uploads/referees";
+    
+    const uploadDir = path.join(process.cwd(), uploadtype);
+
+    await fs.mkdir(uploadDir, { recursive: true });
+
+    const filePath = path.join(uploadDir, fileName);
+    const buffer = Buffer.from(base64Data, "base64");
+    await fs.writeFile(filePath, buffer);
+
     const hashedPassword = await bcrypt.hash(password, 10);
     await User.create({
       email,
@@ -72,6 +107,7 @@ export async function POST(req) {
       club_id,
       profile_description,
       playing_style,
+      profile_image: `/`+uploadtype+`/${fileName}`,
 
 
     });
