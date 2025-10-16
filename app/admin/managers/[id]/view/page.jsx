@@ -137,7 +137,7 @@ export default async function ViewFansPage({ params }) {
                   </div>
                   <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
                     <div className="info-text">
-                      <p className="mb-0">{userdetails.playing_style.win.percentage}</p>
+                      <p className="mb-0">{userdetails.playing_style?.win.percentage}</p>
                     </div>
                   </div>
                 </div>
@@ -151,7 +151,7 @@ export default async function ViewFansPage({ params }) {
                   </div>
                   <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
                     <div className="info-text">
-                      <p className="mb-0">{userdetails.playing_style.style.percentage}</p>
+                      <p className="mb-0">{userdetails.playing_style?.style.percentage}</p>
                     </div>
                   </div>
                 </div>
@@ -165,7 +165,7 @@ export default async function ViewFansPage({ params }) {
                   </div>
                   <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
                     <div className="info-text">
-                      <p className="mb-0">{userdetails.playing_style.trophy.percentage}</p>
+                      <p className="mb-0">{userdetails.playing_style?.trophy.percentage}</p>
                     </div>
                   </div>
                 </div>

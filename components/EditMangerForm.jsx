@@ -302,7 +302,7 @@ export default function EditMangerForm({ user }) {
                   <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
                     <div className="info-text px-0">
                       <p className="mb-0">
-                        <input className="form-control" name="win" defaultValue={user.playing_style.win.percentage} type="text" ></input>
+                        <input className="form-control" name="win" defaultValue={user.playing_style?.win.percentage} type="text" ></input>
                       </p>
                     </div>
                   </div>
@@ -318,7 +318,7 @@ export default function EditMangerForm({ user }) {
                   <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
                     <div className="info-text px-0">
                       <p className="mb-0">
-                        <input className="form-control" name="style" defaultValue={user.playing_style.style.percentage} type="text" ></input>
+                        <input className="form-control" name="style" defaultValue={user.playing_style?.style.percentage} type="text" ></input>
                       </p>
                     </div>
                   </div>
@@ -334,7 +334,7 @@ export default function EditMangerForm({ user }) {
                   <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
                     <div className="info-text px-0">
                       <p className="mb-0">
-                        <input className="form-control" name="trophy" defaultValue={user.playing_style.trophy.percentage} type="text" ></input>
+                        <input className="form-control" name="trophy" defaultValue={user.playing_style?.trophy.percentage} type="text" ></input>
                       </p>
                     </div>
                   </div>
