@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { protectApiRoute } from "@/lib/middleware";
 import { connectDB } from '@/lib/db';
-import Leagues from "@/lib/models/Leagues";
+import Stores from "@/lib/models/Stores";
 
 export async function GET(req) {
   const authResult = await protectApiRoute(req);
@@ -13,12 +13,12 @@ export async function GET(req) {
 
   // Otherwise, it means the user is authenticated
   await connectDB();
-  const leagues = await Leagues.find({},"title image").lean();
+  const stores = await Stores.find({},"title image").lean();
 
   return NextResponse.json({
     success: true,
     message: "Welcome to the Store List!",
-    data: leagues
+    data: stores
 
 
   });
