@@ -86,7 +86,7 @@ export async function POST(req) {
       uploadtype = "uploads/fans";
     if (account_type == "Refreee")
       uploadtype = "uploads/referees";
-    
+
     const uploadDir = path.join(process.cwd(), uploadtype);
 
     await fs.mkdir(uploadDir, { recursive: true });
@@ -107,7 +107,7 @@ export async function POST(req) {
       club_id,
       profile_description,
       playing_style,
-      profile_image: `/`+uploadtype+`/${fileName}`,
+      profile_image: `/` + uploadtype + `/${fileName}`,
 
 
     });
@@ -140,15 +140,20 @@ export async function POST(req) {
         html: `<p>We have sent a code to you.</p><p>Login Code : ${randomNumber}</p>`,
       });
 
+      return NextResponse.json({
+        success: true,
+        data: {
+          'Login Code': randomNumber
+        },
+        message: "User created successfully. Please check login code in email.",
+      });
+
       // return NextResponse.json({ success: true });
     } catch (error) {
       console.error("Email error:", error);
       //return NextResponse.json({ success: false, error: error.message }, { status: 500 });
     }
-    return NextResponse.json({
-      success: true,
-      message: "User created successfully",
-    });
+
   } catch (err) {
     console.error("Signup error:", err);
     return NextResponse.json(
