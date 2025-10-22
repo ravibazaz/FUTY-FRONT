@@ -1,9 +1,9 @@
 import { connectDB } from '@/lib/db';
-import Leagues from '@/lib/models/Leagues';
+import Stores from '@/lib/models/Stores';
 
 export async function GET(req) {
   await connectDB();
 
-  const leagues = await Leagues.find({isActive:true});
-  return Response.json({ leagues });
+  const stores = await Stores.find({isActive:true});
+  return Response.json({ stores });
 }

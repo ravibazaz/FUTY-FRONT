@@ -2,8 +2,8 @@
 
 import { useFormStatus } from "react-dom";
 import { useActionState, useState, useRef, useTransition } from "react";
-import { createLeagues } from "@/actions/leaguesActions";
-import { LeaguesSchema } from "@/lib/validation/leagues";
+import { createStores } from "@/actions/storesActions";
+import { StoresSchema } from "@/lib/validation/stores";
 import Image from "next/image";
 function SubmitButton() {
   const { pending } = useFormStatus();
@@ -12,7 +12,7 @@ function SubmitButton() {
   );
 }
 export default function NewGroundPage() {
-  const [state, formAction] = useActionState(createLeagues, {
+  const [state, formAction] = useActionState(createStores, {
     success: null,
     errors: {},
   });
@@ -43,7 +43,7 @@ export default function NewGroundPage() {
     const formData = new FormData(e.target);
     const raw = Object.fromEntries(formData.entries());
 
-    const result = LeaguesSchema(false).safeParse(raw);
+    const result = StoresSchema(false).safeParse(raw);
 
    
     
@@ -80,7 +80,7 @@ export default function NewGroundPage() {
         </div>
         <div className="body-title-bar d-flex flex-wrap justify-content-between align-items-center gap-20 mb-20">
           <div className="body-title-bar-left d-flex flex-wrap align-items-center gap-20-70">
-            <h1 className="page-title">Add New League</h1>
+            <h1 className="page-title">Add New Store</h1>
 
           </div>
         </div>
@@ -94,7 +94,7 @@ export default function NewGroundPage() {
                   <div className="left-row row">
                     <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
                       <div className="label-text">
-                        <p className="mb-0">League Title</p>
+                        <p className="mb-0">Store Title</p>
                       </div>
                     </div>
                     <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
@@ -141,7 +141,7 @@ export default function NewGroundPage() {
                   <div className="left-row row">
                     <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
                       <div className="label-text mb-0">
-                        <p className="mb-0">League image</p>
+                        <p className="mb-0">Store image</p>
                       </div>
                     </div>
                     <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
@@ -162,7 +162,7 @@ export default function NewGroundPage() {
                               onChange={handleFileChange}
                               style={{ display: "none" }}
                               ></input>
-                            <p className="inputPlaceholder" id="placeholderText">League Badge</p>
+                            <p className="inputPlaceholder" id="placeholderText">Store Badge</p>
                           </div>
                           {state.errors?.image && (
                             <span className="invalid-feedback" style={{ display: "block" }}>{state.errors.image}</span>

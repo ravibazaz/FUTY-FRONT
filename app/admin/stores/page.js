@@ -17,16 +17,16 @@ const Toast = Swal.mixin({
   },
 });
 
-export default function LeagueTable() {
-  const [leagues, setLeagues] = useState([]);
+export default function StoreTable() {
+  const [stores, setStores] = useState([]);
   useEffect(() => {
     async function fetchData() {
       try {
-        const res = await fetch("/api/leagues");
+        const res = await fetch("/api/stores");
         const result = await res.json();
         // console.log(result);
 
-        setLeagues(result.leagues || []);
+        setStores(result.stores || []);
       } catch (err) {
         console.error("Failed to load data:", err);
       }
@@ -50,7 +50,7 @@ export default function LeagueTable() {
   }, []);
 
   useEffect(() => {
-    if (typeof window !== "undefined" && window.$ && leagues.length > 0) {
+    if (typeof window !== "undefined" && window.$ && stores.length > 0) {
       const $ = window.$;
 
       // Destroy if already exists
@@ -86,7 +86,7 @@ export default function LeagueTable() {
         }
       };
     }
-  }, [leagues]);
+  }, [stores]);
 
 
   return (
@@ -94,10 +94,10 @@ export default function LeagueTable() {
       <main className="main-body col-md-9 col-lg-9 col-xl-10">
         <div className="body-top d-flex flex-wrap justify-content-between align-items-center gap-20 mb-10">
           <div className="top-left">
-            <p className="top-breadcrumb mb-0">{'> Leagues'}</p>
+            <p className="top-breadcrumb mb-0">{'> Stores'}</p>
           </div>
           <div className="top-right d-flex justify-content-between align-items-center gap-10">
-            <Link className="btn btn-common" href={`/admin/leagues/new`} >New</Link>
+            <Link className="btn btn-common" href={`/admin/stores/new`} >New</Link>
 
             <a href="#">
               <Image src="/images/icon-setting.svg" width={33} height={33} alt="Settings" />
@@ -106,7 +106,7 @@ export default function LeagueTable() {
         </div>
         <div className="body-title-bar d-flex flex-wrap justify-content-between align-items-center gap-20 mb-10">
           <div className="body-title-bar-left d-flex flex-wrap align-items-center gap-20-70">
-            <h1 className="page-title">Leagues</h1>
+            <h1 className="page-title">Stores</h1>
 
           </div>
         </div>
@@ -118,17 +118,17 @@ export default function LeagueTable() {
               <table id="example" className="table">
                 <thead>
                   <tr>
-                    <th scope="col">League Title</th>
+                    <th scope="col">Store Title</th>
                     <th scope="col">Edit</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {leagues.length > 0 ? (
-                    leagues.map((l, index) => (
+                  {stores.length > 0 ? (
+                    stores.map((l, index) => (
                       <tr key={l._id}>
                         <td className="text-nowrap user-active">
                           <Link
-                            href={`/admin/leagues/${l._id}/view`}
+                            href={`/admin/stores/${l._id}/view`}
                           >
                             {l.title}
                           </Link>
@@ -136,7 +136,7 @@ export default function LeagueTable() {
                        
                         <td className="text-nowrap">
                           <Link className="text-green"
-                            href={`/admin/leagues/${l._id}/edit`}
+                            href={`/admin/stores/${l._id}/edit`}
                           >
                             Edit
                           </Link>
