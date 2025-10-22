@@ -13,7 +13,13 @@ export async function GET(req) {
 
   // Otherwise, it means the user is authenticated
   await connectDB();
-  const grounds = await Clubs.find({},'name image secretary_name').select("-__v").lean();
+  const { searchParams } = new URL(req.url);
+  const q = searchParams.get("q");
+
+  const query = {
+    ...(q && { name: { $regex: q, $options: 'i' } }),
+  };
+  const grounds = await Clubs.find(query, 'name image secretary_name').select("-__v").lean();
 
 
 

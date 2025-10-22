@@ -13,7 +13,14 @@ export async function GET(req) {
 
   // Otherwise, it means the user is authenticated
   await connectDB();
-  const stores = await Stores.find({},"title image").lean();
+  const { searchParams } = new URL(req.url);
+  const q = searchParams.get("q");
+
+  const query = {
+    ...(q && { title: { $regex: q, $options: 'i' } }),
+  };
+
+  const stores = await Stores.find(query, "title image").lean();
 
   return NextResponse.json({
     success: true,

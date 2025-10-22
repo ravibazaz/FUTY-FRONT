@@ -10,10 +10,18 @@ export async function GET(req) {
   if (authResult instanceof NextResponse) {
     return authResult;
   }
-
   // Otherwise, it means the user is authenticated
   await connectDB();
-  const managers = await Users.find({ account_type: "Manager" },"profile_image name surname").lean();
+
+  const { searchParams } = new URL(req.url);
+  const q = searchParams.get("q");
+
+  const query = {
+    account_type: "Manager",
+    ...(q && { name: { $regex: q, $options: 'i' } }),
+  };
+
+  const managers = await Users.find(query, "profile_image name surname").lean();
 
 
 
