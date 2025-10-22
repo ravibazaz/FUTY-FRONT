@@ -77,7 +77,7 @@ export default async function ViewFansPage({ params }) {
                             <div className="right-info-box">
                                 <h2 className="info-box-title fs-14 fw-bold mb-30">Contact Details</h2>
                                 <div className="right-info mb-30">
-                                <Link href={`/admin/clubs/${league._id}/edit`}>
+                                <Link href={`/admin/leagues/${league._id}/edit`}>
                                 <Image
                                     src={preview}
                                     width={82}
@@ -87,7 +87,7 @@ export default async function ViewFansPage({ params }) {
                                 />
                                 </Link>
                                     <p className="mb-0">
-                                        <Link className="text-decoration-none fs-14 fw-bold text-primary underline-hover" href={`/admin/clubs/${league._id}/edit`}>League Badge</Link>
+                                        <Link className="text-decoration-none fs-14 fw-bold text-primary underline-hover" href={`/admin/leagues/${league._id}/edit`}>League Badge</Link>
                                     </p>
                                 </div>
                             </div>

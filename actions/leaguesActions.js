@@ -21,7 +21,7 @@ const fileExists = async (filePath) => {
   }
 };
 
-export async function createLeague(prevState, formData) {
+export async function createLeagues(prevState, formData) {
 
   
   const cookieStore = await cookies();

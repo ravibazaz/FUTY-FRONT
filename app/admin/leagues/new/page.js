@@ -2,7 +2,7 @@
 
 import { useFormStatus } from "react-dom";
 import { useActionState, useState, useRef, useTransition } from "react";
-import { createLeague } from "@/actions/leaguesActions";
+import { createLeagues } from "@/actions/leaguesActions";
 import { LeaguesSchema } from "@/lib/validation/leagues";
 import Image from "next/image";
 function SubmitButton() {
@@ -12,7 +12,7 @@ function SubmitButton() {
   );
 }
 export default function NewGroundPage() {
-  const [state, formAction] = useActionState(createLeague, {
+  const [state, formAction] = useActionState(createLeagues, {
     success: null,
     errors: {},
   });
