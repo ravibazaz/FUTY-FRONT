@@ -7,11 +7,7 @@ import { z } from "zod";
 import { generateToken } from '@/lib/jwt';
 
 export const UserSchema = z.object({
-  email: z.string().nonempty("Email is required").email("Invalid email format"),
-  password: z
-    .string()
-    .nonempty("Password is required")
-    .min(7, "Password must be at least 7 character"),
+  login_code: z.string().nonempty("Login Code is required").min(5, "Login Code must be at least 5 character"),
 });
 
 export async function POST(req) {
@@ -35,18 +31,19 @@ export async function POST(req) {
       );
     }
     await connectDB();
-    const user = await User.findOne({ email: result.data.email,isVerified:true }).select("-__v").lean();
-    if (!user || !(await bcrypt.compare(result.data.password, user.password))) {
+    const user = await User.findOne({ login_code: result.data.login_code }).select("-__v").lean();
+    if (!user) {
       return NextResponse.json(
         {
           success: false,
-          message: "Invalid email or password or not verified!",
+          message: "Invalid code!",
         },
         { status: 200 }
       );
     }
 
-    const token = await generateToken({ email: user.email,user_id: user.id });
+    const token = await generateToken({ email: user.email, user_id: user.id });
+    await User.findByIdAndUpdate(user._id, { isVerified: true });
 
     return NextResponse.json({
       success: true,

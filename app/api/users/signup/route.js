@@ -96,7 +96,7 @@ export async function POST(req) {
     await fs.writeFile(filePath, buffer);
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    await User.create({
+    const newuser = await User.create({
       email,
       password: hashedPassword,
       name,
@@ -129,17 +129,18 @@ export async function POST(req) {
       const max = 99999;
 
       const randomNumber = Math.floor(Math.random() * (max - min + 1)) + min;
-      console.log(randomNumber);
+     // console.log(randomNumber);
 
       // Send mail
       await transporter.sendMail({
         from: `"${process.env.MAIL_FROM_NAME}" <${process.env.SMTP_USER}>`,
         to: email,
         subject: "Login Code",
-        text: "We have sent a code to you :" + randomNumber,
-        html: `<p>We have sent a code to you.</p><p>Login Code : ${randomNumber}</p>`,
+        text: "We have sent a login code to you :" + randomNumber,
+        html: `<p>We have sent a login code to you. Do not share this code to anyone!</p><p>Login Code : ${randomNumber}</p>`,
       });
 
+      await User.findByIdAndUpdate(newuser._id, {login_code:randomNumber});
       return NextResponse.json({
         success: true,
         data: {
