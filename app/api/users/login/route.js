@@ -5,6 +5,7 @@ import bcrypt from "bcryptjs";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { generateToken } from '@/lib/jwt';
+import AgeGroups from "@/lib/models/AgeGroups";
 
 export const UserSchema = z.object({
   email: z.string().nonempty("Email is required").email("Invalid email format"),
@@ -35,6 +36,7 @@ export async function POST(req) {
       );
     }
     await connectDB();
+    //await AgeGroups.create({ age_group: "Adult" });
     const user = await User.findOne({ email: result.data.email,isVerified:true }).select("-__v").lean();
     if (!user || !(await bcrypt.compare(result.data.password, user.password))) {
       return NextResponse.json(

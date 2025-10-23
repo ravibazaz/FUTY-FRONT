@@ -5,6 +5,7 @@ import { useActionState, useState, useRef, useTransition } from "react";
 import { createLeagues } from "@/actions/leaguesActions";
 import { LeaguesSchema } from "@/lib/validation/leagues";
 import Image from "next/image";
+import AgeCheckbox from "@/components/AgeCheckbox";
 function SubmitButton() {
   const { pending } = useFormStatus();
   return (
@@ -45,9 +46,11 @@ export default function NewGroundPage() {
 
     const result = LeaguesSchema(false).safeParse(raw);
 
-   
     
+     //console.log(result);
+
     if (!result.success) {
+     
       setClientErrors(result.error.flatten().fieldErrors);
       return;
     }
@@ -117,6 +120,98 @@ export default function NewGroundPage() {
                   <div className="left-row row">
                     <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
                       <div className="label-text">
+                        <p className="mb-0">Chairman Name</p>
+                      </div>
+                    </div>
+                    <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
+                      <div className="info-text px-0">
+                        <p className="mb-0">
+                          <input className="form-control" name="c_name" type="text"></input>
+                          {state.errors?.c_name && (
+                            <span className="invalid-feedback" style={{ display: "block" }}>{state.errors.c_name}</span>
+                          )}
+                          {clientErrors.c_name && (
+                            <span className="invalid-feedback" style={{ display: "block" }} >{clientErrors.c_name}</span>
+                          )}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="left-info-box">
+                  <div className="left-row row">
+                    <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
+                      <div className="label-text">
+                        <p className="mb-0">Chairman Email</p>
+                      </div>
+                    </div>
+                    <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
+                      <div className="info-text px-0">
+                        <p className="mb-0">
+                          <input className="form-control" name="email" type="text"></input>
+                          {state.errors?.email && (
+                            <span className="invalid-feedback" style={{ display: "block" }}>{state.errors.email}</span>
+                          )}
+                          {clientErrors.email && (
+                            <span className="invalid-feedback" style={{ display: "block" }} >{clientErrors.email}</span>
+                          )}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="left-info-box">
+                  <div className="left-row row">
+                    <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
+                      <div className="label-text">
+                        <p className="mb-0">Chairman Telephone</p>
+                      </div>
+                    </div>
+                    <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
+                      <div className="info-text px-0">
+                        <p className="mb-0">
+                          <input className="form-control" name="telephone" type="text"></input>
+                          {state.errors?.telephone && (
+                            <span className="invalid-feedback" style={{ display: "block" }}>{state.errors.telephone}</span>
+                          )}
+                          {clientErrors.telephone && (
+                            <span className="invalid-feedback" style={{ display: "block" }} >{clientErrors.telephone}</span>
+                          )}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="left-info-box">
+                  <div className="left-row row">
+                    <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
+                      <div className="label-text">
+                        <p className="mb-0">Secretary Name</p>
+                      </div>
+                    </div>
+                    <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
+                      <div className="info-text px-0">
+                        <p className="mb-0">
+                          <input className="form-control" name="s_name" type="text"></input>
+                          {state.errors?.s_name && (
+                            <span className="invalid-feedback" style={{ display: "block" }}>{state.errors.s_name}</span>
+                          )}
+                          {clientErrors.s_name && (
+                            <span className="invalid-feedback" style={{ display: "block" }} >{clientErrors.s_name}</span>
+                          )}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <AgeCheckbox></AgeCheckbox>
+                <div className="left-info-box">
+                  <div className="left-row row">
+                    <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
+                      <div className="label-text">
                         <p className="mb-0">Description</p>
                       </div>
                     </div>
@@ -136,7 +231,7 @@ export default function NewGroundPage() {
                     </div>
                   </div>
                 </div>
-               
+
                 <div className="left-info-box">
                   <div className="left-row row">
                     <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
@@ -155,13 +250,13 @@ export default function NewGroundPage() {
                               height={82}
                               alt="Profile Image"
                             />
-                            <input type="file" id="fileInput" 
+                            <input type="file" id="fileInput"
                               accept="image/*"
                               name="image"
                               ref={fileInputRef}
                               onChange={handleFileChange}
                               style={{ display: "none" }}
-                              ></input>
+                            ></input>
                             <p className="inputPlaceholder" id="placeholderText">League Badge</p>
                           </div>
                           {state.errors?.image && (

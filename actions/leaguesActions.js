@@ -23,16 +23,20 @@ const fileExists = async (filePath) => {
 
 export async function createLeagues(prevState, formData) {
 
-  
+
   const cookieStore = await cookies();
   const userId = cookieStore.get("user_id")?.value;
 
   const raw = Object.fromEntries(formData.entries());
   const imageFile = formData.get("image");
+  const age_groups = formData.getAll("age_groups");
+
+
   const result = LeaguesSchema(false).safeParse({ ...raw, image: imageFile });
 
   if (!result.success)
     return { success: false, errors: result.error.flatten().fieldErrors };
+
 
   // Generate a unique filename and save the image
   const uniqueName = `${uuidv4()}${path.extname(imageFile.name)}`;
@@ -50,6 +54,7 @@ export async function createLeagues(prevState, formData) {
 
   await Leagues.create({
     ...result.data,
+    age_groups: age_groups,
     image: `/uploads/leagues/${uniqueName}`,
   });
 
@@ -64,8 +69,9 @@ export async function updateLeague(id, prevState, formData) {
   if (!result.success) {
     return { success: false, errors: result.error.flatten().fieldErrors };
   }
-  const { title, content} = result.data;
+  const { title, content, c_name, s_name, email, telephone } = result.data;
   const imageFile = formData.get("image");
+  const age_groups = formData.getAll("age_groups");
 
   // console.log(imageFiles);
 
@@ -81,7 +87,7 @@ export async function updateLeague(id, prevState, formData) {
 
   if (imageFile && imageFile.size > 0) {
 
-    const uploadsFolder = path.join(process.cwd(),"uploads/leagues");
+    const uploadsFolder = path.join(process.cwd(), "uploads/leagues");
 
     // Ensure the uploads folder exists
     await fileExists(uploadsFolder);
@@ -114,17 +120,27 @@ export async function updateLeague(id, prevState, formData) {
     const updateData = {
       title,
       content,
+      c_name,
+      s_name,
+      email,
+      telephone,
+      age_groups: age_groups,
       image: `/uploads/leagues/${imageName}`, // Save relative path to the image
     };
     // Update the league document with the new image name
-    await Leagues.findByIdAndUpdate(id, updateData);
+    await Leagues.findByIdAndUpdate(id, updateData, { new: true });
   } else {
     const updateData = {
- title,
+      title,
       content,
+      c_name,
+      s_name,
+      email,
+      telephone,
+      age_groups: age_groups
     };
     // If no new image is uploaded, just update the title and isActive fields
-    await Leagues.findByIdAndUpdate(id, updateData);
+    await Leagues.findByIdAndUpdate(id, updateData, { new: true });
   }
 
   cookieStore.set({
