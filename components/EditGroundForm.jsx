@@ -5,6 +5,7 @@ import { GroundSchema } from "@/lib/validation/grounds";
 import { useFormStatus } from "react-dom";
 import { useActionState, useState, startTransition, useRef } from "react";
 import Image from "next/image";
+import GroundFacilitiesCheckbox from "./GroundFacilitiesCheckbox";
 function SubmitButton() {
   const { pending } = useFormStatus();
   return (
@@ -248,6 +249,7 @@ export default function EditGroundForm({ ground }) {
                   </div>
                 </div>
               </div>
+              <GroundFacilitiesCheckbox facilities={ground.facilities}></GroundFacilitiesCheckbox>
               <div className="left-info-box">
                 <div className="left-row row">
                   <div className="left-label-col col-md-5 col-lg-4 col-xl-4">

@@ -1,4 +1,5 @@
 import ChangeStatus from "@/components/ChangeStatus";
+import GroundFacilitiesCheckbox from "@/components/GroundFacilitiesCheckbox";
 import { connectDB } from "@/lib/db";
 import Grounds from "@/lib/models/Grounds";
 import Image from "next/image";
@@ -79,6 +80,7 @@ export default async function ViewFansPage({ params }) {
                                     </div>
                                 </div>
                             </div>
+                            <GroundFacilitiesCheckbox facilities={userdetails.facilities}></GroundFacilitiesCheckbox>
                             <div className="left-info-box">
                                 <div className="left-row row">
                                     <div className="left-label-col col-md-5 col-lg-4 col-xl-4">

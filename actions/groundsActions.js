@@ -27,6 +27,7 @@ export async function createGrounds(prevState, formData) {
 
   const raw = Object.fromEntries(formData.entries());
   const imageFiles = formData.getAll("images");
+  const facilities = formData.getAll("facilities");
   const result = GroundSchema(false).safeParse({ ...raw, images: imageFiles });
 
   if (!result.success)
@@ -56,6 +57,7 @@ export async function createGrounds(prevState, formData) {
   }
   await Grounds.create({
     ...result.data,
+    facilities: facilities,
     images: uploadedFiles,
   });
 
@@ -72,6 +74,7 @@ export async function updateGround(id, prevState, formData) {
   }
   const { name, add1, add2, add3, pin, content } = result.data;
   const imageFiles = formData.getAll("images");
+  const facilities = formData.getAll("facilities");
 
   // console.log(imageFiles);
   
@@ -134,11 +137,12 @@ export async function updateGround(id, prevState, formData) {
       add3,
       pin,
       content,
+      facilities: facilities,
       images: uploadedFiles,
     };
 
     // Update the league document with the new image name
-    await Grounds.findByIdAndUpdate(id, updateData);
+    await Grounds.findByIdAndUpdate(id, updateData, { new: true });
   } else {
     const updateData = {
       name,
@@ -147,9 +151,10 @@ export async function updateGround(id, prevState, formData) {
       add3,
       pin,
       content,
+      facilities: facilities,
     };
     // If no new image is uploaded, just update the title and isActive fields
-    await Grounds.findByIdAndUpdate(id, updateData);
+    await Grounds.findByIdAndUpdate(id, updateData, { new: true });
   }
 
   cookieStore.set({

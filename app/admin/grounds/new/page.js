@@ -5,6 +5,7 @@ import { useActionState, useState, useRef, useTransition } from "react";
 import { createGrounds } from "@/actions/groundsActions";
 import { GroundSchema } from "@/lib/validation/grounds";
 import Image from "next/image";
+import GroundFacilitiesCheckbox from "@/components/GroundFacilitiesCheckbox";
 function SubmitButton() {
   const { pending } = useFormStatus();
   return (
@@ -220,6 +221,7 @@ export default function NewGroundPage() {
                     </div>
                   </div>
                 </div>
+                <GroundFacilitiesCheckbox></GroundFacilitiesCheckbox>
                 <div className="left-info-box">
                   <div className="left-row row">
                     <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
