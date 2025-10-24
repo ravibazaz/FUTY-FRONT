@@ -1,3 +1,4 @@
+import AgeCheckbox from "@/components/AgeCheckbox";
 import ChangeStatus from "@/components/ChangeStatus";
 import ClubDropdown from "@/components/ClubDropdown";
 import { connectDB } from "@/lib/db";
@@ -11,7 +12,7 @@ export default async function ViewFansPage({ params }) {
     await connectDB();
     const league = await Leagues.findById(id).lean();
     if (league.image)
-        preview = '/api'+league.image;
+        preview = '/api' + league.image;
 
     return (
         <>
@@ -37,6 +38,40 @@ export default async function ViewFansPage({ params }) {
                 <div className="body-main-cont">
                     <div className="single-body-row row">
                         <div className="single-body-left col-lg-12 col-xl-7">
+                            <div className="left-info-box">
+                                <div className="left-row row">
+                                    <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
+                                        <div className="label-text">
+                                            <p className="mb-0">Secretary Name</p>
+                                        </div>
+                                    </div>
+                                    <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
+                                        <div className="info-text">
+                                            <p className="mb-0">
+                                                <a className="text-primary text-decoration-none" href="#">{league.s_name}</a>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="left-info-box">
+                                <div className="left-row row">
+                                    <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
+                                        <div className="label-text">
+                                            <p className="mb-0">Chairman Name</p>
+                                        </div>
+                                    </div>
+                                    <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
+                                        <div className="info-text">
+                                            <p className="mb-0">
+                                                <a className="text-primary text-decoration-none" href="#">{league.c_name}</a>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <AgeCheckbox age_groups={JSON.parse(JSON.stringify(league.age_groups))}></AgeCheckbox>
                             <div className="left-info-box">
                                 <div className="left-row row">
                                     <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
@@ -77,15 +112,27 @@ export default async function ViewFansPage({ params }) {
                             <div className="right-info-box">
                                 <h2 className="info-box-title fs-14 fw-bold mb-30">Contact Details</h2>
                                 <div className="right-info mb-30">
-                                <Link href={`/admin/leagues/${league._id}/edit`}>
-                                <Image
-                                    src={preview}
-                                    width={82}
-                                    height={82}
-                                    className={'profile-img mb-10'}
-                                    alt="Club Badge"
-                                />
-                                </Link>
+                                    <p className="mb-0 fs-14 d-flex align-items-center gap-30">
+                                        <span className="info-span">Chairman E-mail: <a className="text-decoration-none text-body underline-hover" href="mailto:csb9900@gmail.com">{league.email}</a></span>
+                                    </p>
+                                </div>
+                                <div className="right-info mb-30">
+                                    <p className="mb-0 fs-14 d-flex align-items-center gap-30">
+                                        <span className="info-span">Chairman Tel: <a className="text-decoration-none text-body underline-hover" href="tel:+44 07453 234258">{league.telephone}</a></span>
+                                        <span className="user-active">Verified</span>
+                                    </p>
+                                </div>
+
+                                <div className="right-info mb-30">
+                                    <Link href={`/admin/leagues/${league._id}/edit`}>
+                                        <Image
+                                            src={preview}
+                                            width={82}
+                                            height={82}
+                                            className={'profile-img mb-10'}
+                                            alt="Club Badge"
+                                        />
+                                    </Link>
                                     <p className="mb-0">
                                         <Link className="text-decoration-none fs-14 fw-bold text-primary underline-hover" href={`/admin/leagues/${league._id}/edit`}>League Badge</Link>
                                     </p>
