@@ -27,6 +27,7 @@ export async function createClub(prevState, formData) {
 
   const raw = Object.fromEntries(formData.entries());
   const imageFile = formData.get("image");
+  const age_groups = formData.getAll("age_groups");
   const result = ClubSchema(false).safeParse({ ...raw, image: imageFile });
 
   if (!result.success)
@@ -48,6 +49,7 @@ export async function createClub(prevState, formData) {
 
   await Clubs.create({
     ...result.data,
+     age_groups: age_groups,
     image: `/uploads/clubs/${uniqueName}`,
   });
 
@@ -62,8 +64,9 @@ export async function updateClub(id, prevState, formData) {
   if (!result.success) {
     return { success: false, errors: result.error.flatten().fieldErrors };
   }
-  const { name, secretary_name, phone, email } = result.data;
+  const { name, secretary_name, phone, email,league } = result.data;
   const imageFile = formData.get("image");
+  const age_groups = formData.getAll("age_groups");
 
   // console.log(imageFiles);
 
@@ -114,19 +117,23 @@ export async function updateClub(id, prevState, formData) {
       secretary_name,
       phone,
       email,
+      league,
+      age_groups: age_groups,
       image: `/uploads/clubs/${imageName}`, // Save relative path to the image
     };
     // Update the league document with the new image name
-    await Clubs.findByIdAndUpdate(id, updateData);
+    await Clubs.findByIdAndUpdate(id, updateData, { new: true });
   } else {
     const updateData = {
       name,
       secretary_name,
       phone,
+      league,
+      age_groups: age_groups,
       email,
     };
     // If no new image is uploaded, just update the title and isActive fields
-    await Clubs.findByIdAndUpdate(id, updateData);
+    await Clubs.findByIdAndUpdate(id, updateData, { new: true });
   }
 
   cookieStore.set({

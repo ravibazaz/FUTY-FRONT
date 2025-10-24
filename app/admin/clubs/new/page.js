@@ -1,10 +1,12 @@
 "use client";
 
 import { useFormStatus } from "react-dom";
-import { useActionState, useState, useRef, useTransition } from "react";
+import { useActionState, useState, useRef, useTransition, useEffect } from "react";
 import { createClub } from "@/actions/clubsActions";
 import { ClubSchema } from "@/lib/validation/clubs";
 import Image from "next/image";
+import LeagueDropdown from "@/components/LeagueDropdown";
+
 function SubmitButton() {
   const { pending } = useFormStatus();
   return (
@@ -18,9 +20,31 @@ export default function NewGroundPage() {
   });
 
   const [clientErrors, setClientErrors] = useState({});
+  const [leagueId, setLeagueId] = useState("");
+  const [ageGroups, setAgeGroups] = useState([]);
   const [preview, setPreview] = useState("/images/club-badge.jpg");
   const fileInputRef = useRef(null);
   const previewsRef = useRef(null);
+
+
+  useEffect(() => {
+    if (!leagueId) {
+      setAgeGroups([]);
+      return;
+
+    }
+    //console.log("Fetching age groups for:", leagueId);
+
+    fetch(`/api/leagues/age-groups?league=${leagueId}`)
+      .then(res => res.json())
+      .then(data => {
+        // console.log("Age groups received:", data.leagues.age_groups);
+        setAgeGroups(data.leagues.age_groups);
+
+
+      })
+      .catch(err => console.error(err));
+  }, [leagueId]);
 
   const handleUploadClick = () => {
     fileInputRef.current.click();
@@ -115,7 +139,7 @@ export default function NewGroundPage() {
                   <div className="left-row row">
                     <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
                       <div className="label-text">
-                        <p className="mb-0">Secretary</p>
+                        <p className="mb-0">Secretary Name</p>
                       </div>
                     </div>
                     <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
@@ -133,22 +157,7 @@ export default function NewGroundPage() {
                     </div>
                   </div>
                 </div>
-                <div className="left-info-box">
-                  <div className="left-row row">
-                    <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
-                      <div className="label-text">
-                        <p className="mb-0">League</p>
-                      </div>
-                    </div>
-                    <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
-                      <div className="info-text px-0">
-                        <p className="mb-0">
-                          <input className="form-control" type="text"></input>
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+
                 <div className="left-info-box">
                   <div className="left-row row">
                     <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
@@ -185,7 +194,7 @@ export default function NewGroundPage() {
                   <div className="left-row row">
                     <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
                       <div className="label-text mb-0">
-                        <p className="mb-0">Email</p>
+                        <p className="mb-0">Secretary Email</p>
                       </div>
                     </div>
                     <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
@@ -209,7 +218,7 @@ export default function NewGroundPage() {
                   <div className="left-row row">
                     <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
                       <div className="label-text mb-0">
-                        <p className="mb-0">Telephone</p>
+                        <p className="mb-0">Secretary Telephone</p>
                       </div>
                     </div>
                     <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
@@ -228,6 +237,38 @@ export default function NewGroundPage() {
                     </div>
                   </div>
                 </div>
+                <LeagueDropdown clienterror={clientErrors.league} onLeagueChange={setLeagueId}  ></LeagueDropdown>
+                {ageGroups.length > 0 &&
+                  <div className="left-info-box">
+                    <div className="left-row row">
+                      <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
+                        <div className="label-text">
+                          <p className="mb-0">Age Groups</p>
+                        </div>
+                      </div>
+                      <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
+                        <div className="info-text px-0">
+                          <div className="mb-0">
+
+                            {ageGroups.map((agegroup) => (
+                              <div className="form-check" key={agegroup._id}>
+                                <input className="form-check-input" name="age_groups"
+
+                                  type="checkbox" value={agegroup._id} ></input>
+                                <label className="form-check-label">
+                                  {agegroup.age_group}
+                                </label>
+                              </div>
+                            ))}
+
+
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                }
+
                 <div className="left-info-box">
                   <div className="left-row row">
                     <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
@@ -246,13 +287,13 @@ export default function NewGroundPage() {
                               height={82}
                               alt="Profile Image"
                             />
-                            <input type="file" id="fileInput" 
+                            <input type="file" id="fileInput"
                               accept="image/*"
                               name="image"
                               ref={fileInputRef}
                               onChange={handleFileChange}
                               style={{ display: "none" }}
-                              ></input>
+                            ></input>
                             <p className="inputPlaceholder" id="placeholderText">Club Badge</p>
                           </div>
                           {state.errors?.image && (

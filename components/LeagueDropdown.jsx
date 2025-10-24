@@ -35,7 +35,13 @@ export default function LeagueDropdown(props) {
                 className="form-control"
                 name="league"
                 value={selectedClub}
-                onChange={(e) => setSelectedClub(e.target.value)}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  setSelectedClub(value);
+                  if (typeof props.onLeagueChange === "function") {
+                    props.onLeagueChange(value);
+                  }
+                }}
               >
                 <option value="">Choose a League</option>
                 {leagues.map((league) => (
@@ -44,7 +50,7 @@ export default function LeagueDropdown(props) {
                   </option>
                 ))}
               </select>
-               {props.clienterror && <span className="invalid-feedback" style={{ display: "block" }} >{props.clienterror}</span>}
+              {props.clienterror && <span className="invalid-feedback" style={{ display: "block" }} >{props.clienterror}</span>}
             </p>
           </div>
         </div>

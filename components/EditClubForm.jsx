@@ -3,8 +3,9 @@
 import { updateClub } from "@/actions/clubsActions";
 import { ClubSchema } from "@/lib/validation/clubs";
 import { useFormStatus } from "react-dom";
-import { useActionState, useState, startTransition, useRef } from "react";
+import { useActionState, useState, startTransition, useRef, useEffect } from "react";
 import Image from "next/image";
+import LeagueDropdown from "@/components/LeagueDropdown";
 function SubmitButton() {
   const { pending } = useFormStatus();
   return (
@@ -13,6 +14,27 @@ function SubmitButton() {
 }
 
 export default function EditClubForm({ club }) {
+
+  const [leagueId, setLeagueId] = useState(club.league ? club.league : '');
+  const [ageGroups, setAgeGroups] = useState([]);
+  const [selectedage, setSelectedAge] = useState(club.age_groups ? club.age_groups : '');
+  useEffect(() => {
+    if (!leagueId) {
+      setAgeGroups([]);
+      return;
+
+    }
+    //console.log("Fetching age groups for:", leagueId);
+    fetch(`/api/leagues/age-groups?league=${leagueId}`)
+      .then(res => res.json())
+      .then(data => {
+        // console.log("Age groups received:", data.leagues.age_groups);
+        setAgeGroups(data.leagues.age_groups);
+
+
+      })
+      .catch(err => console.error(err));
+  }, [leagueId]);
 
   const fileInputRef = useRef(null);
   const previewsRef = useRef(null);
@@ -30,7 +52,6 @@ export default function EditClubForm({ club }) {
       reader.readAsDataURL(file);
     }
   };
-
   const [state, formAction] = useActionState(
     updateClub.bind(null, club._id),
     {
@@ -40,7 +61,7 @@ export default function EditClubForm({ club }) {
   );
 
   const [clientErrors, setClientErrors] = useState({});
-  const [preview, setPreview] = useState(club.image ? '/api'+club.image : '/images/club-badge.jpg');
+  const [preview, setPreview] = useState(club.image ? '/api' + club.image : '/images/club-badge.jpg');
 
   // if (club.images)
   // setPreview(club.images);
@@ -125,7 +146,7 @@ export default function EditClubForm({ club }) {
                 <div className="left-row row">
                   <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
                     <div className="label-text">
-                      <p className="mb-0">Secretary</p>
+                      <p className="mb-0">Secretary Name</p>
                     </div>
                   </div>
                   <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
@@ -142,22 +163,7 @@ export default function EditClubForm({ club }) {
                   </div>
                 </div>
               </div>
-              <div className="left-info-box">
-                <div className="left-row row">
-                  <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
-                    <div className="label-text">
-                      <p className="mb-0">League</p>
-                    </div>
-                  </div>
-                  <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
-                    <div className="info-text px-0">
-                      <p className="mb-0">
-                        <input className="form-control" type="text" ></input>
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
+
               <div className="left-info-box">
                 <div className="left-row row">
                   <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
@@ -194,7 +200,7 @@ export default function EditClubForm({ club }) {
                 <div className="left-row row">
                   <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
                     <div className="label-text mb-0">
-                      <p className="mb-0">Email</p>
+                      <p className="mb-0">Secretary Email</p>
                     </div>
                   </div>
                   <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
@@ -217,7 +223,7 @@ export default function EditClubForm({ club }) {
                 <div className="left-row row">
                   <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
                     <div className="label-text mb-0">
-                      <p className="mb-0">Telephone</p>
+                      <p className="mb-0">Secretary Telephone</p>
                     </div>
                   </div>
                   <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
@@ -235,6 +241,37 @@ export default function EditClubForm({ club }) {
                   </div>
                 </div>
               </div>
+              <LeagueDropdown clienterror={clientErrors.league} onLeagueChange={setLeagueId} league={club.league}  ></LeagueDropdown>
+              {ageGroups.length > 0 &&
+                <div className="left-info-box">
+                  <div className="left-row row">
+                    <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
+                      <div className="label-text">
+                        <p className="mb-0">Age Groups</p>
+                      </div>
+                    </div>
+                    <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
+                      <div className="info-text px-0">
+                        <div className="mb-0">
+
+                          {ageGroups.map((agegroup) => (
+                            <div className="form-check" key={agegroup._id}>
+                              <input className="form-check-input" name="age_groups"
+defaultChecked={selectedage.includes(agegroup._id)}
+                                type="checkbox" value={agegroup._id} ></input>
+                              <label className="form-check-label">
+                                {agegroup.age_group}
+                              </label>
+                            </div>
+                          ))}
+
+
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              }
               <div className="left-info-box">
                 <div className="left-row row">
                   <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
