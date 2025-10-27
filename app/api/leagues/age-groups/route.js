@@ -1,6 +1,6 @@
 import { connectDB } from '@/lib/db';
 import Leagues from '@/lib/models/Leagues';
-
+import AgeGroups from '@/lib/models/AgeGroups';
 export async function GET(req) {
   await connectDB();
 

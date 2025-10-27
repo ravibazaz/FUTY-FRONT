@@ -1,7 +1,7 @@
 "use client";
 
 import { useFormStatus } from "react-dom";
-import { useActionState, useState, useRef, useTransition } from "react";
+import { useActionState, useState, useRef, useTransition, useEffect } from "react";
 import { createTeam } from "@/actions/teamsActions";
 import { TeamSchema } from "@/lib/validation/teams";
 import Image from "next/image";
@@ -21,10 +21,34 @@ export default function NewGroundPage() {
     errors: {},
   });
 
+  const [clubId, setClubId] = useState("");
+  const [ageGroups, setAgeGroups] = useState([]);
+
   const [clientErrors, setClientErrors] = useState({});
   const [preview, setPreview] = useState("/images/club-badge.jpg");
   const fileInputRef = useRef(null);
   const previewsRef = useRef(null);
+
+
+  useEffect(() => {
+    if (!clubId) {
+      setAgeGroups([]);
+      return;
+
+    }
+    //console.log("Fetching age groups for:", leagueId);
+
+    fetch(`/api/clubs/age-groups?clubid=${clubId}`)
+      .then(res => res.json())
+      .then(data => {
+         console.log("Age groups received:", data);
+        setAgeGroups(data);
+
+
+      })
+      .catch(err => console.error(err));
+  }, [clubId]);
+
 
   const handleUploadClick = () => {
     fileInputRef.current.click();
@@ -119,9 +143,7 @@ export default function NewGroundPage() {
                   </div>
                 </div>
 
-                <ManagerDropdown clienterror={clientErrors.manager}  ></ManagerDropdown>
-                <ClubDropdown clienterror={clientErrors.club}></ClubDropdown>
-                <LeagueDropdown clienterror={clientErrors.league} ></LeagueDropdown>
+                <ClubDropdown clienterror={clientErrors.club} onClubChange={setClubId}  ></ClubDropdown>
                 <GroundDropdown clienterror={clientErrors.ground}></GroundDropdown>
                 <div className="left-info-box-group">
                   <div className="left-info-box">
@@ -303,7 +325,7 @@ export default function NewGroundPage() {
                               style={{ display: "none" }}></input>
                             <p className="inputPlaceholder" id="placeholderText">Club Badge</p>
                           </div>
-                           {state.errors?.image && (
+                          {state.errors?.image && (
                             <span className="invalid-feedback" style={{ display: "block" }}>{state.errors.image}</span>
                           )}
                           {clientErrors.image && (

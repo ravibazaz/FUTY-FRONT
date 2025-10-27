@@ -36,7 +36,13 @@ export default function ClubDropdown(props) {
                 className="form-control"
                 name="club"
                 value={selectedClub}
-                onChange={(e) => setSelectedClub(e.target.value)}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  setSelectedClub(value);
+                  if (typeof props.onClubChange === "function") {
+                    props.onClubChange(value);
+                  }
+                }}
               >
                 <option value="">Choose a club</option>
                 {clubs.map((club) => (
@@ -45,7 +51,7 @@ export default function ClubDropdown(props) {
                   </option>
                 ))}
               </select>
-               {props.clienterror && <span className="invalid-feedback" style={{ display: "block" }} >{props.clienterror}</span>}
+              {props.clienterror && <span className="invalid-feedback" style={{ display: "block" }} >{props.clienterror}</span>}
             </p>
           </div>
         </div>
