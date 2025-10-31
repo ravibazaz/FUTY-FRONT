@@ -41,10 +41,12 @@ export default function NewGroundPage() {
     fetch(`/api/clubs/age-groups?clubid=${clubId}`)
       .then(res => res.json())
       .then(data => {
-         console.log("Age groups received:", data);
-        setAgeGroups(data);
-
-
+        console.log("Age groups received:", data.clubs.age_groups);
+        if (data.clubs.age_groups)
+          setAgeGroups(data.clubs.age_groups);
+        else
+        setAgeGroups([]);
+       
       })
       .catch(err => console.error(err));
   }, [clubId]);
@@ -144,6 +146,34 @@ export default function NewGroundPage() {
                 </div>
 
                 <ClubDropdown clienterror={clientErrors.club} onClubChange={setClubId}  ></ClubDropdown>
+                {ageGroups.length > 0 &&
+                  <div className="left-info-box">
+                    <div className="left-row row">
+                      <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
+                        <div className="label-text">
+                          <p className="mb-0">Age Grouup</p>
+                        </div>
+                      </div>
+                      <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
+                        <div className="info-text px-0">
+                          <p className="mb-0">
+                            <select
+                              className="form-control"
+                              name="age_groups"
+                            >
+                              <option value="">Choose a Age</option>
+                              {ageGroups.map((agegroup) => (
+                                <option key={agegroup._id} value={agegroup._id}>
+                                  {agegroup.age_group}
+                                </option>
+                              ))}
+                            </select>
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                }
                 <GroundDropdown clienterror={clientErrors.ground}></GroundDropdown>
                 <div className="left-info-box-group">
                   <div className="left-info-box">

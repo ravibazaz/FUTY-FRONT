@@ -11,7 +11,7 @@ export default async function ViewFansPage({ params }) {
     const id = (await params).id;
     let preview = "/images/club-badge.jpg";
     await connectDB();
-    const team = await Teams.findById(id).populate("manager","name").populate("club","name").populate("ground","name").populate("league","title").lean();
+    const team = await Teams.findById(id).populate("age_groups","age_group").populate("club","name").populate("ground","name").lean();
     if (team.image)
         preview = '/api'+team.image;
 
@@ -43,22 +43,6 @@ export default async function ViewFansPage({ params }) {
                                 <div className="left-row row">
                                     <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
                                         <div className="label-text">
-                                            <p className="mb-0">Manager</p>
-                                        </div>
-                                    </div>
-                                    <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
-                                        <div className="info-text">
-                                            <p className="mb-0">
-                                                <a className="text-primary text-decoration-none" href="teams-single.php">{team.manager?.name}</a>
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="left-info-box">
-                                <div className="left-row row">
-                                    <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
-                                        <div className="label-text">
                                             <p className="mb-0">Club</p>
                                         </div>
                                     </div>
@@ -75,13 +59,13 @@ export default async function ViewFansPage({ params }) {
                                 <div className="left-row row">
                                     <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
                                         <div className="label-text">
-                                            <p className="mb-0">League</p>
+                                            <p className="mb-0">Age group</p>
                                         </div>
                                     </div>
                                     <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
                                         <div className="info-text">
                                             <p className="mb-0">
-                                                <a className="text-primary text-decoration-none" href="leagues-single.php">{team.league?.title}</a>
+                                                <a className="text-primary text-decoration-none" href="leagues-single.php">{team.age_groups?.age_group}</a>
                                             </p>
                                         </div>
                                     </div>

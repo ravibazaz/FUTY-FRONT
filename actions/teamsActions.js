@@ -66,7 +66,7 @@ export async function updateTeam(id, prevState, formData) {
   if (!result.success) {
     return { success: false, errors: result.error.flatten().fieldErrors };
   }
-  const { name, phone, email, shirt, shorts, socks, attack, midfield, defence, ground, club, manager, league, user } = result.data;
+  const { name, phone, email, shirt, shorts, socks, attack, midfield, defence, ground, club, age_groups, user } = result.data;
   const imageFile = formData.get("image");
 
   // console.log(imageFiles);
@@ -123,8 +123,7 @@ export async function updateTeam(id, prevState, formData) {
       defence,
       ground,
       club,
-      manager,
-      league,
+      age_groups,
       phone,
       email,
       user: userId,
@@ -143,8 +142,7 @@ export async function updateTeam(id, prevState, formData) {
       defence,
       ground,
       club,
-      manager,
-      league,
+      age_groups,
       phone,
       email,
       user: userId,
