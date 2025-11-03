@@ -4,6 +4,8 @@ import Teams from "@/lib/models/Teams";
 import Clubs from "@/lib/models/Clubs";
 import Leagues from "@/lib/models/Leagues";
 import Grounds from "@/lib/models/Grounds";
+import AgeGroups from "@/lib/models/AgeGroups";
+import Users from "@/lib/models/Users";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -11,9 +13,24 @@ export default async function ViewFansPage({ params }) {
     const id = (await params).id;
     let preview = "/images/club-badge.jpg";
     await connectDB();
-    const team = await Teams.findById(id).populate("age_groups","age_group").populate("club","name").populate("ground","name").lean();
+    const team = await Teams.findById(id).populate("age_groups", "age_group").populate({
+        path: "club",
+        select: "name league",
+        populate: {
+            path: "league",
+            model: "Leagues",
+            select: "label title", // whatever fields you want
+        }
+    }).populate("ground", "name")
+        .populate({
+            path: "managers",
+            select: "name",
+        })
+        .lean();
     if (team.image)
-        preview = '/api'+team.image;
+        preview = '/api' + team.image;
+
+    //console.log(team);
 
     return (
         <>
@@ -39,6 +56,28 @@ export default async function ViewFansPage({ params }) {
                 <div className="body-main-cont">
                     <div className="single-body-row row">
                         <div className="single-body-left col-lg-12 col-xl-7">
+
+                            <div className="left-info-box">
+                                <div className="left-row row">
+                                    <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
+                                        <div className="label-text">
+                                            <p className="mb-0">Managers</p>
+                                        </div>
+                                    </div>
+                                    <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
+                                        <div className="info-text">
+                                            {team.managers.map((manager) => (
+                                                <p className="mb-0" key={manager._id}>
+                                                    <a className="text-primary text-decoration-none" href="leagues-single.php">{manager.name}</a>
+                                                </p>
+                                            ))
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
                             <div className="left-info-box">
                                 <div className="left-row row">
                                     <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
@@ -71,6 +110,24 @@ export default async function ViewFansPage({ params }) {
                                     </div>
                                 </div>
                             </div>
+
+                            <div className="left-info-box">
+                                <div className="left-row row">
+                                    <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
+                                        <div className="label-text">
+                                            <p className="mb-0">League</p>
+                                        </div>
+                                    </div>
+                                    <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
+                                        <div className="info-text">
+                                            <p className="mb-0">
+                                                <a className="text-primary text-decoration-none" href="leagues-single.php">{team.club?.league?.title}</a>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
                             <div className="left-info-box">
                                 <div className="left-row row">
                                     <div className="left-label-col col-md-5 col-lg-4 col-xl-4">

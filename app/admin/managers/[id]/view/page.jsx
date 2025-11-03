@@ -3,12 +3,27 @@ import { connectDB } from "@/lib/db";
 import User from "@/lib/models/Users";
 import Image from "next/image";
 import Link from "next/link";
-
+import Teams from "@/lib/models/Teams";
+import Clubs from "@/lib/models/Clubs";
+import Leagues from "@/lib/models/Leagues";
 export default async function ViewFansPage({ params }) {
   const id = (await params).id;
   let preview = "/images/profile-picture.jpg";
   await connectDB();
-  const userdetails = await User.findById(id).lean();
+  const userdetails = await User.findById(id).populate({
+    path: "team_id",
+    select: "name club",
+    populate: {
+      path: "club",
+      model: "Clubs",
+      select: "label name league", // whatever fields you want
+      populate: {
+        path: "league",
+        model: "Leagues",
+        select: "label title", // whatever fields you want
+      }
+    }
+  }).lean();
   if (userdetails.profile_image)
     preview = '/api'+userdetails.profile_image;
 
@@ -44,7 +59,7 @@ export default async function ViewFansPage({ params }) {
         <div className="body-main-cont">
           <div className="single-body-row row">
             <div className="single-body-left col-lg-12 col-xl-7">
-              {/* <div className="left-info-box">
+              <div className="left-info-box">
                 <div className="left-row row">
                   <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
                     <div className="label-text">
@@ -53,11 +68,40 @@ export default async function ViewFansPage({ params }) {
                   </div>
                   <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
                     <div className="info-text">
-                      <p className="mb-0">Peter Housman</p>
+                      <p className="mb-0">{userdetails.team_id?.club?.league?.title}</p>
                     </div>
                   </div>
                 </div>
-              </div> */}
+              </div>
+              <div className="left-info-box">
+                <div className="left-row row">
+                  <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
+                    <div className="label-text mb-0">
+                      <p className="mb-0">Club</p>
+                    </div>
+                  </div>
+                  <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
+                    <div className="info-text">
+                      <p className="mb-0">{userdetails.team_id?.club?.name}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="left-info-box">
+                <div className="left-row row">
+                  <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
+                    <div className="label-text mb-0">
+                      <p className="mb-0">Team</p>
+                    </div>
+                  </div>
+                  <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
+                    <div className="info-text">
+                      <p className="mb-0">{userdetails.team_id?._id ? userdetails.team_id.name: ''}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
               <div className="left-info-box">
                 <div className="left-row row">
                   <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
@@ -72,34 +116,7 @@ export default async function ViewFansPage({ params }) {
                   </div>
                 </div>
               </div>
-              {/* <div className="left-info-box">
-                <div className="left-row row">
-                  <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
-                    <div className="label-text mb-0">
-                      <p className="mb-0">Club</p>
-                    </div>
-                  </div>
-                  <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
-                    <div className="info-text">
-                      <p className="mb-0">Pegasus FC</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="left-info-box">
-                <div className="left-row row">
-                  <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
-                    <div className="label-text mb-0">
-                      <p className="mb-0">Team</p>
-                    </div>
-                  </div>
-                  <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
-                    <div className="info-text">
-                      <p className="mb-0">Pegasus U14</p>
-                    </div>
-                  </div>
-                </div>
-              </div> */}
+
               <div className="left-info-box">
                 <div className="left-row row">
                   <div className="left-label-col col-md-5 col-lg-4 col-xl-4">

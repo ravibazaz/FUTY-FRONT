@@ -70,7 +70,7 @@ export default function NewGroundPage() {
             <p className="top-breadcrumb mb-0">{'> Clubs'}</p>
           </div>
           <div className="top-right d-flex justify-content-between align-items-center gap-10">
-            <a className="btn btn-common" href="#">New</a>
+            {/* <a className="btn btn-common" href="#">Back</a> */}
             <a href="#">
               <Image
                 src="/images/icon-setting.svg"
