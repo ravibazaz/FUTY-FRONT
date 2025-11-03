@@ -1,7 +1,7 @@
 "use client";
 
 import { useFormStatus } from "react-dom";
-import { useActionState, useState, useRef, useTransition,useEffect } from "react";
+import { useActionState, useState, useRef, useTransition, useEffect } from "react";
 import { createManagers } from "@/actions/managersActions";
 import { ManagersSchema } from "@/lib/validation/managers";
 import Image from "next/image";
@@ -19,22 +19,20 @@ export default function NewFanPage() {
         errors: {},
     });
 
-     const [teams, setTeams] = useState([]);
+    const [teams, setTeams] = useState([]);
     useEffect(() => {
 
         fetch(`/api/teams`)
             .then(res => res.json())
             .then(data => {
                 console.log("Teams received:", data.teams);
-                 setTeams(data.teams);
+                setTeams(data.teams);
             })
             .catch(err => console.error(err));
     }, []);
 
-
-
-
-
+    const [selectedClub, setSelectedClub] = useState('');
+    const [selectedLeague, setSelectedLeage] = useState('');
     const [clientErrors, setClientErrors] = useState({});
     const [preview, setPreview] = useState("/images/profile-picture.jpg");
     const fileInputRef = useRef(null);
@@ -229,21 +227,32 @@ export default function NewFanPage() {
                                                     <select
                                                         className="form-control"
                                                         name="team_id"
+                                                        onChange={(e) => {
+                                                            const selectedOption = e.target.options[e.target.selectedIndex];
+                                                            const clubName = selectedOption.dataset.club;
+                                                            const leagueName = selectedOption.dataset.league;
+                                                            setSelectedClub(clubName);
+                                                            setSelectedLeage(leagueName);
+                                                           
+
+                                                        }}
                                                     >
                                                         <option value="">Choose a Team</option>
                                                         {teams.map((team) => (
-                                                            <option key={team._id} value={team._id}>
+                                                            <option key={team._id} data-club={team.club.name} data-league={team.club.league.title}  value={team._id}>
                                                                 {team.name}
                                                             </option>
                                                         ))}
                                                     </select>
                                                     {state.errors?.team_id && (
-                            <span className="invalid-feedback" style={{ display: "block" }}>{state.errors.team_id}</span>
-                          )}
-                          {clientErrors.team_id && (
-                            <span className="invalid-feedback" style={{ display: "block" }} >{clientErrors.team_id}</span>
-                          )}
+                                                        <span className="invalid-feedback" style={{ display: "block" }}>{state.errors.team_id}</span>
+                                                    )}
+                                                    {clientErrors.team_id && (
+                                                        <span className="invalid-feedback" style={{ display: "block" }} >{clientErrors.team_id}</span>
+                                                    )}
                                                 </p>
+                                               {selectedLeague &&  <p className="mb-0">League:{selectedLeague}</p> }
+                                               {selectedClub &&  <p className="mb-0">Club:{selectedClub}</p> }
                                             </div>
                                         </div>
                                     </div>

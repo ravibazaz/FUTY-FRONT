@@ -85,7 +85,7 @@ export async function updateManager(id, prevState, formData) {
   if (!result.success) {
     return { success: false, errors: result.error.flatten().fieldErrors };
   }
-  const { name, email, telephone, nick_name, post_code, profile_description,travel_distance } = result.data;
+  const { name, email, telephone, nick_name, post_code, profile_description,travel_distance,team_id } = result.data;
   const imageFile = formData.get("profile_image");
   const password = formData.get("password");
 
@@ -160,6 +160,7 @@ export async function updateManager(id, prevState, formData) {
       post_code,
       profile_description,
       travel_distance,
+      team_id,
       playing_style: playing_style,
       profile_image: `/uploads/managers/${imageName}`, // Save relative path to the image
     };
@@ -178,6 +179,7 @@ export async function updateManager(id, prevState, formData) {
       post_code,
       profile_description,
       travel_distance,
+      team_id,
       playing_style: playing_style,
     };
     if (password) {

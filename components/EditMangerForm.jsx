@@ -3,7 +3,7 @@
 import { updateManager } from "@/actions/managersActions";
 import { ManagersSchema } from "@/lib/validation/managers";
 import { useFormStatus } from "react-dom";
-import { useActionState, useState, startTransition, useRef } from "react";
+import { useActionState, useState, startTransition, useRef, useEffect } from "react";
 import Image from "next/image";
 function SubmitButton() {
   const { pending } = useFormStatus();
@@ -17,8 +17,25 @@ function SubmitButton() {
 
 export default function EditMangerForm({ user }) {
 
-  //console.log(user);
-  
+  //console.log(user.team_id._id);
+
+  const [teams, setTeams] = useState([]);
+  useEffect(() => {
+
+    fetch(`/api/teams`)
+      .then(res => res.json())
+      .then(data => {
+        console.log("Teams received:", data.teams);
+        setTeams(data.teams);
+      })
+      .catch(err => console.error(err));
+  }, []);
+
+  const [selectedClub, setSelectedClub] = useState(user.team_id?.club?.name);
+  const [selectedLeague, setSelectedLeage] = useState(user.team_id?.club?.league?.title);
+  const [selectedTeam, setSelectedTeam] = useState(user.team_id._id ? user.team_id._id: '');
+
+
   const fileInputRef = useRef(null);
   const handleUploadClick = () => {
     fileInputRef.current.click();
@@ -45,7 +62,7 @@ export default function EditMangerForm({ user }) {
   );
 
   const [clientErrors, setClientErrors] = useState({});
-  const [preview, setPreview] = useState(user.profile_image ? '/api'+user.profile_image  : '/images/profile-picture.jpg');
+  const [preview, setPreview] = useState(user.profile_image ? '/api' + user.profile_image : '/images/profile-picture.jpg');
   // if (user.profile_image)
   // setPreview(user.profile_image);
 
@@ -212,54 +229,49 @@ export default function EditMangerForm({ user }) {
                   </div>
                 </div>
               </div>
-              {/* <div className="left-info-box">
-                <div className="left-row row">
-                  <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
-                    <div className="label-text mb-0">
-                      <p className="mb-0">League</p>
-                    </div>
-                  </div>
-                  <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
-                    <div className="info-text px-0">
-                      <p className="mb-0">
-                        <input className="form-control" type="text" ></input>
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
+
               <div className="left-info-box">
                 <div className="left-row row">
                   <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
-                    <div className="label-text mb-0">
-                      <p className="mb-0">Club</p>
-                    </div>
-                  </div>
-                  <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
-                    <div className="info-text px-0">
-                      <p className="mb-0">
-                        <input className="form-control" type="text" ></input>
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="left-info-box">
-                <div className="left-row row">
-                  <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
-                    <div className="label-text mb-0">
+                    <div className="label-text">
                       <p className="mb-0">Team</p>
                     </div>
                   </div>
                   <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
                     <div className="info-text px-0">
                       <p className="mb-0">
-                        <input className="form-control" type="text" placeholder="Search Team" ></input>
+                        <select
+                          className="form-control"
+                          name="team_id"
+                           value={selectedTeam}
+                          onChange={(e) => {
+                            const selectedOption = e.target.options[e.target.selectedIndex];
+                            const clubName = selectedOption.dataset.club;
+                            const leagueName = selectedOption.dataset.league;
+                            setSelectedClub(clubName);
+                            setSelectedLeage(leagueName);
+                            setSelectedTeam(e.target.value);
+                          }}
+                        >
+                          <option value="">Choose a Team</option>
+                          {teams.map((team) => (
+                            <option key={team._id} data-club={team.club.name} data-league={team.club.league.title} value={team._id}>
+                              {team.name}
+                            </option>
+                          ))}
+                        </select>
+                        {clientErrors.team_id && (
+                          <span className="invalid-feedback" style={{ display: "block" }} >{clientErrors.team_id}</span>
+                        )}
                       </p>
+                      {selectedLeague && <p className="mb-0">League:{selectedLeague}</p>}
+                      {selectedClub && <p className="mb-0">Club:{selectedClub}</p>}
                     </div>
                   </div>
                 </div>
-              </div> */}
+              </div>
+
+
               <div className="left-info-box">
                 <div className="left-row row">
                   <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
