@@ -33,7 +33,7 @@ export default function EditMangerForm({ user }) {
 
   const [selectedClub, setSelectedClub] = useState(user.team_id?.club?.name);
   const [selectedLeague, setSelectedLeage] = useState(user.team_id?.club?.league?.title);
-  const [selectedTeam, setSelectedTeam] = useState(user.team_id._id ? user.team_id._id: '');
+  const [selectedTeam, setSelectedTeam] = useState(user.team_id?._id ? user.team_id._id: '');
 
 
   const fileInputRef = useRef(null);
