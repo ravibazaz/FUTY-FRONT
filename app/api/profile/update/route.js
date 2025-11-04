@@ -7,27 +7,62 @@ import path from "path";
 import { promises as fs } from "fs";
 import Users from "@/lib/models/Users";
 import bcrypt from "bcryptjs";
-export const UserSchema = z.object({
-  email: z.string().nonempty("Email is required").email("Invalid email format"),
-  password: z.string().nonempty("Password is required").min(7, "Password must be at least 7 character"),
-  confirm_password: z.string().min(7, "Confirm password must be at least 7 characters long"),
-  name: z.string().nonempty("Name is required").min(2, "Name must be at least 2 character"),
-  telephone: z.string().nonempty("Telephone is required").min(2, "Telephone must be at least 2 character"),
-  profile_image: z
-    .string()
-    .optional()
-    .refine(
-      (val) =>
-        val === '' ||
-        /^data:image\/(png|jpg|jpeg|gif|webp);base64,/.test(val),
-      {
-        message: "Invalid image format. Must be a valid Base64-encoded image.",
-      }
-    )
-}).refine((data) => data.password === data.confirm_password, {
-  message: "Passwords don't match",
-  path: ["confirm_password"],
-});
+export const UserSchema = z
+  .object({
+    email: z
+      .string()
+      .nonempty("Email is required")
+      .email("Invalid email format"),
+
+    name: z
+      .string()
+      .nonempty("Name is required")
+      .min(2, "Name must be at least 2 characters"),
+
+    telephone: z
+      .string()
+      .nonempty("Telephone is required")
+      .min(2, "Telephone must be at least 2 characters"),
+
+    // ✅ Optional password fields (validate only if provided)
+    password: z
+      .string()
+      .optional()
+      .refine(
+        (val) => !val || val.length >= 7,
+        "Password must be at least 7 characters long"
+      ),
+
+    confirm_password: z
+      .string()
+      .optional()
+      .refine(
+        (val) => !val || val.length >= 7,
+        "Confirm password must be at least 7 characters long"
+      ),
+
+    profile_image: z
+      .string()
+      .optional()
+      .refine(
+        (val) =>
+          !val ||
+          /^data:image\/(png|jpg|jpeg|gif|webp);base64,/.test(val),
+        {
+          message: "Invalid image format. Must be a valid Base64-encoded image.",
+        }
+      ),
+  })
+  // ✅ Match passwords only if both are provided
+  .refine(
+    (data) =>
+      (!data.password && !data.confirm_password) ||
+      data.password === data.confirm_password,
+    {
+      message: "Passwords don't match",
+      path: ["confirm_password"],
+    }
+  );
 
 export async function POST(req) {
   const authResult = await protectApiRoute(req);
