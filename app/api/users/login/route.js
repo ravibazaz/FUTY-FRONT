@@ -1,6 +1,9 @@
 // app/api/signup/route.js
 import { connectDB } from "@/lib/db";
 import User from "@/lib/models/Users";
+import Teams from "@/lib/models/Teams";
+import Clubs from "@/lib/models/Clubs";
+import Leagues from "@/lib/models/Leagues";
 import bcrypt from "bcryptjs";
 import { NextResponse } from "next/server";
 import { z } from "zod";
@@ -37,7 +40,20 @@ export async function POST(req) {
     }
     await connectDB();
     //await AgeGroups.create({ age_group: "Adult" });
-    const user = await User.findOne({ email: result.data.email,isVerified:true }).select("-__v").lean();
+    const user = await User.findOne({ email: result.data.email,isVerified:true }).populate({
+        path: "team_id",
+        select: "name club",
+        populate: {
+          path: "club",
+          model: "Clubs",
+          select: "label name league", // whatever fields you want
+          populate: {
+            path: "league",
+            model: "Leagues",
+            select: "label title", // whatever fields you want
+          }
+        }
+      }).select("-__v").lean();
     if (!user || !(await bcrypt.compare(result.data.password, user.password))) {
       return NextResponse.json(
         {
