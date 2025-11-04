@@ -1,10 +1,16 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+import TomSelect from "tom-select";
+import "tom-select/dist/css/tom-select.bootstrap5.css";
 
 export default function LeagueDropdown(props) {
   const [leagues, setLeagues] = useState([]);
   const [selectedClub, setSelectedClub] = useState(props.league ? props.league : '');
+
+  const selectRef = useRef(null);
+  const tomSelectRef = useRef(null);
+
   useEffect(() => {
     const fetchClubs = async () => {
       try {
@@ -17,6 +23,49 @@ export default function LeagueDropdown(props) {
     };
     fetchClubs();
   }, []);
+
+
+  // Initialize Tom Select after leagues are loaded
+  useEffect(() => {
+    if (!selectRef.current || leagues.length === 0) return;
+
+    // Destroy any previous instance
+    if (tomSelectRef.current) {
+      tomSelectRef.current.destroy();
+      tomSelectRef.current = null;
+    }
+
+    // Initialize Tom Select
+    tomSelectRef.current = new TomSelect(selectRef.current, {
+      create: false,
+      placeholder: "Choose a League",
+      sortField: { field: "text", direction: "asc" },
+      onChange: (value) => {
+        setSelectedClub(value);
+        if (typeof props.onLeagueChange === "function") {
+          props.onLeagueChange(value);
+        }
+      },
+    });
+
+    // ✅ Preselect value in edit mode
+    if (selectedClub) {
+      tomSelectRef.current.setValue(selectedClub, true);
+    }
+
+    // Cleanup
+    return () => {
+      tomSelectRef.current?.destroy();
+      tomSelectRef.current = null;
+    };
+  }, [leagues]);
+
+  // ✅ Keep TomSelect synced if selectedClub changes later
+  useEffect(() => {
+    if (tomSelectRef.current && selectedClub) {
+      tomSelectRef.current.setValue(selectedClub, true);
+    }
+  }, [selectedClub]);
 
   return (
 
@@ -34,14 +83,8 @@ export default function LeagueDropdown(props) {
               <select
                 className="form-control"
                 name="league"
-                value={selectedClub}
-                onChange={(e) => {
-                  const value = e.target.value;
-                  setSelectedClub(value);
-                  if (typeof props.onLeagueChange === "function") {
-                    props.onLeagueChange(value);
-                  }
-                }}
+                ref={selectRef}
+                defaultValue={selectedClub} 
               >
                 <option value="">Choose a League</option>
                 {leagues.map((league) => (
