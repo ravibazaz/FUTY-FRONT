@@ -6,10 +6,14 @@ import { useFormStatus } from "react-dom";
 import { useActionState, useState, startTransition, useRef } from "react";
 import Image from "next/image";
 import GroundFacilitiesCheckbox from "./GroundFacilitiesCheckbox";
+import Link from "next/link";
 function SubmitButton() {
   const { pending } = useFormStatus();
   return (
-    <input className="btn-common-text mt-30 mb-30" disabled={pending} type="submit" value={pending ? "Editing" : "Edit Ground"}></input>
+    <>
+      <input className="btn-common-text mt-30 mb-30" disabled={pending} type="submit" value={pending ? "Editing" : "Edit Ground"}></input>
+       <Link className="btn-common-text mt-30 mb-30 ps-3"  href="/admin/grounds" >Back</Link>
+    </>
   );
 }
 
@@ -78,7 +82,7 @@ export default function EditGroundForm({ ground }) {
 
     // console.log(formData.getAll("images"));
     // return false;
-    
+
     const result = GroundSchema(true).safeParse(
       Object.fromEntries(formData.entries())
     );
@@ -103,7 +107,7 @@ export default function EditGroundForm({ ground }) {
           <p className="top-breadcrumb mb-0">{'> Grounds'}</p>
         </div>
         <div className="top-right d-flex justify-content-between align-items-center gap-10">
-          <a className="btn btn-common" href="grounds-new.php">New</a>
+          {/* <a className="btn btn-common" href="grounds-new.php">New</a> */}
           <a href="#">
             <Image
               src="/images/icon-setting.svg"
@@ -276,7 +280,7 @@ export default function EditGroundForm({ ground }) {
                               ground.images.map((l, index) => (
                                 <Image
                                   key={index}
-                                  src={'/api'+l}
+                                  src={'/api' + l}
                                   width={82}
                                   height={82}
                                   alt="Profile Image"

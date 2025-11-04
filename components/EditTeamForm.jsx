@@ -7,10 +7,14 @@ import { useActionState, useState, startTransition, useRef, useEffect } from "re
 import Image from "next/image";
 import ClubDropdown from "@/components/ClubDropdown";
 import GroundDropdown from "@/components/GroundDropdown";
+import Link from "next/link";
 function SubmitButton() {
   const { pending } = useFormStatus();
   return (
-    <input className="btn-common-text mt-30 mb-30" disabled={pending} type="submit" value={pending ? "Editing" : "Edit Team"}></input>
+    <>
+      <input className="btn-common-text mt-30 mb-30" disabled={pending} type="submit" value={pending ? "Editing" : "Edit Team"}></input>
+      <Link className="btn-common-text mt-30 mb-30 ps-3" href="/admin/teams" >Back</Link>
+    </>
   );
 }
 
@@ -109,7 +113,7 @@ export default function EditTeamForm({ team }) {
             <p className="top-breadcrumb mb-0">{'> Teams'}</p>
           </div>
           <div className="top-right d-flex justify-content-between align-items-center gap-10">
-            <a className="btn btn-common" href="teams-new.php">New</a>
+            {/* <a className="btn btn-common" href="teams-new.php">New</a> */}
             <a href="#">
               <Image
                 src="/images/icon-setting.svg"
@@ -171,7 +175,7 @@ export default function EditTeamForm({ team }) {
                             >
                               <option value="">Choose a Age</option>
                               {ageGroups.map((agegroup) => (
-                                <option  key={agegroup._id} value={agegroup._id}>
+                                <option key={agegroup._id} value={agegroup._id}>
                                   {agegroup.age_group}
                                 </option>
                               ))}

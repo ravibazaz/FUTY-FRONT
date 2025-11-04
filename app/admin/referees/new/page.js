@@ -5,12 +5,16 @@ import { useActionState, useState, useRef, useTransition } from "react";
 import { createReferees } from "@/actions/refereesActions";
 import { RefereesSchema } from "@/lib/validation/referees";
 import Image from "next/image";
+import Link from "next/link";
 function SubmitButton() {
     const { pending } = useFormStatus();
     return (
-        <button type="submit" className="btn-common-text" disabled={pending}>
-            {pending ? "Adding" : "Save"}
-        </button>
+        <>
+            <button type="submit" className="btn-common-text" disabled={pending}>
+                {pending ? "Adding" : "Save"}
+            </button>
+            <Link className="btn-common-text mt-30 mb-30 ps-3" href="/admin/referees" >Back</Link>
+        </>
     );
 }
 export default function NewFanPage() {
@@ -77,7 +81,7 @@ export default function NewFanPage() {
                         <p className="top-breadcrumb mb-0">{'> Referee'}</p>
                     </div>
                     <div className="top-right d-flex justify-content-between align-items-center gap-10">
-                        <a className="btn btn-common" href="managers-new.php">New</a>
+                        {/* <a className="btn btn-common" href="managers-new.php">New</a> */}
                         <a href="#">
                             <Image
                                 src="/images/icon-setting.svg"
@@ -273,7 +277,7 @@ export default function NewFanPage() {
                                         <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
                                             <div className="info-text px-0">
                                                 <p className="mb-0">
-                                                    <input name="nick_name"  className="form-control" type="text"></input>
+                                                    <input name="nick_name" className="form-control" type="text"></input>
                                                 </p>
                                             </div>
                                         </div>

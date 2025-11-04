@@ -6,10 +6,14 @@ import { useFormStatus } from "react-dom";
 import { useActionState, useState, startTransition, useRef } from "react";
 import Image from "next/image";
 import AgeCheckbox from "./AgeCheckbox";
+import Link from "next/link";
 function SubmitButton() {
   const { pending } = useFormStatus();
   return (
-    <input className="btn-common-text mt-30 mb-30" disabled={pending} type="submit" value={pending ? "Editing" : "Edit League"}></input>
+    <>
+      <input className="btn-common-text mt-30 mb-30" disabled={pending} type="submit" value={pending ? "Editing" : "Edit League"}></input>
+      <Link className="btn-common-text mt-30 mb-30 ps-3" href="/admin/leagues" >Back</Link>
+    </>
   );
 }
 
@@ -41,7 +45,7 @@ export default function EditLeagueForm({ league }) {
   );
 
   const [clientErrors, setClientErrors] = useState({});
-  const [preview, setPreview] = useState(league.image ? '/api'+league.image : '/images/club-badge.jpg');
+  const [preview, setPreview] = useState(league.image ? '/api' + league.image : '/images/club-badge.jpg');
 
   // if (club.images)
   // setPreview(club.images);
@@ -84,7 +88,7 @@ export default function EditLeagueForm({ league }) {
           <p className="top-breadcrumb mb-0">{'> League'}</p>
         </div>
         <div className="top-right d-flex justify-content-between align-items-center gap-10">
-          <a className="btn btn-common" href="clubs-new.php">New</a>
+          {/* <a className="btn btn-common" href="clubs-new.php">New</a> */}
           <a href="#">
             <img src="/images/icon-setting.svg" alt="Settings" />
           </a>
@@ -121,89 +125,89 @@ export default function EditLeagueForm({ league }) {
                   </div>
                 </div>
               </div>
-                <div className="left-info-box">
-                  <div className="left-row row">
-                    <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
-                      <div className="label-text">
-                        <p className="mb-0">Chairman Name</p>
-                      </div>
+              <div className="left-info-box">
+                <div className="left-row row">
+                  <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
+                    <div className="label-text">
+                      <p className="mb-0">Chairman Name</p>
                     </div>
-                    <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
-                      <div className="info-text px-0">
-                        <p className="mb-0">
-                          <input className="form-control" name="c_name" defaultValue={league.c_name} type="text"></input>
-                          {clientErrors.c_name && (
-                            <span className="invalid-feedback" style={{ display: "block" }} >{clientErrors.c_name}</span>
-                          )}
-                        </p>
-                      </div>
+                  </div>
+                  <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
+                    <div className="info-text px-0">
+                      <p className="mb-0">
+                        <input className="form-control" name="c_name" defaultValue={league.c_name} type="text"></input>
+                        {clientErrors.c_name && (
+                          <span className="invalid-feedback" style={{ display: "block" }} >{clientErrors.c_name}</span>
+                        )}
+                      </p>
                     </div>
                   </div>
                 </div>
+              </div>
 
-                <div className="left-info-box">
-                  <div className="left-row row">
-                    <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
-                      <div className="label-text">
-                        <p className="mb-0">Chairman Email</p>
-                      </div>
-                    </div>
-                    <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
-                      <div className="info-text px-0">
-                        <p className="mb-0">
-                          <input className="form-control" name="email" defaultValue={league.email} type="text"></input>
-                         
-                          {clientErrors.email && (
-                            <span className="invalid-feedback" style={{ display: "block" }} >{clientErrors.email}</span>
-                          )}
-                        </p>
-                      </div>
+              <div className="left-info-box">
+                <div className="left-row row">
+                  <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
+                    <div className="label-text">
+                      <p className="mb-0">Chairman Email</p>
                     </div>
                   </div>
-                </div>
+                  <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
+                    <div className="info-text px-0">
+                      <p className="mb-0">
+                        <input className="form-control" name="email" defaultValue={league.email} type="text"></input>
 
-                <div className="left-info-box">
-                  <div className="left-row row">
-                    <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
-                      <div className="label-text">
-                        <p className="mb-0">Chairman Telephone</p>
-                      </div>
-                    </div>
-                    <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
-                      <div className="info-text px-0">
-                        <p className="mb-0">
-                          <input className="form-control" name="telephone" defaultValue={league.telephone} type="text"></input>
-                         
-                          {clientErrors.telephone && (
-                            <span className="invalid-feedback" style={{ display: "block" }} >{clientErrors.telephone}</span>
-                          )}
-                        </p>
-                      </div>
+                        {clientErrors.email && (
+                          <span className="invalid-feedback" style={{ display: "block" }} >{clientErrors.email}</span>
+                        )}
+                      </p>
                     </div>
                   </div>
                 </div>
+              </div>
 
-                <div className="left-info-box">
-                  <div className="left-row row">
-                    <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
-                      <div className="label-text">
-                        <p className="mb-0">Secretary Name</p>
-                      </div>
+              <div className="left-info-box">
+                <div className="left-row row">
+                  <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
+                    <div className="label-text">
+                      <p className="mb-0">Chairman Telephone</p>
                     </div>
-                    <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
-                      <div className="info-text px-0">
-                        <p className="mb-0">
-                          <input className="form-control" name="s_name" defaultValue={league.s_name} type="text"></input>
-                         
-                          {clientErrors.s_name && (
-                            <span className="invalid-feedback" style={{ display: "block" }} >{clientErrors.s_name}</span>
-                          )}
-                        </p>
-                      </div>
+                  </div>
+                  <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
+                    <div className="info-text px-0">
+                      <p className="mb-0">
+                        <input className="form-control" name="telephone" defaultValue={league.telephone} type="text"></input>
+
+                        {clientErrors.telephone && (
+                          <span className="invalid-feedback" style={{ display: "block" }} >{clientErrors.telephone}</span>
+                        )}
+                      </p>
                     </div>
                   </div>
                 </div>
-                <AgeCheckbox age_groups={league.age_groups}></AgeCheckbox>
+              </div>
+
+              <div className="left-info-box">
+                <div className="left-row row">
+                  <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
+                    <div className="label-text">
+                      <p className="mb-0">Secretary Name</p>
+                    </div>
+                  </div>
+                  <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
+                    <div className="info-text px-0">
+                      <p className="mb-0">
+                        <input className="form-control" name="s_name" defaultValue={league.s_name} type="text"></input>
+
+                        {clientErrors.s_name && (
+                          <span className="invalid-feedback" style={{ display: "block" }} >{clientErrors.s_name}</span>
+                        )}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <AgeCheckbox age_groups={league.age_groups}></AgeCheckbox>
               <div className="left-info-box">
                 <div className="left-row row">
                   <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
@@ -225,9 +229,9 @@ export default function EditLeagueForm({ league }) {
                   </div>
                 </div>
               </div>
-            
-              
-              
+
+
+
               <div className="left-info-box">
                 <div className="left-row row">
                   <div className="left-label-col col-md-5 col-lg-4 col-xl-4">

@@ -6,10 +6,14 @@ import { createLeagues } from "@/actions/leaguesActions";
 import { LeaguesSchema } from "@/lib/validation/leagues";
 import Image from "next/image";
 import AgeCheckbox from "@/components/AgeCheckbox";
+import Link from "next/link";
 function SubmitButton() {
   const { pending } = useFormStatus();
   return (
-    <input className="btn-common-text mt-30 mb-30" disabled={pending} type="submit" value={pending ? "Adding" : "Save"}></input>
+    <>
+      <input className="btn-common-text mt-30 mb-30" disabled={pending} type="submit" value={pending ? "Adding" : "Save"}></input>
+      <Link className="btn-common-text mt-30 mb-30 ps-3"  href="/admin/leagues" >Back</Link>
+    </>
   );
 }
 export default function NewGroundPage() {
@@ -46,11 +50,11 @@ export default function NewGroundPage() {
 
     const result = LeaguesSchema(false).safeParse(raw);
 
-    
-     //console.log(result);
+
+    //console.log(result);
 
     if (!result.success) {
-     
+
       setClientErrors(result.error.flatten().fieldErrors);
       return;
     }

@@ -6,10 +6,14 @@ import { createGrounds } from "@/actions/groundsActions";
 import { GroundSchema } from "@/lib/validation/grounds";
 import Image from "next/image";
 import GroundFacilitiesCheckbox from "@/components/GroundFacilitiesCheckbox";
+import Link from "next/link";
 function SubmitButton() {
   const { pending } = useFormStatus();
   return (
-    <input className="btn-common-text mt-30 mb-30" disabled={pending} type="submit" value={pending ? "Adding" : "Save"}></input>
+    <>
+      <input className="btn-common-text mt-30 mb-30" disabled={pending} type="submit" value={pending ? "Adding" : "Save"}></input>
+      <Link className="btn-common-text mt-30 mb-30 ps-3" href="/admin/grounds" >Back</Link>
+    </>
   );
 }
 export default function NewGroundPage() {
@@ -45,7 +49,7 @@ export default function NewGroundPage() {
           img.src = e.target.result;
           previewsRef.current.appendChild(img)
         }
-         reader.readAsDataURL(file);
+        reader.readAsDataURL(file);
       }
     });
   };
@@ -79,7 +83,7 @@ export default function NewGroundPage() {
             <p className="top-breadcrumb mb-0">{'> Grounds'}</p>
           </div>
           <div className="top-right d-flex justify-content-between align-items-center gap-10">
-            <a className="btn btn-common" href="grounds-new.php">New</a>
+            {/* <a className="btn btn-common" href="grounds-new.php">New</a> */}
             <a href="#">
               <Image
                 src="/images/icon-setting.svg"

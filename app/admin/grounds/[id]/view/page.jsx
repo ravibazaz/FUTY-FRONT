@@ -19,7 +19,7 @@ export default async function ViewFansPage({ params }) {
                         <p className="top-breadcrumb mb-0">{'> Grounds'}</p>
                     </div>
                     <div className="top-right d-flex justify-content-between align-items-center gap-10">
-                        <a className="btn btn-common" href="grounds-new.php">New</a>
+                        {/* <a className="btn btn-common" href="grounds-new.php">New</a> */}
                         <a href="#">
                             <Image
                                 src="/images/icon-setting.svg"
@@ -92,6 +92,7 @@ export default async function ViewFansPage({ params }) {
                                         <div className="info-text">
                                             <p className="mb-0">
                                                 <Link className="btn-common-text" href={`/admin/grounds/${userdetails._id}/edit`}>Edit</Link>
+                                                <Link className="btn-common-text mt-30 mb-30 ps-3"  href="/admin/grounds" >Back</Link>
                                             </p>
                                         </div>
                                     </div>

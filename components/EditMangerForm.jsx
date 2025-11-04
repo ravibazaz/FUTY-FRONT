@@ -5,13 +5,16 @@ import { ManagersSchema } from "@/lib/validation/managers";
 import { useFormStatus } from "react-dom";
 import { useActionState, useState, startTransition, useRef, useEffect } from "react";
 import Image from "next/image";
+import Link from "next/link";
 function SubmitButton() {
   const { pending } = useFormStatus();
   return (
-    <button type="submit" className="btn-common-text" disabled={pending}>
-      {pending ? "Editing" : "Edit Manager"}
-    </button>
-
+    <>
+      <button type="submit" className="btn-common-text" disabled={pending}>
+        {pending ? "Editing" : "Edit Manager"}
+      </button>
+      <Link className="btn-common-text mt-30 mb-30 ps-3" href="/admin/managers" >Back</Link>
+    </>
   );
 }
 
@@ -33,7 +36,7 @@ export default function EditMangerForm({ user }) {
 
   const [selectedClub, setSelectedClub] = useState(user.team_id?.club?.name);
   const [selectedLeague, setSelectedLeage] = useState(user.team_id?.club?.league?.title);
-  const [selectedTeam, setSelectedTeam] = useState(user.team_id?._id ? user.team_id._id: '');
+  const [selectedTeam, setSelectedTeam] = useState(user.team_id?._id ? user.team_id._id : '');
 
 
   const fileInputRef = useRef(null);
@@ -116,7 +119,7 @@ export default function EditMangerForm({ user }) {
           <p className="top-breadcrumb mb-0">{'> Managers'}</p>
         </div>
         <div className="top-right d-flex justify-content-between align-items-center gap-10">
-          <a className="btn btn-common" href="managers-new.php">New</a>
+          {/* <a className="btn btn-common" href="managers-new.php">New</a> */}
           <a href="#">
             <Image
               src="/images/icon-setting.svg"
@@ -243,7 +246,7 @@ export default function EditMangerForm({ user }) {
                         <select
                           className="form-control"
                           name="team_id"
-                           value={selectedTeam}
+                          value={selectedTeam}
                           onChange={(e) => {
                             const selectedOption = e.target.options[e.target.selectedIndex];
                             const clubName = selectedOption.dataset.club;

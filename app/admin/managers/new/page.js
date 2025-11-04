@@ -5,12 +5,17 @@ import { useActionState, useState, useRef, useTransition, useEffect } from "reac
 import { createManagers } from "@/actions/managersActions";
 import { ManagersSchema } from "@/lib/validation/managers";
 import Image from "next/image";
+import Link from "next/link";
 function SubmitButton() {
     const { pending } = useFormStatus();
     return (
+        <>
+       
         <button type="submit" className="btn-common-text" disabled={pending}>
             {pending ? "Adding" : "Save"}
         </button>
+        <Link className="btn-common-text mt-30 mb-30 ps-3"  href="/admin/managers" >Back</Link>
+         </>
     );
 }
 export default function NewFanPage() {
@@ -91,7 +96,7 @@ export default function NewFanPage() {
                         <p className="top-breadcrumb mb-0">{'> Managers'}</p>
                     </div>
                     <div className="top-right d-flex justify-content-between align-items-center gap-10">
-                        <a className="btn btn-common" href="managers-new.php">New</a>
+                        {/* <a className="btn btn-common" href="managers-new.php">New</a> */}
                         <a href="#">
                             <Image
                                 src="/images/icon-setting.svg"

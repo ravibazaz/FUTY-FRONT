@@ -5,12 +5,16 @@ import { FansSchema } from "@/lib/validation/fans";
 import { useFormStatus } from "react-dom";
 import { useActionState, useState, startTransition, useRef } from "react";
 import Image from "next/image";
+import Link from "next/link";
 function SubmitButton() {
   const { pending } = useFormStatus();
   return (
-    <button type="submit" className="btn-common-text" disabled={pending}>
-      {pending ? "Editing" : "Edit User"}
-    </button>
+    <>
+      <button type="submit" className="btn-common-text" disabled={pending}>
+        {pending ? "Editing" : "Edit User"}
+      </button>
+      <Link className="btn-common-text mt-30 mb-30 ps-3" href="/admin/fans" >Back</Link>
+    </>
 
   );
 }
@@ -43,7 +47,7 @@ export default function EditFanForm({ user }) {
   );
 
   const [clientErrors, setClientErrors] = useState({});
-  const [preview, setPreview] = useState(user.profile_image ? '/api'+user.profile_image : '/images/profile-picture.jpg');
+  const [preview, setPreview] = useState(user.profile_image ? '/api' + user.profile_image : '/images/profile-picture.jpg');
   // if (user.profile_image)
   // setPreview(user.profile_image);
 
@@ -97,7 +101,7 @@ export default function EditFanForm({ user }) {
           <p className="top-breadcrumb mb-0">{'> Fans'}</p>
         </div>
         <div className="top-right d-flex justify-content-between align-items-center gap-10">
-          <a className="btn btn-common" href="fans-new.php">New</a>
+          {/* <a className="btn btn-common" href="fans-new.php">New</a> */}
           <a href="#">
             <Image
               src="/images/icon-setting.svg"

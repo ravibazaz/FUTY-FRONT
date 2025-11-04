@@ -6,11 +6,16 @@ import { createClub } from "@/actions/clubsActions";
 import { ClubSchema } from "@/lib/validation/clubs";
 import Image from "next/image";
 import LeagueDropdown from "@/components/LeagueDropdown";
+import Link from "next/link";
 
 function SubmitButton() {
   const { pending } = useFormStatus();
   return (
+    <>
     <input className="btn-common-text mt-30 mb-30" disabled={pending} type="submit" value={pending ? "Adding" : "Save"}></input>
+    <Link className="btn-common-text mt-30 mb-30 ps-3"  href="/admin/clubs" >Back</Link>
+    </>
+    
   );
 }
 export default function NewGroundPage() {
@@ -89,7 +94,7 @@ export default function NewGroundPage() {
             <p className="top-breadcrumb mb-0">{'> Clubs'}</p>
           </div>
           <div className="top-right d-flex justify-content-between align-items-center gap-10">
-            <a className="btn btn-common" href="#">New</a>
+            {/* <a className="btn btn-common" href="#">New</a> */}
             <a href="#">
               <Image
                 src="/images/icon-setting.svg"

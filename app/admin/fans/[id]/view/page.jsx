@@ -21,7 +21,7 @@ export default async function ViewFansPage({ params }) {
             <p className="top-breadcrumb mb-0">{'> Fans'}</p>
           </div>
           <div className="top-right d-flex justify-content-between align-items-center gap-10">
-            <a className="btn btn-common" href="fans-new.php">New</a>
+            {/* <a className="btn btn-common" href="fans-new.php">New</a> */}
             <a href="#">
               <Image
                 src="/images/icon-setting.svg"
@@ -70,6 +70,7 @@ export default async function ViewFansPage({ params }) {
                     <div className="info-text">
                       <p className="mb-0">
                         <Link className="btn-common-text" href={`/admin/fans/${userdetails._id}/edit`}>Edit</Link>
+                        <Link className="btn-common-text mt-30 mb-30 ps-3"  href="/admin/fans" >Back</Link>
                         {/* <!-- <input className="btn-common-text" type="submit" value="Edit"> --> */}
                       </p>
                     </div>

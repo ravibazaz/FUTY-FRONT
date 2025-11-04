@@ -5,20 +5,23 @@ import { RefereesSchema } from "@/lib/validation/referees";
 import { useFormStatus } from "react-dom";
 import { useActionState, useState, startTransition, useRef } from "react";
 import Image from "next/image";
+import Link from "next/link";
 function SubmitButton() {
   const { pending } = useFormStatus();
   return (
-    <button type="submit" className="btn-common-text" disabled={pending}>
-      {pending ? "Editing" : "Edit Referee"}
-    </button>
-
+    <>
+      <button type="submit" className="btn-common-text" disabled={pending}>
+        {pending ? "Editing" : "Edit Referee"}
+      </button>
+      <Link className="btn-common-text mt-30 mb-30 ps-3" href="/admin/referees" >Back</Link>
+    </>
   );
 }
 
 export default function EditRefereeForm({ user }) {
 
   //console.log(user);
-  
+
   const fileInputRef = useRef(null);
   const handleUploadClick = () => {
     fileInputRef.current.click();
@@ -45,7 +48,7 @@ export default function EditRefereeForm({ user }) {
   );
 
   const [clientErrors, setClientErrors] = useState({});
-  const [preview, setPreview] = useState(user.profile_image ? '/api'+user.profile_image  : '/images/profile-picture.jpg');
+  const [preview, setPreview] = useState(user.profile_image ? '/api' + user.profile_image : '/images/profile-picture.jpg');
   // if (user.profile_image)
   // setPreview(user.profile_image);
 
@@ -99,7 +102,7 @@ export default function EditRefereeForm({ user }) {
           <p className="top-breadcrumb mb-0">{'> Referee'}</p>
         </div>
         <div className="top-right d-flex justify-content-between align-items-center gap-10">
-          <a className="btn btn-common" href="managers-new.php">New</a>
+          {/* <a className="btn btn-common" href="managers-new.php">New</a> */}
           <a href="#">
             <Image
               src="/images/icon-setting.svg"
@@ -324,7 +327,7 @@ export default function EditRefereeForm({ user }) {
                   </div>
                 </div>
               </div>
-              
+
               <div className="left-info-box">
                 <div className="left-row row">
                   <div className="left-label-col col-md-5 col-lg-4 col-xl-4">

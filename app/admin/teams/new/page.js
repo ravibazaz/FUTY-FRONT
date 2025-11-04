@@ -9,10 +9,14 @@ import ClubDropdown from "@/components/ClubDropdown";
 import ManagerDropdown from "@/components/ManagerDropdown";
 import LeagueDropdown from "@/components/LeagueDropdown";
 import GroundDropdown from "@/components/GroundDropdown";
+import Link from "next/link";
 function SubmitButton() {
   const { pending } = useFormStatus();
   return (
-    <input className="btn-common-text mt-30 mb-30" disabled={pending} type="submit" value={pending ? "Adding" : "Save"}></input>
+    <>
+      <input className="btn-common-text mt-30 mb-30" disabled={pending} type="submit" value={pending ? "Adding" : "Save"}></input>
+      <Link className="btn-common-text mt-30 mb-30 ps-3" href="/admin/teams" >Back</Link>
+    </>
   );
 }
 export default function NewGroundPage() {
@@ -45,8 +49,8 @@ export default function NewGroundPage() {
         if (data.clubs.age_groups)
           setAgeGroups(data.clubs.age_groups);
         else
-        setAgeGroups([]);
-       
+          setAgeGroups([]);
+
       })
       .catch(err => console.error(err));
   }, [clubId]);
@@ -99,7 +103,7 @@ export default function NewGroundPage() {
             <p className="top-breadcrumb mb-0">{'> Teams'}</p>
           </div>
           <div className="top-right d-flex justify-content-between align-items-center gap-10">
-            <a className="btn btn-common" href="clubs-new.php">New</a>
+            {/* <a className="btn btn-common" href="clubs-new.php">New</a> */}
             <a href="#">
               <Image
                 src="/images/icon-setting.svg"
