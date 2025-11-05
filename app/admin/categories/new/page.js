@@ -2,8 +2,8 @@
 
 import { useFormStatus } from "react-dom";
 import { useActionState, useState, useRef, useTransition } from "react";
-import { createStores } from "@/actions/storesActions";
-import { StoresSchema } from "@/lib/validation/stores";
+import { createCategory } from "@/actions/categoriesActions";
+import { CategoriesSchema } from "@/lib/validation/categories";
 import Image from "next/image";
 import Link from "next/link";
 function SubmitButton() {
@@ -11,13 +11,13 @@ function SubmitButton() {
   return (
     <>
       <input className="btn-common-text mt-30 mb-30" disabled={pending} type="submit" value={pending ? "Adding" : "Submit"}></input>
-      <Link className="btn-common-text mt-30 mb-30 ps-3" href="/admin/stores" >Back</Link>
+      <Link className="btn-common-text mt-30 mb-30 ps-3" href="/admin/categories" >Back</Link>
     </>
 
   );
 }
-export default function NewGroundPage() {
-  const [state, formAction] = useActionState(createStores, {
+export default function NewCategoryPage() {
+  const [state, formAction] = useActionState(createCategory, {
     success: null,
     errors: {},
   });
@@ -47,11 +47,8 @@ export default function NewGroundPage() {
     e.preventDefault();
     const formData = new FormData(e.target);
     const raw = Object.fromEntries(formData.entries());
-
-    const result = StoresSchema(false).safeParse(raw);
-
-
-
+    const result = CategoriesSchema(false).safeParse(raw);
+    
     if (!result.success) {
       setClientErrors(result.error.flatten().fieldErrors);
       return;
@@ -85,7 +82,7 @@ export default function NewGroundPage() {
         </div>
         <div className="body-title-bar d-flex flex-wrap justify-content-between align-items-center gap-20 mb-20">
           <div className="body-title-bar-left d-flex flex-wrap align-items-center gap-20-70">
-            <h1 className="page-title">Add New Product</h1>
+            <h1 className="page-title">Add New Category</h1>
 
           </div>
         </div>
@@ -99,7 +96,7 @@ export default function NewGroundPage() {
                   <div className="left-row row">
                     <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
                       <div className="label-text">
-                        <p className="mb-0">Product Title</p>
+                        <p className="mb-0">Category Title</p>
                       </div>
                     </div>
                     <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
@@ -146,7 +143,7 @@ export default function NewGroundPage() {
                   <div className="left-row row">
                     <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
                       <div className="label-text mb-0">
-                        <p className="mb-0">Product image</p>
+                        <p className="mb-0">Category image</p>
                       </div>
                     </div>
                     <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
@@ -167,7 +164,7 @@ export default function NewGroundPage() {
                               onChange={handleFileChange}
                               style={{ display: "none" }}
                             ></input>
-                            <p className="inputPlaceholder" id="placeholderText">Product Badge</p>
+                            <p className="inputPlaceholder" id="placeholderText">Category Badge</p>
                           </div>
                           {state.errors?.image && (
                             <span className="invalid-feedback" style={{ display: "block" }}>{state.errors.image}</span>

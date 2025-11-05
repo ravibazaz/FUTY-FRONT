@@ -55,7 +55,7 @@ export default function Sidebar() {
                                 </a>
                                 <div className="collapse submenu" id="submenu2">
                                     <Link className={`nav-link ${pathname.startsWith('/admin/stores') ? 'active' : ''}`}  href="/admin/stores" >Products</Link>
-                                     <Link  className="nav-link" href={'#'} >Categories</Link>
+                                     <Link className={`nav-link ${pathname.startsWith('/admin/categories') ? 'active' : ''}`}  href="/admin/categories"  >Categories</Link>
                                      
                                 </div>
                             </li>

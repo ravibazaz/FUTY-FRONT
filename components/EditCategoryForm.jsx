@@ -1,7 +1,7 @@
 "use client";
 
-import { updateStore } from "@/actions/storesActions";
-import { StoresSchema } from "@/lib/validation/stores";
+import { updateCategory } from "@/actions/categoriesActions";
+import { CategoriesSchema } from "@/lib/validation/categories";
 import { useFormStatus } from "react-dom";
 import { useActionState, useState, startTransition, useRef } from "react";
 import Image from "next/image";
@@ -11,13 +11,13 @@ function SubmitButton() {
   return (
     <>
       <input className="btn-common-text mt-30 mb-30" disabled={pending} type="submit" value={pending ? "Editing" : "Save"}></input>
-      <Link className="btn-common-text mt-30 mb-30 ps-3" href={'/admin/stores'}>Back</Link>
+      <Link className="btn-common-text mt-30 mb-30 ps-3" href={'/admin/categories'}>Back</Link>
     </>
   )
 
 }
 
-export default function EditStoreForm({ store }) {
+export default function EditStoreForm({ category }) {
 
   const fileInputRef = useRef(null);
   const previewsRef = useRef(null);
@@ -37,7 +37,7 @@ export default function EditStoreForm({ store }) {
   };
 
   const [state, formAction] = useActionState(
-    updateStore.bind(null, store._id),
+    updateCategory.bind(null, category._id),
     {
       success: null,
       errors: {},
@@ -45,7 +45,7 @@ export default function EditStoreForm({ store }) {
   );
 
   const [clientErrors, setClientErrors] = useState({});
-  const [preview, setPreview] = useState(store.image ? '/api' + store.image : '/images/club-badge.jpg');
+  const [preview, setPreview] = useState(category.image ? '/api' + category.image : '/images/club-badge.jpg');
 
   // if (club.images)
   // setPreview(club.images);
@@ -64,7 +64,7 @@ export default function EditStoreForm({ store }) {
       formData.delete("image"); // Remove the image key if no new file is uploaded
     }
 
-    const result = StoresSchema(true).safeParse(
+    const result = CategoriesSchema(true).safeParse(
       Object.fromEntries(formData.entries())
     );
 
@@ -77,15 +77,13 @@ export default function EditStoreForm({ store }) {
       formAction(formData);
     });
 
-
-
   };
 
   return (
     <main className="main-body col-md-9 col-lg-9 col-xl-10">
       <div className="body-top d-flex flex-wrap justify-content-between align-items-center gap-20 mb-10">
         <div className="top-left">
-          <p className="top-breadcrumb mb-0">{'> Product'}</p>
+          <p className="top-breadcrumb mb-0">{'> Category'}</p>
         </div>
         <div className="top-right d-flex justify-content-between align-items-center gap-10">
           {/* <a className="btn btn-common" href="clubs-new.php">New</a> */}
@@ -96,7 +94,7 @@ export default function EditStoreForm({ store }) {
       </div>
       <div className="body-title-bar d-flex flex-wrap justify-content-between align-items-center gap-20 mb-20">
         <div className="body-title-bar-left d-flex flex-wrap align-items-center gap-20-70">
-          <h1 className="page-title">Edit Product</h1>
+          <h1 className="page-title">Edit Category</h1>
         </div>
       </div>
 
@@ -114,7 +112,7 @@ export default function EditStoreForm({ store }) {
                   <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
                     <div className="info-text px-0">
                       <p className="mb-0">
-                        <input className="form-control" name="title" defaultValue={store.title} type="text" ></input>
+                        <input className="form-control" name="title" defaultValue={category.title} type="text" ></input>
                         {clientErrors.title && (
                           <span className="invalid-feedback" style={{ display: "block" }}>
                             {clientErrors.title}
@@ -136,7 +134,7 @@ export default function EditStoreForm({ store }) {
                   <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
                     <div className="info-text px-0">
                       <p className="mb-0">
-                        <textarea className="form-control" defaultValue={store.content} name="content" ></textarea>
+                        <textarea className="form-control" defaultValue={category.content} name="content" ></textarea>
                         {clientErrors.content && (
                           <span className="invalid-feedback" style={{ display: "block" }}>
                             {clientErrors.content}
@@ -154,7 +152,7 @@ export default function EditStoreForm({ store }) {
                 <div className="left-row row">
                   <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
                     <div className="label-text mb-0">
-                      <p className="mb-0">Product image</p>
+                      <p className="mb-0">Category image</p>
                     </div>
                   </div>
                   <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
@@ -171,7 +169,7 @@ export default function EditStoreForm({ store }) {
                             name="image"
                             onChange={handleFileChange}
                             style={{ display: "none" }} ></input>
-                          <p className="inputPlaceholder" id="placeholderText">Product Badge</p>
+                          <p className="inputPlaceholder" id="placeholderText">Category Badge</p>
                         </div>
                         {clientErrors.image && (
                           <span className="invalid-feedback" style={{ display: "block" }}>

@@ -1,7 +1,5 @@
-import ChangeStatus from "@/components/ChangeStatus";
-import ClubDropdown from "@/components/ClubDropdown";
 import { connectDB } from "@/lib/db";
-import Stores from "@/lib/models/Stores";
+import Categories from "@/lib/models/Categories";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -9,19 +7,19 @@ export default async function ViewFansPage({ params }) {
     const id = (await params).id;
     let preview = "/images/club-badge.jpg";
     await connectDB();
-    const store = await Stores.findById(id).lean();
-    if (store.image)
-        preview = '/api'+store.image;
+    const category = await Categories.findById(id).lean();
+    if (category.image)
+        preview = '/api'+category.image;
 
     return (
         <>
             <main className="main-body col-md-9 col-lg-9 col-xl-10">
                 <div className="body-top d-flex flex-wrap justify-content-between align-items-center gap-20 mb-10">
                     <div className="top-left">
-                        <p className="top-breadcrumb mb-0">{'> Product'}</p>
+                        <p className="top-breadcrumb mb-0">{'> Category'}</p>
                     </div>
                     <div className="top-right d-flex justify-content-between align-items-center gap-10">
-                        <a className="btn btn-common" href="clubs-new.php">New</a>
+                        {/* <a className="btn btn-common" href="clubs-new.php">New</a> */}
                         <a href="#">
                             <img src="/images/icon-setting.svg" alt="Settings" />
                         </a>
@@ -29,7 +27,7 @@ export default async function ViewFansPage({ params }) {
                 </div>
                 <div className="body-title-bar d-flex flex-wrap justify-content-between align-items-center gap-20 mb-20">
                     <div className="body-title-bar-left d-flex flex-wrap align-items-center gap-20-70">
-                        <h1 className="page-title">{store.title}</h1>
+                        <h1 className="page-title">{category.title}</h1>
 
                     </div>
                 </div>
@@ -47,7 +45,7 @@ export default async function ViewFansPage({ params }) {
                                     <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
                                         <div className="info-text">
                                             <p className="mb-0">
-                                                <a className="text-primary text-decoration-none" href="#">{store.content}</a>
+                                                <a className="text-primary text-decoration-none" href="#">{category.content}</a>
                                             </p>
                                         </div>
                                     </div>
@@ -65,7 +63,7 @@ export default async function ViewFansPage({ params }) {
                                     <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
                                         <div className="info-text">
                                             <p className="mb-0">
-                                                <Link className="btn-common-text" href={`/admin/stores/${store._id}/edit`} >Edit</Link>
+                                                <Link className="btn-common-text" href={`/admin/categories/${category._id}/edit`} >Edit</Link>
 
                                             </p>
                                         </div>
@@ -75,9 +73,8 @@ export default async function ViewFansPage({ params }) {
                         </div>
                         <div className="single-body-right col-lg-12 col-xl-5">
                             <div className="right-info-box">
-                                <h2 className="info-box-title fs-14 fw-bold mb-30">Contact Details</h2>
                                 <div className="right-info mb-30">
-                                <Link href={`/admin/stores/${store._id}/edit`}>
+                                <Link href={`/admin/categories/${category._id}/edit`}>
                                 <Image
                                     src={preview}
                                     width={82}
@@ -87,7 +84,7 @@ export default async function ViewFansPage({ params }) {
                                 />
                                 </Link>
                                     <p className="mb-0">
-                                        <Link className="text-decoration-none fs-14 fw-bold text-primary underline-hover" href={`/admin/stores/${store._id}/edit`}>Product Badge</Link>
+                                        <Link className="text-decoration-none fs-14 fw-bold text-primary underline-hover" href={`/admin/categories/${category._id}/edit`}>Category Badge</Link>
                                     </p>
                                 </div>
                             </div>
