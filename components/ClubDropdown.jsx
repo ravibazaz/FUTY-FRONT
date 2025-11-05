@@ -1,10 +1,14 @@
 "use client";
 
-import { useState, useEffect } from "react";
-
+import { useState, useEffect, useRef } from "react";
+import TomSelect from "tom-select";
+import "tom-select/dist/css/tom-select.bootstrap5.css";
 export default function ClubDropdown(props) {
   const [clubs, setClubs] = useState([]);
   const [selectedClub, setSelectedClub] = useState(props.club ? props.club : '');
+
+  const selectRef = useRef(null);
+  const tomSelectRef = useRef(null);
 
   useEffect(() => {
     const fetchClubs = async () => {
@@ -18,6 +22,51 @@ export default function ClubDropdown(props) {
     };
     fetchClubs();
   }, []);
+
+
+
+  // Initialize Tom Select after clubs are loaded
+    useEffect(() => {
+      if (!selectRef.current || clubs.length === 0) return;
+  
+      // Destroy any previous instance
+      if (tomSelectRef.current) {
+        tomSelectRef.current.destroy();
+        tomSelectRef.current = null;
+      }
+  
+      // Initialize Tom Select
+      tomSelectRef.current = new TomSelect(selectRef.current, {
+        create: false,
+        placeholder: "Choose a club",
+        sortField: { field: "text", direction: "asc" },
+        onChange: (value) => {
+          setSelectedClub(value);
+          if (typeof props.onClubChange === "function") {
+            props.onClubChange(value);
+          }
+        },
+      });
+  
+      // ✅ Preselect value in edit mode
+      if (selectedClub) {
+        tomSelectRef.current.setValue(selectedClub, true);
+      }
+  
+      // Cleanup
+      return () => {
+        tomSelectRef.current?.destroy();
+        tomSelectRef.current = null;
+      };
+    }, [clubs]);
+  
+    // ✅ Keep TomSelect synced if selectedClub changes later
+    useEffect(() => {
+      if (tomSelectRef.current && selectedClub) {
+        tomSelectRef.current.setValue(selectedClub, true);
+      }
+    }, [selectedClub]);
+
 
   return (
 
@@ -35,14 +84,8 @@ export default function ClubDropdown(props) {
               <select
                 className="form-control"
                 name="club"
-                value={selectedClub}
-                onChange={(e) => {
-                  const value = e.target.value;
-                  setSelectedClub(value);
-                  if (typeof props.onClubChange === "function") {
-                    props.onClubChange(value);
-                  }
-                }}
+                ref={selectRef}
+                defaultValue={selectedClub} 
               >
                 <option value="">Choose a club</option>
                 {clubs.map((club) => (

@@ -1,10 +1,15 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+import TomSelect from "tom-select";
+import "tom-select/dist/css/tom-select.bootstrap5.css";
 
 export default function GroundDropdown(props) {
   const [grounds, setGrounds] = useState([]);
- const [selectedClub, setSelectedClub] = useState(props.ground ? props.ground : '');
+  const [selectedClub, setSelectedClub] = useState(props.ground ? props.ground : '');
+
+  const selectRef = useRef(null);
+  const tomSelectRef = useRef(null);
 
   useEffect(() => {
     const fetchClubs = async () => {
@@ -18,6 +23,47 @@ export default function GroundDropdown(props) {
     };
     fetchClubs();
   }, []);
+
+  // Initialize Tom Select after grounds are loaded
+  useEffect(() => {
+    if (!selectRef.current || grounds.length === 0) return;
+
+    // Destroy any previous instance
+    if (tomSelectRef.current) {
+      tomSelectRef.current.destroy();
+      tomSelectRef.current = null;
+    }
+
+    // Initialize Tom Select
+    tomSelectRef.current = new TomSelect(selectRef.current, {
+      create: false,
+      placeholder: "Choose a Ground",
+      sortField: { field: "text", direction: "asc" },
+      onChange: (value) => {
+        setSelectedClub(value);
+        
+      },
+    });
+
+    // ✅ Preselect value in edit mode
+    if (selectedClub) {
+      tomSelectRef.current.setValue(selectedClub, true);
+    }
+
+    // Cleanup
+    return () => {
+      tomSelectRef.current?.destroy();
+      tomSelectRef.current = null;
+    };
+  }, [grounds]);
+
+  // ✅ Keep TomSelect synced if selectedClub changes later
+  useEffect(() => {
+    if (tomSelectRef.current && selectedClub) {
+      tomSelectRef.current.setValue(selectedClub, true);
+    }
+  }, [selectedClub]);
+
 
   return (
 
@@ -34,8 +80,8 @@ export default function GroundDropdown(props) {
               <select
                 className="form-control"
                 name="ground"
-                 value={selectedClub}
-                onChange={(e) => setSelectedClub(e.target.value)}
+                ref={selectRef}
+                defaultValue={selectedClub} 
               >
                 <option value="">Choose a Ground</option>
                 {grounds.map((ground) => (
@@ -44,7 +90,7 @@ export default function GroundDropdown(props) {
                   </option>
                 ))}
               </select>
-               {props.clienterror && <span className="invalid-feedback" style={{ display: "block" }} >{props.clienterror}</span>}
+              {props.clienterror && <span className="invalid-feedback" style={{ display: "block" }} >{props.clienterror}</span>}
             </p>
           </div>
         </div>

@@ -6,12 +6,14 @@ import { useFormStatus } from "react-dom";
 import { useActionState, useState, startTransition, useRef, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import TomSelect from "tom-select";
+import "tom-select/dist/css/tom-select.bootstrap5.css";
 function SubmitButton() {
   const { pending } = useFormStatus();
   return (
     <>
       <button type="submit" className="btn-common-text" disabled={pending}>
-        {pending ? "Editing" : "Edit Manager"}
+        {pending ? "Editing" : "Save"}
       </button>
       <Link className="btn-common-text mt-30 mb-30 ps-3" href="/admin/managers" >Back</Link>
     </>
@@ -37,6 +39,46 @@ export default function EditMangerForm({ user }) {
   const [selectedClub, setSelectedClub] = useState(user.team_id?.club?.name);
   const [selectedLeague, setSelectedLeage] = useState(user.team_id?.club?.league?.title);
   const [selectedTeam, setSelectedTeam] = useState(user.team_id?._id ? user.team_id._id : '');
+  const selectRef = useRef(null);
+  const tomSelectRef = useRef(null);
+
+
+  // Initialize Tom Select after teams are loaded
+  useEffect(() => {
+    if (!selectRef.current || teams.length === 0) return;
+
+    // Destroy any previous instance
+    if (tomSelectRef.current) {
+      tomSelectRef.current.destroy();
+      tomSelectRef.current = null;
+    }
+
+    // Initialize Tom Select
+    tomSelectRef.current = new TomSelect(selectRef.current, {
+      create: false,
+      placeholder: "Choose a Team",
+      sortField: { field: "text", direction: "asc" },
+      onChange: (value) => {
+        const selectedOption = selectRef.current.querySelector(`option[value="${value}"]`);
+        const clubName = selectedOption.dataset.club || "";
+        const leagueName = selectedOption.dataset.league || "";
+        setSelectedClub(clubName);
+        setSelectedLeage(leagueName);
+      },
+    });
+    // ✅ Preselect value in edit mode
+    if (selectedTeam) {
+      tomSelectRef.current.setValue(selectedTeam, true);
+    }
+
+
+    // Cleanup
+    return () => {
+      tomSelectRef.current?.destroy();
+      tomSelectRef.current = null;
+    };
+  }, [teams]);
+
 
 
   const fileInputRef = useRef(null);
@@ -246,15 +288,9 @@ export default function EditMangerForm({ user }) {
                         <select
                           className="form-control"
                           name="team_id"
-                          value={selectedTeam}
-                          onChange={(e) => {
-                            const selectedOption = e.target.options[e.target.selectedIndex];
-                            const clubName = selectedOption.dataset.club;
-                            const leagueName = selectedOption.dataset.league;
-                            setSelectedClub(clubName);
-                            setSelectedLeage(leagueName);
-                            setSelectedTeam(e.target.value);
-                          }}
+                          ref={selectRef}
+                          defaultValue={selectedTeam} 
+
                         >
                           <option value="">Choose a Team</option>
                           {teams.map((team) => (

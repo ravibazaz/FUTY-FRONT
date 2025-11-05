@@ -6,16 +6,18 @@ import { createManagers } from "@/actions/managersActions";
 import { ManagersSchema } from "@/lib/validation/managers";
 import Image from "next/image";
 import Link from "next/link";
+import TomSelect from "tom-select";
+import "tom-select/dist/css/tom-select.bootstrap5.css";
 function SubmitButton() {
     const { pending } = useFormStatus();
     return (
         <>
-       
-        <button type="submit" className="btn-common-text" disabled={pending}>
-            {pending ? "Adding" : "Save"}
-        </button>
-        <Link className="btn-common-text mt-30 mb-30 ps-3"  href="/admin/managers" >Back</Link>
-         </>
+
+            <button type="submit" className="btn-common-text" disabled={pending}>
+                {pending ? "Adding" : "Submit"}
+            </button>
+            <Link className="btn-common-text mt-30 mb-30 ps-3" href="/admin/managers" >Back</Link>
+        </>
     );
 }
 export default function NewFanPage() {
@@ -41,6 +43,41 @@ export default function NewFanPage() {
     const [clientErrors, setClientErrors] = useState({});
     const [preview, setPreview] = useState("/images/profile-picture.jpg");
     const fileInputRef = useRef(null);
+    const selectRef = useRef(null);
+    const tomSelectRef = useRef(null);
+
+    // Initialize Tom Select after teams are loaded
+    useEffect(() => {
+        if (!selectRef.current || teams.length === 0) return;
+
+        // Destroy any previous instance
+        if (tomSelectRef.current) {
+            tomSelectRef.current.destroy();
+            tomSelectRef.current = null;
+        }
+
+        // Initialize Tom Select
+        tomSelectRef.current = new TomSelect(selectRef.current, {
+            create: false,
+            placeholder: "Choose a Team",
+            sortField: { field: "text", direction: "asc" },
+            onChange: (value) => {
+                const selectedOption = selectRef.current.querySelector(`option[value="${value}"]`);
+                const clubName = selectedOption.dataset.club || "";
+                const leagueName = selectedOption.dataset.league || "";
+                setSelectedClub(clubName);
+                setSelectedLeage(leagueName);
+            },
+        });
+
+
+        // Cleanup
+        return () => {
+            tomSelectRef.current?.destroy();
+            tomSelectRef.current = null;
+        };
+    }, [teams]);
+
 
     const handleUploadClick = () => {
         fileInputRef.current.click();
@@ -232,19 +269,11 @@ export default function NewFanPage() {
                                                     <select
                                                         className="form-control"
                                                         name="team_id"
-                                                        onChange={(e) => {
-                                                            const selectedOption = e.target.options[e.target.selectedIndex];
-                                                            const clubName = selectedOption.dataset.club;
-                                                            const leagueName = selectedOption.dataset.league;
-                                                            setSelectedClub(clubName);
-                                                            setSelectedLeage(leagueName);
-                                                           
-
-                                                        }}
+                                                        ref={selectRef}
                                                     >
                                                         <option value="">Choose a Team</option>
                                                         {teams.map((team) => (
-                                                            <option key={team._id} data-club={team.club.name} data-league={team.club.league.title}  value={team._id}>
+                                                            <option key={team._id} data-club={team.club.name} data-league={team.club.league.title} value={team._id}>
                                                                 {team.name}
                                                             </option>
                                                         ))}
@@ -256,8 +285,8 @@ export default function NewFanPage() {
                                                         <span className="invalid-feedback" style={{ display: "block" }} >{clientErrors.team_id}</span>
                                                     )}
                                                 </p>
-                                               {selectedLeague &&  <p className="mb-0">League:{selectedLeague}</p> }
-                                               {selectedClub &&  <p className="mb-0">Club:{selectedClub}</p> }
+                                                {selectedLeague && <p className="mb-0">League:{selectedLeague}</p>}
+                                                {selectedClub && <p className="mb-0">Club:{selectedClub}</p>}
                                             </div>
                                         </div>
                                     </div>

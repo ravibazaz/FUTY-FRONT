@@ -8,11 +8,13 @@ import Image from "next/image";
 import ClubDropdown from "@/components/ClubDropdown";
 import GroundDropdown from "@/components/GroundDropdown";
 import Link from "next/link";
+import TomSelect from "tom-select";
+import "tom-select/dist/css/tom-select.bootstrap5.css";
 function SubmitButton() {
   const { pending } = useFormStatus();
   return (
     <>
-      <input className="btn-common-text mt-30 mb-30" disabled={pending} type="submit" value={pending ? "Editing" : "Edit Team"}></input>
+      <input className="btn-common-text mt-30 mb-30" disabled={pending} type="submit" value={pending ? "Editing" : "Save"}></input>
       <Link className="btn-common-text mt-30 mb-30 ps-3" href="/admin/teams" >Back</Link>
     </>
   );
@@ -23,6 +25,8 @@ export default function EditTeamForm({ team }) {
   const [clubId, setClubId] = useState(team.club ? team.club : '');
   const [ageGroups, setAgeGroups] = useState([]);
   const [selectedage, setSelectedAge] = useState(team.age_groups ? team.age_groups : '');
+  const selectRef = useRef(null);
+  const tomSelectRef = useRef(null);
   useEffect(() => {
     if (!clubId) {
       setAgeGroups([]);
@@ -43,6 +47,51 @@ export default function EditTeamForm({ team }) {
       })
       .catch(err => console.error(err));
   }, [clubId]);
+
+  // Initialize TomSelect every time clubId (and thus ageGroups) changes
+  useEffect(() => {
+    if (!selectRef.current) return;
+
+    // Destroy previous instance
+    if (tomSelectRef.current) {
+      tomSelectRef.current.destroy();
+      tomSelectRef.current = null;
+    }
+
+    // Only initialize if we have options
+    if (ageGroups.length > 0) {
+      // Create the base options HTML
+      const select = selectRef.current;
+      select.innerHTML = `<option value="">Choose an Age</option>`;
+      ageGroups.forEach((agegroup) => {
+        const opt = document.createElement("option");
+        opt.value = agegroup._id;
+        opt.textContent = agegroup.age_group;
+        select.appendChild(opt);
+      });
+
+      // Initialize new TomSelect
+      tomSelectRef.current = new TomSelect(selectRef.current, {
+        placeholder: "Choose an Age Group",
+        sortField: { field: "text", direction: "asc" }
+      });
+      // Preselect if editing
+      if (selectedage) {
+        tomSelectRef.current.setValue(selectedage, true);
+      }
+
+
+
+    }
+
+    // Cleanup
+    return () => {
+      if (tomSelectRef.current) {
+        tomSelectRef.current.destroy();
+        tomSelectRef.current = null;
+      }
+    };
+  }, [ageGroups]);
 
 
   const fileInputRef = useRef(null);
@@ -172,13 +221,10 @@ export default function EditTeamForm({ team }) {
                             <select defaultValue={selectedage}
                               className="form-control"
                               name="age_groups"
+                              ref={selectRef}
                             >
                               <option value="">Choose a Age</option>
-                              {ageGroups.map((agegroup) => (
-                                <option key={agegroup._id} value={agegroup._id}>
-                                  {agegroup.age_group}
-                                </option>
-                              ))}
+                              
                             </select>
                           </p>
                         </div>
