@@ -49,8 +49,15 @@ export default function Sidebar() {
                             <li className="nav-item">
                                 <Link className={`nav-link ${pathname.startsWith('/admin/adverts') ? 'active' : ''}`} href="/admin/adverts"><span className="link-text">Adverts</span></Link>
                             </li>
-                            <li className="nav-item">
-                                <Link className={`nav-link ${pathname.startsWith('/admin/stores') ? 'active' : ''}`} href="/admin/stores"><span className="link-text">Store</span></Link>
+                            <li className="nav-item with-submenu" >
+                                <a className="nav-link collapsed" href="#submenu2" data-bs-toggle="collapse" role="button" aria-expanded="false" >
+                                    <span className="link-text">Stores</span>
+                                </a>
+                                <div className="collapse submenu" id="submenu2">
+                                    <Link className={`nav-link ${pathname.startsWith('/admin/stores') ? 'active' : ''}`}  href="/admin/stores" >Products</Link>
+                                     <Link  className="nav-link" href={'#'} >Categories</Link>
+                                     
+                                </div>
                             </li>
 
                             <li className="nav-item with-submenu" >
