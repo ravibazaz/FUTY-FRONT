@@ -23,7 +23,7 @@ const fileExists = async (filePath) => {
 
 export async function createCategory(prevState, formData) {
 
-  
+
   const cookieStore = await cookies();
   const userId = cookieStore.get("user_id")?.value;
 
@@ -53,7 +53,7 @@ export async function createCategory(prevState, formData) {
     image: `/uploads/categories/${uniqueName}`,
   });
 
-  cookieStore.set("toastMessage", "Store Added");
+  cookieStore.set("toastMessage", "Category Added");
   redirect("/admin/categories");
 }
 
@@ -64,10 +64,11 @@ export async function updateCategory(id, prevState, formData) {
   if (!result.success) {
     return { success: false, errors: result.error.flatten().fieldErrors };
   }
-  const { title, content} = result.data;
+  const { title, content, parent_cat_id } = result.data;
   const imageFile = formData.get("image");
+  const type = formData.get("type");
 
-  // console.log(imageFiles);
+  //console.log("test".title);
 
 
   await connectDB();
@@ -75,13 +76,13 @@ export async function updateCategory(id, prevState, formData) {
   const category = await Categories.findById(id);
 
   if (!category) {
-    return { success: false, error: "Store not found" };
+    return { success: false, error: "Category not found" };
   }
   // Handle image update if a new image is uploaded
 
   if (imageFile && imageFile.size > 0) {
 
-    const uploadsFolder = path.join(process.cwd(),"uploads/categories");
+    const uploadsFolder = path.join(process.cwd(), "uploads/categories");
 
     // Ensure the uploads folder exists
     await fileExists(uploadsFolder);
@@ -114,14 +115,16 @@ export async function updateCategory(id, prevState, formData) {
     const updateData = {
       title,
       content,
+      parent_cat_id: type == 'Main' ? null : parent_cat_id,
       image: `/uploads/categories/${imageName}`, // Save relative path to the image
     };
     // Update the category document with the new image name
     await Categories.findByIdAndUpdate(id, updateData);
   } else {
     const updateData = {
- title,
+      title,
       content,
+      parent_cat_id: type == 'Main' ? null : parent_cat_id,
     };
     // If no new image is uploaded, just update the title and isActive fields
     await Categories.findByIdAndUpdate(id, updateData);
@@ -129,7 +132,7 @@ export async function updateCategory(id, prevState, formData) {
 
   cookieStore.set({
     name: "toastMessage",
-    value: "Store Updated",
+    value: "Category Updated",
     path: "/",
   });
   redirect("/admin/categories");
@@ -143,7 +146,7 @@ export async function deleteStore(id) {
   await connectDB();
   const category = await Categories.findById(id);
   if (!category) {
-    throw new Error("Store not found");
+    throw new Error("Category not found");
   }
   if (category.image) {
     // Construct the file path for the image

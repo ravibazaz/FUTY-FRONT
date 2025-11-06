@@ -3,9 +3,11 @@
 import { updateCategory } from "@/actions/categoriesActions";
 import { CategoriesSchema } from "@/lib/validation/categories";
 import { useFormStatus } from "react-dom";
-import { useActionState, useState, startTransition, useRef } from "react";
+import { useActionState, useState, startTransition, useRef, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import TomSelect from "tom-select";
+import "tom-select/dist/css/tom-select.bootstrap5.css";
 function SubmitButton() {
   const { pending } = useFormStatus();
   return (
@@ -18,6 +20,8 @@ function SubmitButton() {
 }
 
 export default function EditStoreForm({ category }) {
+
+
 
   const fileInputRef = useRef(null);
   const previewsRef = useRef(null);
@@ -44,12 +48,63 @@ export default function EditStoreForm({ category }) {
     }
   );
 
+  const selectRef = useRef(null);
+  const tomSelectRef = useRef(null);
+  const [type, setType] = useState(category.parent_cat_id ? 'Sub' : 'Main');
+  const [categories, setCategories] = useState([]);
+  const [selectedClub, setSelectedClub] = useState(category.parent_cat_id ? category.parent_cat_id : '');
   const [clientErrors, setClientErrors] = useState({});
   const [preview, setPreview] = useState(category.image ? '/api' + category.image : '/images/club-badge.jpg');
 
-  // if (club.images)
-  // setPreview(club.images);
-  // const arrayLength = club.images;
+  useEffect(() => {
+
+    const fetchCategories = async () => {
+      try {
+        const response = await fetch("/api/categories");
+        const data = await response.json();
+        setCategories(data.categories);
+      } catch (error) {
+        console.error("Error fetching Caegory:", error);
+      }
+    };
+    fetchCategories();
+  }, []);
+
+
+  // Initialize Tom Select after type are loaded
+  useEffect(() => {
+    if (!selectRef.current || categories.length === 0) return;
+    // Destroy any previous instance
+    if (tomSelectRef.current) {
+      tomSelectRef.current.destroy();
+      tomSelectRef.current = null;
+    }
+    // Initialize Tom Select
+    tomSelectRef.current = new TomSelect(selectRef.current, {
+      create: false,
+      placeholder: "Choose a Sub Category",
+      sortField: { field: "text", direction: "asc" },
+
+    });
+
+    // ✅ Preselect value in edit mode
+    if (selectedClub) {
+      tomSelectRef.current.setValue(selectedClub, true);
+    }
+
+    // Cleanup
+    return () => {
+      tomSelectRef.current?.destroy();
+      tomSelectRef.current = null;
+    };
+  }, [categories,type]);
+
+  // ✅ Keep TomSelect synced if selectedClub changes later
+  useEffect(() => {
+    if (tomSelectRef.current && selectedClub) {
+      tomSelectRef.current.setValue(selectedClub, true);
+    }
+  }, [selectedClub]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -57,6 +112,7 @@ export default function EditStoreForm({ category }) {
     const raw = Object.fromEntries(formData.entries());
 
     // Check if a new image was uploaded
+    formData.set("type", type); // Append the new file
     const imageFile = e.target.image.files[0];
     if (imageFile) {
       formData.set("image", imageFile); // Append the new file
@@ -123,6 +179,68 @@ export default function EditStoreForm({ category }) {
                   </div>
                 </div>
               </div>
+
+
+              <div className="left-info-box">
+                <div className="left-row row">
+                  <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
+                    <div className="label-text">
+                      <p className="mb-0">Category Type</p>
+                    </div>
+                  </div>
+                  <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
+                    <div className="info-text px-0">
+                      <p className="mb-0">
+                        <select
+                          className="form-control"
+                          name="type"
+                          value={type}
+                          onChange={(e) => setType(e.target.value)}
+                        >
+                          <option value="Main">Main Category</option>
+                          <option value="Sub">Sub Category</option>
+                        </select>
+
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {
+                type == 'Sub' && <div className="left-info-box">
+                  <div className="left-row row">
+                    <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
+                      <div className="label-text">
+                        <p className="mb-0">Sub Category</p>
+                      </div>
+                    </div>
+                    <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
+                      <div className="info-text px-0">
+                        <p className="mb-0">
+
+                          <select
+                            className="form-control"
+                            name="parent_cat_id"
+                            ref={selectRef}
+                            defaultValue={selectedClub}
+
+                          >
+                            <option value="">Choose a Sub Category</option>
+                            {categories.map((category) => (
+                              <option key={category._id} value={category._id}>
+                                {category.title}
+                              </option>
+                            ))}
+                          </select>
+
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              }
+
 
               <div className="left-info-box">
                 <div className="left-row row">

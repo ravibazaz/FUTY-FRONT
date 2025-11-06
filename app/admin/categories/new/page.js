@@ -1,11 +1,13 @@
 "use client";
 
 import { useFormStatus } from "react-dom";
-import { useActionState, useState, useRef, useTransition } from "react";
+import { useActionState, useState, useRef, useTransition, useEffect } from "react";
 import { createCategory } from "@/actions/categoriesActions";
 import { CategoriesSchema } from "@/lib/validation/categories";
 import Image from "next/image";
 import Link from "next/link";
+import TomSelect from "tom-select";
+import "tom-select/dist/css/tom-select.bootstrap5.css";
 function SubmitButton() {
   const { pending } = useFormStatus();
   return (
@@ -22,10 +24,56 @@ export default function NewCategoryPage() {
     errors: {},
   });
 
+  const selectRef = useRef(null);
+  const tomSelectRef = useRef(null);
   const [clientErrors, setClientErrors] = useState({});
+  const [type, setType] = useState('Main');
+  const [categories, setCategories] = useState([]);
   const [preview, setPreview] = useState("/images/club-badge.jpg");
   const fileInputRef = useRef(null);
   const previewsRef = useRef(null);
+
+
+  useEffect(() => {
+
+    const fetchCategories = async () => {
+      try {
+        const response = await fetch("/api/categories");
+        const data = await response.json();
+        setCategories(data.categories);
+      } catch (error) {
+        console.error("Error fetching Caegory:", error);
+      }
+    };
+    fetchCategories();
+  }, []);
+
+
+  // Initialize Tom Select after type are loaded
+  useEffect(() => {
+    if (!selectRef.current || type.length === 0) return;
+
+    // Destroy any previous instance
+    if (tomSelectRef.current) {
+      tomSelectRef.current.destroy();
+      tomSelectRef.current = null;
+    }
+    // Initialize Tom Select
+    tomSelectRef.current = new TomSelect(selectRef.current, {
+      create: false,
+      placeholder: "Choose a Sub Category",
+      sortField: { field: "text", direction: "asc" },
+
+    });
+
+    // Cleanup
+    return () => {
+      tomSelectRef.current?.destroy();
+      tomSelectRef.current = null;
+    };
+  }, [type]);
+
+
 
   const handleUploadClick = () => {
     fileInputRef.current.click();
@@ -48,7 +96,7 @@ export default function NewCategoryPage() {
     const formData = new FormData(e.target);
     const raw = Object.fromEntries(formData.entries());
     const result = CategoriesSchema(false).safeParse(raw);
-    
+
     if (!result.success) {
       setClientErrors(result.error.flatten().fieldErrors);
       return;
@@ -114,6 +162,65 @@ export default function NewCategoryPage() {
                     </div>
                   </div>
                 </div>
+
+
+                <div className="left-info-box">
+                  <div className="left-row row">
+                    <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
+                      <div className="label-text">
+                        <p className="mb-0">Category Type</p>
+                      </div>
+                    </div>
+                    <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
+                      <div className="info-text px-0">
+                        <p className="mb-0">
+                          <select
+                            className="form-control"
+                            name="type"
+                            value={type}
+                            onChange={(e) => setType(e.target.value)}
+                          >
+                            <option value="Main">Main Category</option>
+                            <option value="Sub">Sub Category</option>
+                          </select>
+
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {
+                  type=='Sub' && <div className="left-info-box">
+                    <div className="left-row row">
+                      <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
+                        <div className="label-text">
+                          <p className="mb-0">Sub Category</p>
+                        </div>
+                      </div>
+                      <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
+                        <div className="info-text px-0">
+                          <p className="mb-0">
+
+                            <select
+                              className="form-control"
+                              name="parent_cat_id"
+                              ref={selectRef}
+                            >
+                              <option value="">Choose a Sub Category</option>
+                              {categories.map((category) => (
+                                <option key={category._id} value={category._id}>
+                                  {category.title}
+                                </option>
+                              ))}
+                            </select>
+
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                }
 
                 <div className="left-info-box">
                   <div className="left-row row">
