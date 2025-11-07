@@ -24,7 +24,7 @@ export default function CategoriesTable() {
       try {
         const res = await fetch("/api/categories");
         const result = await res.json();
-        // console.log(result);
+        console.log(result);
         setCategories(result.categories || []);
       } catch (err) {
         console.error("Failed to load data:", err);
@@ -132,13 +132,14 @@ export default function CategoriesTable() {
                           </Link>
                         </td>
 
-                        <td className="text-nowrap user-active">
-                          
-                            {l.title}
-                          
-                        </td>
-
-                       
+                        {l.parent_cat_id?.title ? (
+                          <td className="text-nowrap user-active">
+                            {l.parent_cat_id?.title}
+                          </td>
+                        ) : (
+                          <td >
+                          </td>
+                        )}
                         <td className="text-nowrap">
                           <Link className="text-green"
                             href={`/admin/categories/${l._id}/edit`}

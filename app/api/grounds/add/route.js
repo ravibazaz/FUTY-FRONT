@@ -46,6 +46,7 @@ export async function POST(req) {
     const rawData = Object.fromEntries(formData.entries());
     // Extract all files (normalize to array)
     let images = formData.getAll("images");
+    const facilities = formData.getAll("facilities");
     if (!Array.isArray(images)) images = [images]; //  handle single upload gracefully
 
     //Validate with Zod
@@ -84,6 +85,7 @@ export async function POST(req) {
     const newGround = await Grounds.create({
       ...rawData,
       images: imagePaths,
+      facilities: facilities
     });
 
     return NextResponse.json({

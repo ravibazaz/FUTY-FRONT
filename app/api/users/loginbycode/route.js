@@ -45,10 +45,25 @@ export async function POST(req) {
     const token = await generateToken({ email: user.email, user_id: user.id });
     await User.findByIdAndUpdate(user._id, { isVerified: true });
 
+    const updated_user = await User.findOne({ login_code: result.data.login_code }).select("-__v").populate({
+      path: "team_id",
+      select: "name club",
+      populate: {
+        path: "club",
+        model: "Clubs",
+        select: "label name league", // whatever fields you want
+        populate: {
+          path: "league",
+          model: "Leagues",
+          select: "label title", // whatever fields you want
+        }
+      }
+    }).lean();
+
     return NextResponse.json({
       success: true,
       message: "Login successfully",
-      data: user,
+      data: updated_user,
       token: token,
     });
   } catch (err) {

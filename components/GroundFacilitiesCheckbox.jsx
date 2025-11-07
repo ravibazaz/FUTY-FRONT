@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 
 export default function GroundFacilitiesCheckbox(props) {
    const [selectedfacilities, setSelectedFacilities] = useState(props.facilities ? props.facilities : '');
-  console.log(selectedfacilities);
+  //console.log(selectedfacilities);
 
   return (
 

@@ -23,7 +23,7 @@ const fileExists = async (filePath) => {
 
 export async function createStores(prevState, formData) {
 
-  
+
   const cookieStore = await cookies();
   const userId = cookieStore.get("user_id")?.value;
 
@@ -64,7 +64,7 @@ export async function updateStore(id, prevState, formData) {
   if (!result.success) {
     return { success: false, errors: result.error.flatten().fieldErrors };
   }
-  const { title, content} = result.data;
+  const { title, content, category, price, discount, shipping_cost, size, color, material, product_code, other_product_info } = result.data;
   const imageFile = formData.get("image");
 
   // console.log(imageFiles);
@@ -81,7 +81,7 @@ export async function updateStore(id, prevState, formData) {
 
   if (imageFile && imageFile.size > 0) {
 
-    const uploadsFolder = path.join(process.cwd(),"uploads/stores");
+    const uploadsFolder = path.join(process.cwd(), "uploads/stores");
 
     // Ensure the uploads folder exists
     await fileExists(uploadsFolder);
@@ -114,14 +114,16 @@ export async function updateStore(id, prevState, formData) {
     const updateData = {
       title,
       content,
+      category, price, discount, shipping_cost, size, color, material, product_code, other_product_info,
       image: `/uploads/stores/${imageName}`, // Save relative path to the image
     };
     // Update the store document with the new image name
     await Stores.findByIdAndUpdate(id, updateData);
   } else {
     const updateData = {
- title,
+      title,
       content,
+      category, price, discount, shipping_cost, size, color, material, product_code, other_product_info
     };
     // If no new image is uploaded, just update the title and isActive fields
     await Stores.findByIdAndUpdate(id, updateData);

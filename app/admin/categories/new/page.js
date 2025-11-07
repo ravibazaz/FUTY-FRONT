@@ -97,6 +97,7 @@ export default function NewCategoryPage() {
     const raw = Object.fromEntries(formData.entries());
     const result = CategoriesSchema(false).safeParse(raw);
 
+    formData.set("type", type); // Append the new file
     if (!result.success) {
       setClientErrors(result.error.flatten().fieldErrors);
       return;

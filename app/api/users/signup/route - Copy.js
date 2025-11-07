@@ -15,6 +15,12 @@ export const UserSchema = z.object({
   name: z.string().nonempty("Name is required").min(2, "Name must be at least 2 character"),
   telephone: z.string().nonempty("Telephone is required").min(2, "Telephone must be at least 2 character"),
   account_type: z.string().nonempty("Account Type is required").min(2, "Account Type must be at least 2 character"),
+  profile_image: z
+    .string()
+    .nonempty("Profile image is required")
+    .refine((val) => /^data:image\/(png|jpg|jpeg|gif|webp);base64,/.test(val), {
+      message: "Invalid image format. Must be a valid Base64-encoded image.",
+    })
 }).refine((data) => data.password === data.confirm_password, {
   message: "Passwords don't match",
   path: ["confirm_password"],
@@ -30,6 +36,12 @@ export async function POST(req) {
     const surname = data.surname;
     const telephone = data.telephone;
     const account_type = data.account_type;
+    const profile_description = data.profile_description;
+    const playing_style = data.playing_style;
+    const club_id = data.club_id;
+    const ground_id = data.ground_id;
+    const profile_image = data.profile_image;
+
 
     const result = UserSchema.safeParse(data);
     // If validation fails, return an error response
@@ -59,6 +71,12 @@ export async function POST(req) {
       );
     }
 
+    const matches = profile_image.match(/^data:(.+);base64,(.+)$/);
+    const mimeType = matches[1];
+    const base64Data = matches[2];
+    const extension = mimeType.split("/")[1];
+    const fileName = `${uuidv4()}.${extension}`;
+
     // Save to /public/uploads
     let uploadtype = "";
     if (account_type == "Manager")
@@ -68,7 +86,13 @@ export async function POST(req) {
     if (account_type == "Refreee")
       uploadtype = "uploads/referees";
 
+    const uploadDir = path.join(process.cwd(), uploadtype);
 
+    await fs.mkdir(uploadDir, { recursive: true });
+
+    const filePath = path.join(uploadDir, fileName);
+    const buffer = Buffer.from(base64Data, "base64");
+    await fs.writeFile(filePath, buffer);
 
     const hashedPassword = await bcrypt.hash(password, 10);
     const newuser = await User.create({
@@ -78,6 +102,13 @@ export async function POST(req) {
       surname,
       telephone,
       account_type,
+      ground_id,
+      club_id,
+      profile_description,
+      playing_style,
+      profile_image: `/` + uploadtype + `/${fileName}`,
+
+
     });
 
 
@@ -97,7 +128,7 @@ export async function POST(req) {
       const max = 99999;
 
       const randomNumber = Math.floor(Math.random() * (max - min + 1)) + min;
-      // console.log(randomNumber);
+     // console.log(randomNumber);
 
       // Send mail
       await transporter.sendMail({
@@ -108,12 +139,11 @@ export async function POST(req) {
         html: `<p>We have sent a login code to you. Do not share this code to anyone!</p><p>Login Code : ${randomNumber}</p>`,
       });
 
-      await User.findByIdAndUpdate(newuser._id, { login_code: randomNumber });
+      await User.findByIdAndUpdate(newuser._id, {login_code:randomNumber});
       return NextResponse.json({
         success: true,
         data: {
-          'Login Code': randomNumber,
-          isVerified: false
+          'Login Code': randomNumber
         },
         message: "User created successfully. Please check login code in email.",
       });

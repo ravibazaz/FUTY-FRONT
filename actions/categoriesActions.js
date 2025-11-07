@@ -29,6 +29,7 @@ export async function createCategory(prevState, formData) {
 
   const raw = Object.fromEntries(formData.entries());
   const imageFile = formData.get("image");
+  const type = formData.get("type");
   const result = CategoriesSchema(false).safeParse({ ...raw, image: imageFile });
 
   if (!result.success)
@@ -48,8 +49,10 @@ export async function createCategory(prevState, formData) {
 
   await connectDB();
 
+
   await Categories.create({
     ...result.data,
+    parent_cat_id: result.parent_cat_id ? parent_cat_id : null,
     image: `/uploads/categories/${uniqueName}`,
   });
 

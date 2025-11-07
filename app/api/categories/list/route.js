@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { protectApiRoute } from "@/lib/middleware";
 import { connectDB } from '@/lib/db';
-import Stores from "@/lib/models/Stores";
+import Categories from "@/lib/models/Categories";
 
 export async function GET(req) {
   const authResult = await protectApiRoute(req);
@@ -16,16 +16,20 @@ export async function GET(req) {
   const { searchParams } = new URL(req.url);
   const q = searchParams.get("q");
 
-  const query = {
-    ...(q && { title: { $regex: q, $options: 'i' } }),
-  };
+const query = {
+  ...(q && { title: { $regex: q, $options: "i" } }),
+  $or: [
+    { parent_cat_id: null },
+    { parent_cat_id: { $exists: false } },
+  ],
+};
 
-  const stores = await Stores.find(query, "title image").lean();
+  const categories = await Categories.find(query, "title image content").lean();
 
   return NextResponse.json({
     success: true,
-    message: "Welcome to the Store List!",
-    data: stores
+    message: "Welcome to the Categories List!",
+    data: categories
 
 
   });
