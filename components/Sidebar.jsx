@@ -66,6 +66,7 @@ export default function Sidebar() {
                                 </a>
                                 <div className="collapse submenu" id="submenu1">
                                     <Link className={`nav-link ${pathname.startsWith('/admin/agegroups') ? 'active' : ''}`} href="/admin/agegroups" >Age Groups</Link>
+                                     <Link className={`nav-link ${pathname.startsWith('/admin/profiles') ? 'active' : ''}`} href="/admin/profiles" >Profile</Link>
 
                                 </div>
                             </li>
