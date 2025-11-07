@@ -13,20 +13,20 @@ export const GroundSchema = z.object({
   county: z.string().nonempty("County is required").min(2, "County must be at least 2 character"),
   pin: z.string().nonempty("Post Code is required").min(2, "Post Code must be at least 2 character"),
   isHomeGround: z.string().nonempty("Home Ground is required").min(2, "Home Ground must be at least 2 character"),
-  // images: z
-  //   .union([
-  //     z.instanceof(File), //  single file
-  //     z.array(z.instanceof(File)).nonempty("At least one image is required"), //  multiple
-  //   ])
-  //   .refine(
-  //     (val) => {
-  //       const files = Array.isArray(val) ? val : [val];
-  //       return files.every((file) =>
-  //         ["image/jpeg", "image/png", "image/webp", "image/gif"].includes(file.type)
-  //       );
-  //     },
-  //     { message: "Only JPEG, PNG, GIF, or WebP files are allowed" }
-  //   ),
+  images: z
+    .union([
+      z.instanceof(File), //  single file
+      z.array(z.instanceof(File)).nonempty("At least one image is required"), //  multiple
+    ])
+    .refine(
+      (val) => {
+        const files = Array.isArray(val) ? val : [val];
+        return files.every((file) =>
+          ["image/jpeg", "image/png", "image/webp", "image/gif"].includes(file.type)
+        );
+      },
+      { message: "Only JPEG, PNG, GIF, or WebP files are allowed" }
+    ),
 });
 
 export async function POST(req) {
