@@ -13,7 +13,16 @@ export async function GET(req) {
 
   // Otherwise, it means the user is authenticated
   await connectDB();
-  const grounds = await Teams.find({},'name images').select("-__v").lean();
+  const grounds = await Teams.find().populate({
+    path: "club",
+    select: "name league",
+    populate: {
+      path: "league",
+      model: "Leagues",
+      select: "label title" // whatever fields you want
+    }
+  })
+  .select("-__v").lean();
 
 
 

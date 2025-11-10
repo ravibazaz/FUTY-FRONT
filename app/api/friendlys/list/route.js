@@ -13,8 +13,8 @@ export async function GET(req) {
 
   // Otherwise, it means the user is authenticated
   await connectDB();
-  const friendlies = await Friendlies.find({},'name images date time').select("-__v").lean();
-
+ // const friendlies = await Friendlies.find({},'name images date time').select("-__v").lean();
+const friendlies = await Friendlies.find().populate('team_id').populate('manager_id').populate('ground_id').populate('league_id').select("-__v").lean();
 
 
 

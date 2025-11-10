@@ -13,7 +13,7 @@ export async function GET(req) {
 
   // Otherwise, it means the user is authenticated
   await connectDB();
-  const tournaments = await Tournaments.find({},'name images date closing_date').select("-__v").lean();
+  const tournaments = await Tournaments.find().populate('ground').populate('club').select("-__v").lean();
 
 
 
