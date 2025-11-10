@@ -4,7 +4,6 @@ import User from "@/lib/models/Users";
 import bcrypt from "bcryptjs";
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import nodemailer from "nodemailer";
 import { v4 as uuidv4 } from "uuid";
 import path from "path";
 import { promises as fs } from "fs";
@@ -107,6 +106,30 @@ export async function POST(req) {
       //   text: "We have sent a login code to you :" + randomNumber,
       //   html: `<p>We have sent a login code to you. Do not share this code to anyone!</p><p>Login Code : ${randomNumber}</p>`,
       // });
+
+      const message = `<p>We have sent a login code to you. Do not share this code to anyone!</p><p>Login Code : ${randomNumber}</p>`;
+      const subject = "Login Code";
+      const res = await fetch(process.env.BREVO_REST_URL, {
+        method: "POST",
+        headers: {
+          "accept": "application/json",
+          "api-key": process.env.BREVO_API_KEY,
+          "content-type": "application/json",
+        },
+        body: JSON.stringify({
+          sender: { email: process.env.BREVO_MAIL_FROM, name: process.env.MAIL_FROM_NAME },
+          to: [{ email: email }],
+          subject : subject,
+          htmlContent: `<p>${message}</p>`,
+        }),
+      });
+     
+      
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.message || "Failed to send email");
+      }
 
       await User.findByIdAndUpdate(newuser._id, { login_code: randomNumber });
       return NextResponse.json({
