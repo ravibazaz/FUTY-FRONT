@@ -1,64 +1,36 @@
-// app/api/signup/route.js
-import { connectDB } from "@/lib/db";
-import User from "@/lib/models/Users";
-import bcrypt from "bcryptjs";
 import { NextResponse } from "next/server";
-import nodemailer from "nodemailer";
 
-export async function GET(req) {
+export async function POST(req) {
   try {
-    try {
-      //Create transporter
-      const transporter = nodemailer.createTransport({
-        host: process.env.SMTP_HOST,
-        port: process.env.SMTP_PORT,
-        secure: false, // true for 465, false for other ports
-        auth: {
-          user: process.env.SMTP_USER,
-          pass: process.env.SMTP_PASS,
-        },
-      });
+    const { to, subject, message } = await req.json();
 
-      const min = 10000;
-      const max = 99999;
+    const res = await fetch("https://api.brevo.com/v3/smtp/email", {
+      method: "POST",
+      headers: {
+        "accept": "application/json",
+        "api-key": process.env.BREVO_API_KEY,
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({
+        sender: { email: "info@makeitlive.info", name: "FUTY" },
+        to: [{ email: to }],
+        subject,
+        htmlContent: `<p>${message}</p>`,
+      }),
+    });
 
-      const randomNumber = Math.floor(Math.random() * (max - min + 1)) + min;
-      // console.log(randomNumber);
+    const data = await res.json();
 
-      transporter.verify()
-        .then(() => console.log("SMTP Connected"))
-        .catch(console.error);
-
-
-      // Send mail
-      await transporter.sendMail({
-        from: `"${process.env.MAIL_FROM_NAME}" <${process.env.SMTP_USER}>`,
-        to: 'madan@outrightsolutions.net',
-        subject: "Login Code",
-        text: "We have sent a login code to you :" + randomNumber,
-        html: `<p>We have sent a login code to you. Do not share this code to anyone!</p><p>Login Code : ${randomNumber}</p>`,
-      });
-
-
-      return NextResponse.json({
-        success: true,
-        message: "User created successfully. Please check login code in email.",
-      });
-
-      // return NextResponse.json({ success: true });
-    } catch (error) {
-      console.error("Email error:", error);
-      //return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+    if (!res.ok) {
+      throw new Error(data.message || "Failed to send email");
     }
 
+    return NextResponse.json({ success: true, data });
   } catch (err) {
-    console.error("Signup error:", err);
+    console.error("Email error:", err);
     return NextResponse.json(
-      {
-        success: false,
-        message: "Internal Server Error",
-      },
-      { status: 200 }
+      { success: false, message: err.message },
+      { status: 500 }
     );
   }
 }
