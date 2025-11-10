@@ -68,19 +68,30 @@ export async function POST(req) {
     if (account_type == "Refreee")
       uploadtype = "uploads/referees";
 
+
+
     const hashedPassword = await bcrypt.hash(password, 10);
+    const newuser = await User.create({
+      email,
+      password: hashedPassword,
+      name,
+      surname,
+      telephone,
+      account_type,
+    });
+
 
     try {
       // Create transporter
-      const transporter = nodemailer.createTransport({
-        host: process.env.SMTP_HOST,
-        port: process.env.SMTP_PORT,
-        secure: false, // true for 465, false for other ports
-        auth: {
-          user: process.env.SMTP_USER,
-          pass: process.env.SMTP_PASS,
-        },
-      });
+      // const transporter = nodemailer.createTransport({
+      //   host: process.env.SMTP_HOST,
+      //   port: process.env.SMTP_PORT,
+      //   secure: false, // true for 465, false for other ports
+      //   auth: {
+      //     user: process.env.SMTP_USER,
+      //     pass: process.env.SMTP_PASS,
+      //   },
+      // });
 
       const min = 10000;
       const max = 99999;
@@ -89,22 +100,13 @@ export async function POST(req) {
       // console.log(randomNumber);
 
       // Send mail
-      await transporter.sendMail({
-        from: `"${process.env.MAIL_FROM_NAME}" <${process.env.SMTP_USER}>`,
-        to: email,
-        subject: "Login Code",
-        text: "We have sent a login code to you :" + randomNumber,
-        html: `<p>We have sent a login code to you. Do not share this code to anyone!</p><p>Login Code : ${randomNumber}</p>`,
-      });
-
-      const newuser = await User.create({
-        email,
-        password: hashedPassword,
-        name,
-        surname,
-        telephone,
-        account_type,
-      });
+      // await transporter.sendMail({
+      //   from: `"${process.env.MAIL_FROM_NAME}" <${process.env.SMTP_USER}>`,
+      //   to: email,
+      //   subject: "Login Code",
+      //   text: "We have sent a login code to you :" + randomNumber,
+      //   html: `<p>We have sent a login code to you. Do not share this code to anyone!</p><p>Login Code : ${randomNumber}</p>`,
+      // });
 
       await User.findByIdAndUpdate(newuser._id, { login_code: randomNumber });
       return NextResponse.json({
