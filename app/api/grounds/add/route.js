@@ -47,7 +47,7 @@ export async function POST(req) {
     // Extract normal text fields
     const rawData = Object.fromEntries(formData.entries());
     // Extract all files (normalize to array)
-    let images = formData.getAll("images");
+    let images = formData.get("images");
 
     console.log('Images');
     
