@@ -42,10 +42,17 @@ export async function POST(req) {
   try {
 
     const formData = await req.formData();
+    console.log(formData);
+    
     // Extract normal text fields
     const rawData = Object.fromEntries(formData.entries());
     // Extract all files (normalize to array)
     let images = formData.getAll("images");
+
+    console.log('Images');
+    
+    console.log(images);
+    
     const facilities = formData.getAll("facilities");
     if (!Array.isArray(images)) images = [images]; //  handle single upload gracefully
 
