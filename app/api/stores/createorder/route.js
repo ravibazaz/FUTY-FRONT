@@ -23,7 +23,7 @@ export async function POST(req) {
     return { success: false, error: "Product not found" };
   }
 
-  let newFileName ='';
+  let newFileName = '';
   if (store.image) {
     const oldImagePath = path.join(process.cwd(), store.image);
     // Create a new filename (e.g., add a timestamp or suffix)
@@ -31,7 +31,9 @@ export async function POST(req) {
     const base = path.basename(store.image, ext); // filename without extension
     const dir = path.dirname(store.image); // folder path
 
-    newFileName = `${base}-copy${ext}`;
+    const timestamp = Date.now(); // gives milliseconds since epoch
+    const newFileName = `${base}-${timestamp}${ext}`;
+
     const newImagePath = path.join(process.cwd(), dir, newFileName);
     try {
       // Copy instead of deleting
@@ -41,11 +43,11 @@ export async function POST(req) {
       console.warn(`Failed to copy image: ${err.message}`);
     }
   }
- 
+
   await OrderHistories.create({
     ...data,
     order_product_title: store.title,
-    order_product_image: '/uploads/stores/'+newFileName,
+    order_product_image: '/uploads/stores/' + newFileName,
     order_product_price: store.price,
     order_product_size: store.size,
     order_product_color: store.color,
