@@ -17,17 +17,17 @@ export const TournamentSchema = z.object({
   league_id: z.string().nonempty("League is required").min(3, "League at least 3 character"),
   images: z
     .union([
-      z.string(),               // single base64 string
-      z.array(z.string()).nonempty("At least one image is required"), // multiple base64 strings
+      z.instanceof(File), //  single file
+      z.array(z.instanceof(File)).nonempty("At least one image is required"), //  multiple
     ])
     .refine(
       (val) => {
-        const imgs = Array.isArray(val) ? val : [val];
-        return imgs.every((img) =>
-          /^data:image\/(jpeg|png|webp|gif);base64,/.test(img)
+        const files = Array.isArray(val) ? val : [val];
+        return files.every((file) =>
+          ["image/jpeg", "image/png", "image/webp", "image/gif"].includes(file.type)
         );
       },
-      { message: "Only valid Base64-encoded JPEG, PNG, GIF, or WebP images are allowed" }
+      { message: "Only JPEG, PNG, GIF, or WebP files are allowed" }
     ),
 });
 
@@ -72,23 +72,14 @@ export async function POST(req) {
     // Save uploaded images
     const imagePaths = [];
     for (const image of images) {
+      if (!image?.name) continue; // skip invalid entries
 
-    if (typeof image !== "string") continue;
-      // Remove base64 prefix if exists
-      const base64Data = image.replace(/^data:image\/\w+;base64,/, "");
-      const buffer = Buffer.from(base64Data, "base64");
-
-      // Extract file extension
-      const extMatch = image.match(/^data:image\/(\w+);base64,/);
-      const ext = extMatch ? extMatch[1] : "jpg";
-
-      const fileName = `${Date.now()}_${Math.random()
-        .toString(36)
-        .substring(2, 8)}.${ext}`;
-      const filePath = path.join(uploadDir, fileName);
-
+      const uniqueName = `${Date.now()}_${image.name}`;
+      const filePath = path.join(uploadDir, uniqueName);
+      const buffer = Buffer.from(await image.arrayBuffer());
       await fs.writeFile(filePath, buffer);
-      imagePaths.push(`/uploads/friendlys/${fileName}`);
+
+      imagePaths.push(`/uploads/friendlys/${uniqueName}`);
     }
 
     // Otherwise, it means the user is authenticated

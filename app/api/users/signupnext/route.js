@@ -51,7 +51,9 @@ export async function POST(req) {
   const team_id = data.team_id;
   const nick_name = data.nick_name;
   const post_code = data.post_code;
+  const referee_lavel = data.referee_lavel;
   const travel_distance = data.travel_distance;
+  const referee_fee = data.referee_fee;
 
   const result = UserSchema.safeParse(data);
   // If validation fails, return an error response
@@ -91,6 +93,8 @@ export async function POST(req) {
     nick_name,
     post_code,
     travel_distance,
+    referee_lavel,
+    referee_fee,
   };
 
   if (profile_image) {

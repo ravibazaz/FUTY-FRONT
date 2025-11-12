@@ -1,33 +1,30 @@
 import { NextResponse } from "next/server";
 import { protectApiRoute } from "@/lib/middleware";
 import { connectDB } from '@/lib/db';
-import Friendlies from "@/lib/models/Friendlies";
+import Tournaments from "@/lib/models/Tournaments";
 import { z } from "zod";
 import { v4 as uuidv4 } from "uuid";
 import path from "path";
 import { promises as fs } from "fs";
 export const TournamentSchema = z.object({
-  name: z.string().nonempty("Friendly Title is required").min(2, "Friendly Title must be at least 2 character"),
+  name: z.string().nonempty("Tournament Title is required").min(2, "Tournament Title must be at least 2 character"),
   date: z.string().nonempty("Date is required").min(6, "Date must be at least 6 character"),
-  time: z.string().nonempty("Time is required").min(4, "Time must be at least 4 character"),
+  closing_date: z.string().nonempty("Closing Date is required").min(6, "Closing date must be at least 6 character"),
   description: z.string().nonempty("Description is required").min(2, "Description must be at least 2 character"),
-  ground_id: z.string().nonempty("Ground is required").min(3, "Ground at least 3 character"),
-  team_id: z.string().nonempty("Team is required").min(3, "Team at least 3 character"),
-  manager_id: z.string().nonempty("Manager is required").min(3, "Manager at least 3 character"),
-  league_id: z.string().nonempty("League is required").min(3, "League at least 3 character"),
+  accepted_by: z.string().nonempty("Accepted by is required").min(3, "Accepted by at least 3 character"),
   images: z
     .union([
-      z.string(),               // single base64 string
-      z.array(z.string()).nonempty("At least one image is required"), // multiple base64 strings
+      z.instanceof(File), //  single file
+      z.array(z.instanceof(File)).nonempty("At least one image is required"), //  multiple
     ])
     .refine(
       (val) => {
-        const imgs = Array.isArray(val) ? val : [val];
-        return imgs.every((img) =>
-          /^data:image\/(jpeg|png|webp|gif);base64,/.test(img)
+        const files = Array.isArray(val) ? val : [val];
+        return files.every((file) =>
+          ["image/jpeg", "image/png", "image/webp", "image/gif"].includes(file.type)
         );
       },
-      { message: "Only valid Base64-encoded JPEG, PNG, GIF, or WebP images are allowed" }
+      { message: "Only JPEG, PNG, GIF, or WebP files are allowed" }
     ),
 });
 
@@ -67,33 +64,24 @@ export async function POST(req) {
         { status: 200 }
       );
     }
-    const uploadDir = path.join(process.cwd(), "uploads/friendlys");
+    const uploadDir = path.join(process.cwd(), "uploads/tournaments");
     await fs.mkdir(uploadDir, { recursive: true });
     // Save uploaded images
     const imagePaths = [];
     for (const image of images) {
+      if (!image?.name) continue; // skip invalid entries
 
-    if (typeof image !== "string") continue;
-      // Remove base64 prefix if exists
-      const base64Data = image.replace(/^data:image\/\w+;base64,/, "");
-      const buffer = Buffer.from(base64Data, "base64");
-
-      // Extract file extension
-      const extMatch = image.match(/^data:image\/(\w+);base64,/);
-      const ext = extMatch ? extMatch[1] : "jpg";
-
-      const fileName = `${Date.now()}_${Math.random()
-        .toString(36)
-        .substring(2, 8)}.${ext}`;
-      const filePath = path.join(uploadDir, fileName);
-
+      const uniqueName = `${Date.now()}_${image.name}`;
+      const filePath = path.join(uploadDir, uniqueName);
+      const buffer = Buffer.from(await image.arrayBuffer());
       await fs.writeFile(filePath, buffer);
-      imagePaths.push(`/uploads/friendlys/${fileName}`);
+
+      imagePaths.push(`/uploads/tournaments/${uniqueName}`);
     }
 
     // Otherwise, it means the user is authenticated
     await connectDB();
-    const newGround = await Friendlies.create({
+    const newGround = await Tournaments.create({
       ...rawData,
       accepted_by_user: user._id,
       images: imagePaths,
@@ -101,7 +89,7 @@ export async function POST(req) {
 
     return NextResponse.json({
       success: true,
-      message: "Successfully added friendlys!",
+      message: "Successfully added tournament!",
 
     });
 
