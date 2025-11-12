@@ -200,7 +200,7 @@ export default function NewGroundPage() {
                     <div className="left-row row">
                       <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
                         <div className="label-text">
-                          <p className="mb-0">Age Grouup</p>
+                          <p className="mb-0">Age Group</p>
                         </div>
                       </div>
                       <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
