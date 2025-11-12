@@ -111,7 +111,7 @@ export async function POST(req) {
       uploadtype = "uploads/managers";
     if (user.account_type == "Fan")
       uploadtype = "uploads/fans";
-    if (user.account_type == "Refreee")
+    if (user.account_type == "Referee")
       uploadtype = "uploads/referees";
 
 

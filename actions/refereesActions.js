@@ -53,12 +53,12 @@ export async function createReferees(prevState, formData) {
   await connectDB();
   await Users.create({
     ...result.data,
-    account_type: 'Refreee',
+    account_type: 'Referee',
     password: hashedPassword,
     profile_image: `/uploads/referees/${uniqueName}`, // Save relative path to the image
   });
 
-  cookieStore.set("toastMessage", "Refreee Added");
+  cookieStore.set("toastMessage", "Referee Added");
   redirect("/admin/referees");
 }
 

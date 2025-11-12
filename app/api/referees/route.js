@@ -3,6 +3,6 @@ import Users from '@/lib/models/Users';
 
 export async function GET(req) {
   await connectDB();
-  const referees = await Users.find({ account_type: "Refreee"});
+  const referees = await Users.find({ account_type: "Referee"});
   return Response.json({ referees });
 }
