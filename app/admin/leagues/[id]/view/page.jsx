@@ -12,7 +12,7 @@ export default async function ViewFansPage({ params }) {
     await connectDB();
     const league = await Leagues.findById(id).populate({
         path: "clubs",
-        select: "name",
+        select: "name phone secretary_name",
     }).lean();
 
     // console.log(league);
