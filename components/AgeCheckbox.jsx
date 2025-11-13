@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 export default function AgeCheckbox(props) {
   const [agegroups, setAgegroups] = useState([]);
   const [selectedage, setSelectedAge] = useState(props.age_groups ? props.age_groups : '');
- console.log(selectedage);
+ //console.log(selectedage);
   
 
   useEffect(() => {
@@ -15,7 +15,7 @@ export default function AgeCheckbox(props) {
         const data = await response.json();
         setAgegroups(data.agegroups);
       } catch (error) {
-        console.error("Error fetching clubs:", error);
+        //console.error("Error fetching clubs:", error);
       }
     };
     fetchAgeGroups();

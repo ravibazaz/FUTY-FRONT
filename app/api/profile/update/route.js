@@ -66,7 +66,6 @@ export const UserSchema = z
 
 export async function POST(req) {
   const authResult = await protectApiRoute(req);
-
   // Check if the middleware returned a NextResponse object (error)
   if (authResult instanceof NextResponse) {
     return authResult;
@@ -89,7 +88,6 @@ export async function POST(req) {
   if (!result.success) {
     // Flatten errors to match your desired response structure
     const errors = result.error.flatten().fieldErrors;
-
     return NextResponse.json(
       {
         success: false,

@@ -5,12 +5,18 @@ import { connectDB } from "@/lib/db";
 import Leagues from "@/lib/models/Leagues";
 import Image from "next/image";
 import Link from "next/link";
-
+import Clubs from "@/lib/models/Clubs";
 export default async function ViewFansPage({ params }) {
     const id = (await params).id;
     let preview = "/images/club-badge.jpg";
     await connectDB();
-    const league = await Leagues.findById(id).lean();
+    const league = await Leagues.findById(id).populate({
+        path: "clubs",
+        select: "name",
+    }).lean();
+
+    // console.log(league);
+
     if (league.image)
         preview = '/api' + league.image;
 
@@ -101,7 +107,7 @@ export default async function ViewFansPage({ params }) {
                                         <div className="info-text">
                                             <p className="mb-0">
                                                 <Link className="btn-common-text" href={`/admin/leagues/${league._id}/edit`} >Edit</Link>
-                                                <Link className="btn-common-text mt-30 mb-30 ps-3"  href="/admin/leagues" >Back</Link>
+                                                <Link className="btn-common-text mt-30 mb-30 ps-3" href="/admin/leagues" >Back</Link>
                                             </p>
                                         </div>
                                     </div>
@@ -140,6 +146,58 @@ export default async function ViewFansPage({ params }) {
                             </div>
                         </div>
                     </div>
+                    {league.clubs.length > 0 && <div className="single-bottom-table-cont mt-30">
+                        <h2 className="fs-14 fw-bold mb-20">Clubs</h2>
+
+                        <div className="table-responsive common-datatable">
+                            <table id="example" className="table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Club Name</th>
+                                        <th scope="col">Secretary Name</th>
+                                        <th scope="col">Telephone</th>
+                                        <th scope="col">Edit</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {league.clubs.length > 0 ? (
+                                        league.clubs.map((l, index) => (
+                                            <tr key={l._id}>
+                                                <td className="text-nowrap">
+                                                    <Link
+                                                        href={`/admin/clubs/${l._id}/view`}
+                                                    >
+                                                        {l.name}
+                                                    </Link>
+                                                </td>
+                                                <td className="text-nowrap">
+                                                    {l.secretary_name}
+                                                </td>
+                                                <td className="text-nowrap">
+                                                    {l.phone}
+                                                </td>
+
+                                                <td className="text-nowrap">
+                                                    <Link className="text-green"
+                                                        href={`/admin/clubs/${l._id}/edit`}
+                                                    >
+                                                        Edit
+                                                    </Link>
+
+                                                </td>
+                                            </tr>
+                                        ))
+                                    ) : (
+                                        <tr>
+                                            <td colSpan="2" className="text-center">Loading...</td>
+                                        </tr>
+                                    )}
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                    }
 
 
 

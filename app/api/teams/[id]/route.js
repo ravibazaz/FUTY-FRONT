@@ -26,7 +26,7 @@ export async function GET(req, { params }) {
       model: "Leagues",
       select: "label title image", // whatever fields you want
     }
-  }).populate("ground", "name images")
+  }).populate("ground")
     .populate({
       path: "managers",
       select: "name profile_image",

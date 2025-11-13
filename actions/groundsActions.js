@@ -72,7 +72,7 @@ export async function updateGround(id, prevState, formData) {
   if (!result.success) {
     return { success: false, errors: result.error.flatten().fieldErrors };
   }
-  const { name, add1, add2, add3, pin, content } = result.data;
+  const { name, add1, add2, add3, pin, content , lat, long} = result.data;
   const imageFiles = formData.getAll("images");
   const facilities = formData.getAll("facilities");
 
@@ -137,6 +137,7 @@ export async function updateGround(id, prevState, formData) {
       add3,
       pin,
       content,
+       lat, long,
       facilities: facilities,
       images: uploadedFiles,
     };
@@ -151,6 +152,7 @@ export async function updateGround(id, prevState, formData) {
       add3,
       pin,
       content,
+       lat, long,
       facilities: facilities,
     };
     // If no new image is uploaded, just update the title and isActive fields

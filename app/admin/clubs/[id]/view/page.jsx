@@ -2,6 +2,7 @@ import ChangeStatus from "@/components/ChangeStatus";
 import ClubDropdown from "@/components/ClubDropdown";
 import { connectDB } from "@/lib/db";
 import Clubs from "@/lib/models/Clubs";
+import Teams from "@/lib/models/Teams";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -22,12 +23,10 @@ export default async function ViewFansPage({ params }) {
         })
         .lean();
 
-    // const club = await Clubs.findById(id).populate("league","title").populate("age_groups").lean();
+    const teams = await Teams.find({ 'club': club._id }).lean();
     if (club.image)
         preview = '/api' + club.image;
-
-    //console.log(club.age_groups);
-
+    //console.log(teams);
     return (
         <>
             <main className="main-body col-md-9 col-lg-9 col-xl-10">
@@ -158,7 +157,7 @@ export default async function ViewFansPage({ params }) {
                                         <div className="info-text">
                                             <p className="mb-0">
                                                 <Link className="btn-common-text" href={`/admin/clubs/${club._id}/edit`} >Edit</Link>
-                                                <Link className="btn-common-text mt-30 mb-30 ps-3"  href="/admin/clubs" >Back</Link>
+                                                <Link className="btn-common-text mt-30 mb-30 ps-3" href="/admin/clubs" >Back</Link>
 
                                             </p>
                                         </div>
@@ -199,60 +198,59 @@ export default async function ViewFansPage({ params }) {
                     </div>
 
 
-                    <div className="single-bottom-table-cont mt-30">
+                    {teams.length > 0 && <div className="single-bottom-table-cont mt-30">
                         <h2 className="fs-14 fw-bold mb-20">Teams</h2>
-                        <form>
 
-                            <div className="table-responsive common-datatable">
-                                <table id="example" className="table">
-                                    <thead>
+                        <div className="table-responsive common-datatable">
+                            <table id="example" className="table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Team</th>
+                                        <th scope="col">Phone</th>
+                                        <th scope="col">Email</th>
+                                        <th scope="col">Edit</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {teams.length > 0 ? (
+                                        teams.map((l, index) => (
+                                            <tr key={l._id}>
+                                                <td className="text-nowrap">
+                                                    <Link
+                                                        href={`/admin/teams/${l._id}/view`}
+                                                    >
+                                                        {l.name}
+                                                    </Link>
+                                                </td>
+                                                <td className="text-nowrap">
+                                                    {l.phone}
+                                                </td>
+                                                <td className="text-nowrap">
+                                                    {l.email}
+                                                </td>
+
+                                                <td className="text-nowrap">
+                                                    <Link className="text-green"
+                                                        href={`/admin/teams/${l._id}/edit`}
+                                                    >
+                                                        Edit
+                                                    </Link>
+
+                                                </td>
+                                            </tr>
+                                        ))
+                                    ) : (
                                         <tr>
-                                            <th scope="col">Team</th>
-                                            <th scope="col">Manager</th>
-                                            <th scope="col">Telephone</th>
-                                            <th scope="col">Email</th>
-                                            <th scope="col">Ground</th>
-                                            <th scope="col">Edit</th>
+                                            <td colSpan="2" className="text-center">Loading...</td>
                                         </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td className="text-nowrap">Pegasus U10s</td>
-                                            <td className="text-nowrap"><a href="#">Marc Waters</a></td>
-                                            <td className="text-nowrap"><a href="tel:+44 08564 346268">+44 08564 346268</a></td>
-                                            <td className="text-nowrap"><a href="mailto:u7@phyl.co.uk">u7@phyl.co.uk</a></td>
-                                            <td className="text-nowrap"><a href="#">Waterend</a></td>
-                                            <td className="text-nowrap"><a className="text-green" href="clubs-edit.php">Edit</a></td>
-                                        </tr>
-                                        <tr>
-                                            <td className="text-nowrap">Pegasus U10s</td>
-                                            <td className="text-nowrap"><a href="#">Marc Waters</a></td>
-                                            <td className="text-nowrap"><a href="tel:+44 08564 346268">+44 08564 346268</a></td>
-                                            <td className="text-nowrap"><a href="mailto:u7@phyl.co.uk">u7@phyl.co.uk</a></td>
-                                            <td className="text-nowrap"><a href="#">Waterend</a></td>
-                                            <td className="text-nowrap"><a className="text-green" href="clubs-edit.php">Edit</a></td>
-                                        </tr>
-                                        <tr>
-                                            <td className="text-nowrap">Pegasus U10s</td>
-                                            <td className="text-nowrap"><a href="#">Marc Waters</a></td>
-                                            <td className="text-nowrap"><a href="tel:+44 08564 346268">+44 08564 346268</a></td>
-                                            <td className="text-nowrap"><a href="mailto:u7@phyl.co.uk">u7@phyl.co.uk</a></td>
-                                            <td className="text-nowrap"><a href="#">Waterend</a></td>
-                                            <td className="text-nowrap"><a className="text-green" href="clubs-edit.php">Edit</a></td>
-                                        </tr>
-                                        <tr>
-                                            <td className="text-nowrap">Pegasus U10s</td>
-                                            <td className="text-nowrap"><a href="#">Marc Waters</a></td>
-                                            <td className="text-nowrap"><a href="tel:+44 08564 346268">+44 08564 346268</a></td>
-                                            <td className="text-nowrap"><a href="mailto:u7@phyl.co.uk">u7@phyl.co.uk</a></td>
-                                            <td className="text-nowrap"><a href="#">Waterend</a></td>
-                                            <td className="text-nowrap"><a className="text-green" href="clubs-edit.php">Edit</a></td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </form>
+                                    )}
+                                </tbody>
+                            </table>
+                        </div>
+
                     </div>
+                    }
+
 
                     <div className="single-bottom-table-cont mt-30">
                         <h2 className="fs-14 fw-bold mb-20">Friendlies</h2>

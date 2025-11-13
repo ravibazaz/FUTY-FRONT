@@ -59,7 +59,7 @@ export async function POST(req) {
       return NextResponse.json(
         {
           success: false,
-          message: "Invalid email or password or not verified!. Check mail your mail for code or resend again.",
+          message: "Invalid email or password or not verified!. Check your mail for code or resend again.",
         },
         { status: 200 }
       );
