@@ -54,8 +54,12 @@ export default function Home() {
               <input type={showPassword ? "text" : "password"} id="password" className="fadeIn third" name="password" placeholder="Password"></input>
               <span id="showPasswordImg" className="eye-icon" onClick={() => setShowPassword((prev) => !prev)}
                 style={{ cursor: "pointer" }}>
-                <img src={showPassword ? "images/icon-closed-eye.svg" : "images/icon-open-eye.svg"}
-                  alt={showPassword ? "Closed Eye" : "Open Eye"}></img>
+                <Image
+                  src={showPassword ? "/images/icon-closed-eye.svg" : "/images/icon-open-eye.svg"}
+                  alt={showPassword ? "Closed Eye" : "Open Eye"}
+                  width={24}
+                  height={24}
+                />
               </span>
             </div>
 

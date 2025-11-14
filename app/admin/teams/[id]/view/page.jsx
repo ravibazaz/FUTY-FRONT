@@ -42,7 +42,13 @@ export default async function ViewFansPage({ params }) {
                     <div className="top-right d-flex justify-content-between align-items-center gap-10">
                         {/* <a className="btn btn-common" href="teams-new.php">New</a> */}
                         <a href="#">
-                            <img src="images/icon-setting.svg" alt="Settings" />
+                            <Image
+                                src="/images/icon-setting.svg"
+                                width={33}
+                                height={33}
+                                alt="Settings"
+                            />
+
                         </a>
                     </div>
                 </div>
@@ -255,7 +261,7 @@ export default async function ViewFansPage({ params }) {
                                         <div className="info-text">
                                             <p className="mb-0">
                                                 <Link className="btn-common-text" href={`/admin/teams/${team._id}/edit`}>Edit</Link>
-                                                <Link className="btn-common-text mt-30 mb-30 ps-3"  href="/admin/teams" >Back</Link>
+                                                <Link className="btn-common-text mt-30 mb-30 ps-3" href="/admin/teams" >Back</Link>
                                             </p>
                                         </div>
                                     </div>
