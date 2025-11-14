@@ -89,7 +89,7 @@ export async function POST(req) {
       }
 
 
-      await User.findByIdAndUpdate(user._id, { login_code: randomNumber, isVerified: false });
+      await User.findByIdAndUpdate(user._id, { login_code: randomNumber, isVerified: false,isActive: false });
 
       return NextResponse.json({
         success: true,

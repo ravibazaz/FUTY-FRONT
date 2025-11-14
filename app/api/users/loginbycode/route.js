@@ -43,7 +43,7 @@ export async function POST(req) {
     }
 
     const token = await generateToken({ email: user.email, user_id: user.id });
-    await User.findByIdAndUpdate(user._id, { isVerified: true });
+    await User.findByIdAndUpdate(user._id, { isVerified: true,isActive: true });
 
     const updated_user = await User.findOne({ login_code: result.data.login_code }).select("-__v").populate({
       path: "team_id",

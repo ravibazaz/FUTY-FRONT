@@ -41,7 +41,7 @@ export async function POST(req) {
     await connectDB();
 
     //await AgeGroups.create({ age_group: "Adult" });
-    const user = await User.findOne({ email: result.data.email, isVerified: true }).populate({
+    const user = await User.findOne({ email: result.data.email, isVerified: true,isActive: true }).populate({
       path: "team_id",
       select: "name club",
       populate: {
@@ -59,7 +59,7 @@ export async function POST(req) {
       return NextResponse.json(
         {
           success: false,
-          message: "Invalid email or password or not verified!. Check your mail for code or resend again.",
+          message: "Invalid email or password or not verified or inactive!. Check your mail for code or resend again.",
         },
         { status: 200 }
       );
