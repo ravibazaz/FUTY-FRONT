@@ -12,6 +12,7 @@ export default function Home() {
   });
   const router = useRouter();
   const [loading, setLoading] = useState(true);
+  const [showPassword, setShowPassword] = useState(false);
   useEffect(() => {
     async function checkAuth() {
       try {
@@ -36,7 +37,7 @@ export default function Home() {
 
   return (
     <>
-      
+
       <div className="wrapper fadeInDown">
 
         <div id="formContent">
@@ -49,11 +50,20 @@ export default function Home() {
           {/* <!-- Login Form --> */}
           <form action={formAction}>
             <input type="text" id="login" className="fadeIn second" name="email" placeholder="Email"></input>
-            <input type="password" id="password" className="fadeIn third" name="password" placeholder="Password"></input>
+            <div className="password-container">
+              <input type={showPassword ? "text" : "password"} id="password" className="fadeIn third" name="password" placeholder="Password"></input>
+              <span id="showPasswordImg" className="eye-icon" onClick={() => setShowPassword((prev) => !prev)}
+                style={{ cursor: "pointer" }}>
+                <img src={showPassword ? "images/icon-closed-eye.svg" : "images/icon-open-eye.svg"}
+                  alt={showPassword ? "Closed Eye" : "Open Eye"}></img>
+              </span>
+            </div>
+
+            {/* <input type="password" id="password" className="fadeIn third" name="password" placeholder="Password"></input> */}
             {state?.error && (
               <div className="text-danger mb-2">{state.error}</div>
             )}
-            <input className="btn-login fadeIn fourth" type="submit" disabled={isPending} value= {isPending ? "Loading..." : "Sign In"} ></input>
+            <input className="btn-login fadeIn fourth" type="submit" disabled={isPending} value={isPending ? "Loading..." : "Sign In"} ></input>
           </form>
           {/* <!-- Remind Passowrd --> */}
           {/* <div id="formFooter">

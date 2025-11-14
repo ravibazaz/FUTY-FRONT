@@ -41,17 +41,13 @@ export async function POST(req) {
         { status: 200 }
       );
     }
-
     try {
+      const min = 10000;
+      const max = 99999;
+      const randomNumber = Math.floor(Math.random() * (max - min + 1)) + min;
 
-      const password = crypto.randomBytes(12)
-        .toString("base64") // base64 gives letters, numbers, symbols
-        .slice(0, 12);  // trim to desired length
-
-      const randomNumber = await bcrypt.hash(password, 10);
-
-      const message = `<p>We have sent a temporary password to you. Do not share this temporary password to anyone. Please change this password after login in change password section.</p><p>Temporary password: ${password}</p>`;
-      const subject = "Temporary password";
+      const message = `<p>We have sent a One Time Password(OTP) to your mail. Do not share this password to anyone.</p><p>One Time Password(OTP): ${randomNumber}</p>`;
+      const subject = "One Time Password(OTP)";
       const res = await fetch(process.env.BREVO_REST_URL, {
         method: "POST",
         headers: {
@@ -76,7 +72,11 @@ export async function POST(req) {
 
       return NextResponse.json({
         success: true,
-        message: "Sent temporary password successfully",
+        data: {
+          'OTP': randomNumber,
+          'Email': user.email,
+        },
+        message: "We have sent a One Time Password(OTP) to your mail. Do not share this password to anyone",
       });
       // return NextResponse.json({ success: true });
     } catch (error) {
@@ -86,7 +86,7 @@ export async function POST(req) {
 
 
   } catch (err) {
-    console.error("Forget password error:", err);
+    console.error("password error:", err);
     return NextResponse.json(
       {
         success: false,

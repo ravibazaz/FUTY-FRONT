@@ -16,7 +16,7 @@ const id = (await params).id;
   
   // Otherwise, it means the user is authenticated
   await connectDB();
-  const grounds = await Grounds.findById(id).select("-__v").lean();
+  const grounds = await Grounds.findById(id).populate('facilities').select("-__v").lean();
 
   return NextResponse.json({
     success: true,

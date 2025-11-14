@@ -13,7 +13,7 @@ export async function GET(req) {
   // Otherwise, it means the user is authenticated
   const { user } = authResult;
 
-  console.log(user);
+ // console.log(user);
   
   await Users.findByIdAndUpdate(user._id, { isActive: false });
   return NextResponse.json({

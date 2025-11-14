@@ -8,6 +8,11 @@
     padding-top: 30px;
   }
 }
+@media (min-width: 768px) and (max-width: 1199px) {
+  .main-body {
+    margin-left: 25%;
+  }
+}
 @media (min-width: 768px) and (max-width: 991px) {
   .logo-sidebar {
     padding: 36px 20px 66px 20px;
@@ -28,6 +33,14 @@
   }
   .navbar-search {
     display: block;
+  }
+  .sidebar {
+    height: 100vh;
+    overflow: auto;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1;
   }
 }
 @media screen and (max-width: 767px) {
@@ -56,6 +69,7 @@
     background-color: var(--color-primary);
   }
   .main-body {
+    margin-left: 0;
     padding: 30px 20px 60px 20px;
   }
   .page-title {

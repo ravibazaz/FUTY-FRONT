@@ -198,7 +198,6 @@ textarea.form-control {
 .sidebar {
   /* max-width: 220px; */
 }
-
 .sidebar .nav-link {
   font-size: .875rem;
   font-weight: 500;
@@ -222,7 +221,7 @@ textarea.form-control {
 
 /*---- Sidebar CSS - START ----*/
 .sidebar {
-  min-height: 100vh;
+  /* min-height: 100vh; */
 }
 .logo-sidebar {
   padding: 36px 40px 66px 40px;
@@ -311,6 +310,7 @@ textarea.form-control {
 /*---- Sidebar CSS - END ----*/
 /*---- Main Body CSS - START ----*/
 .main-body {
+  margin-left: 16.66666667%;
   padding: 50px 40px;
 }
 .top-breadcrumb {

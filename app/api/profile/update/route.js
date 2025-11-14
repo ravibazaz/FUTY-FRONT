@@ -24,23 +24,6 @@ export const UserSchema = z
       .nonempty("Telephone is required")
       .min(2, "Telephone must be at least 2 characters"),
 
-    // ✅ Optional password fields (validate only if provided)
-    password: z
-      .string()
-      .optional()
-      .refine(
-        (val) => !val || val.length >= 7,
-        "Password must be at least 7 characters long"
-      ),
-
-    confirm_password: z
-      .string()
-      .optional()
-      .refine(
-        (val) => !val || val.length >= 7,
-        "Confirm password must be at least 7 characters long"
-      ),
-
     profile_image: z
       .string()
       .optional()
@@ -52,17 +35,7 @@ export const UserSchema = z
           message: "Invalid image format. Must be a valid Base64-encoded image.",
         }
       ),
-  })
-  // ✅ Match passwords only if both are provided
-  .refine(
-    (data) =>
-      (!data.password && !data.confirm_password) ||
-      data.password === data.confirm_password,
-    {
-      message: "Passwords don't match",
-      path: ["confirm_password"],
-    }
-  );
+  });
 
 export async function POST(req) {
   const authResult = await protectApiRoute(req);
@@ -76,9 +49,8 @@ export async function POST(req) {
 
   const data = await req.json();
   const email = data.email;
-  const password = data.password;
-  const confirm_password = data.confirm_password;
   const name = data.name;
+  const nick_name = data.nick_name;
   const surname = data.surname;
   const telephone = data.telephone;
   const profile_image = data.profile_image;
@@ -109,14 +81,13 @@ export async function POST(req) {
       { status: 200 }
     );
   }
-
-
-
   const updateData = {
     name,
     email,
     telephone,
-    surname
+    surname,
+    nick_name
+    
   };
 
   if (profile_image) {
@@ -189,9 +160,9 @@ export async function POST(req) {
     // });
   }
 
-  if (password) {
-    updateData.password = await bcrypt.hash(password, 10);
-  }
+  // if (password) {
+  //   updateData.password = await bcrypt.hash(password, 10);
+  // }
 
   await Users.findByIdAndUpdate(user._id, updateData);
 

@@ -246,8 +246,30 @@ input[type="password"]:placeholder {
   margin: 30px auto 15px auto;
 }
 .btn-login {
-    margin-top: 30px!important;
+  margin-top: 30px!important;
 }
 .forgot-password {
-    font-size: 14px;
+  font-size: 14px;
+}
+.password-container {
+  display: inline-block;
+  position: relative;
+  width: 85%;
+}
+.password-container #password {
+  margin-left: 0;
+  margin-right: 0;
+  width: 100%;
+}
+.password-container .eye-icon {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+}
+.password-container .eye-icon img {
+  display: block;
+  height: 16px;
+  width: 16px;
 }
