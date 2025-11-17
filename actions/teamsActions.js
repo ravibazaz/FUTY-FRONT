@@ -158,13 +158,13 @@ export async function updateTeam(id, prevState, formData) {
   redirect("/admin/teams");
 }
 
-export async function deleteLeague(id) {
+export async function deleteTeam(id) {
   "use server";
 
   const cookieStore = await cookies();
 
   await connectDB();
-  const league = await Leagues.findById(id);
+  const league = await Teams.findById(id);
   if (!league) {
     throw new Error("League not found");
   }
@@ -176,7 +176,7 @@ export async function deleteLeague(id) {
       console.warn(`Failed to delete image: ${err.message}`);
     });
   }
-  await Leagues.findByIdAndDelete(id);
+  await Teams.findByIdAndDelete(id);
   cookieStore.set("toastMessage", "Deleted");
-  redirect("/admin/leagues");
+  redirect("/admin/teams");
 }

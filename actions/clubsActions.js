@@ -144,25 +144,25 @@ export async function updateClub(id, prevState, formData) {
   redirect("/admin/clubs");
 }
 
-export async function deleteLeague(id) {
+export async function deleteClub(id) {
   "use server";
 
   const cookieStore = await cookies();
 
   await connectDB();
-  const league = await Leagues.findById(id);
-  if (!league) {
-    throw new Error("League not found");
+  const club = await Clubs.findById(id);
+  if (!club) {
+    throw new Error("Club not found");
   }
-  if (league.image) {
+  if (club.image) {
     // Construct the file path for the image
-    const imagePath = path.join(process.cwd(), league.image);
+    const imagePath = path.join(process.cwd(), club.image);
     // Delete the image file from the folder
     await fs.unlink(imagePath).catch((err) => {
       console.warn(`Failed to delete image: ${err.message}`);
     });
   }
-  await Leagues.findByIdAndDelete(id);
+  await Clubs.findByIdAndDelete(id);
   cookieStore.set("toastMessage", "Deleted");
-  redirect("/admin/leagues");
+  redirect("/admin/clubs");
 }

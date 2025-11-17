@@ -5,6 +5,9 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Swal from "sweetalert2";
+import { deleteLeague } from "@/actions/leaguesActions";
+import DeleteButton from "@/components/DeleteButton";
+
 const Toast = Swal.mixin({
   toast: true,
   position: "top-end",
@@ -87,8 +90,6 @@ export default function LeagueTable() {
       };
     }
   }, [leagues]);
-
-
   return (
     <>
       <main className="main-body col-md-9 col-lg-9 col-xl-10">
@@ -113,47 +114,56 @@ export default function LeagueTable() {
 
         <div className="body-main-cont">
 
-          <form>
-            <div className="table-responsive common-datatable">
-              <table id="example" className="table">
-                <thead>
-                  <tr>
-                    <th scope="col">League Title</th>
-                    <th scope="col">Edit</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {leagues.length > 0 ? (
-                    leagues.map((l, index) => (
-                      <tr key={l._id}>
-                        <td className="text-nowrap user-active">
-                          <Link
-                            href={`/admin/leagues/${l._id}/view`}
-                          >
-                            {l.title}
-                          </Link>
-                        </td>
-                       
-                        <td className="text-nowrap">
-                          <Link className="text-green"
-                            href={`/admin/leagues/${l._id}/edit`}
-                          >
-                            Edit
-                          </Link>
 
-                        </td>
-                      </tr>
-                    ))
-                  ) : (
-                    <tr>
-                      <td colSpan="5" className="text-center">Loading...</td>
+          <div className="table-responsive common-datatable">
+            <table id="example" className="table">
+              <thead>
+                <tr>
+                  <th scope="col">League Title</th>
+                  <th scope="col">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {leagues.length > 0 ? (
+                  leagues.map((l, index) => (
+                    <tr key={l._id}>
+                      <td className="text-nowrap user-active">
+                        <Link
+                          href={`/admin/leagues/${l._id}/view`}
+                        >
+                          {l.title}
+                        </Link>
+                      </td>
+
+                      <td className="text-nowrap">
+                        <Link className="text-green"
+                          href={`/admin/leagues/${l._id}/edit`}
+                        >
+                          Edit
+                        </Link>
+
+                        {/* SweetAlert Delete Button */}
+                        <DeleteButton id={l._id} />
+
+                        {/* Hidden Form for Server Action POST */}
+                        <form
+                          id={`delete-form-${l._id}`}
+                          action={deleteLeague.bind(null, l._id)}
+                        />
+
+                      </td>
                     </tr>
-                  )}
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="5" className="text-center">Loading...</td>
+                  </tr>
+                )}
 
-                </tbody>
-              </table>
-            </div>
-          </form>
+              </tbody>
+            </table>
+          </div>
+
         </div>
 
       </main>

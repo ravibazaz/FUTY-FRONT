@@ -5,6 +5,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Swal from "sweetalert2";
+import DeleteButton from "@/components/DeleteButton";
+import { deleteTeam } from "@/actions/teamsActions";
 const Toast = Swal.mixin({
   toast: true,
   position: "top-end",
@@ -113,54 +115,61 @@ export default function GroundTable() {
 
         <div className="body-main-cont">
 
-          <form>
-            <div className="table-responsive common-datatable">
-              <table id="example" className="table">
-                <thead>
-                  <tr>
-                    <th scope="col">Team</th>
-                    <th scope="col">Manager</th>
-                    <th scope="col">Telephone</th>
-                    <th scope="col">Email</th>
-                    <th scope="col">Ground</th>
-                    <th scope="col">Edit</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {teams.length > 0 ? (
-                    teams.map((l, index) => (
-                      <tr key={l._id}>
-                        <td className="text-nowrap user-active">
-                          <Link
-                            href={`/admin/teams/${l._id}/view`}
-                          >
-                            {l.name}
-                          </Link>
-                        </td>
-                        <td className="text-nowrap"><a href="#">Marc Waters</a></td>
-                        <td className="text-nowrap"><a href="tel:+44 08564 346268">{l.phone}</a></td>
-                        <td className="text-nowrap"><a href="mailto:u7@phyl.co.uk">{l.email}</a></td>
-                        <td className="text-nowrap"><a href="mailto:u7@phyl.co.uk">{l.email}</a></td>
-                        <td className="text-nowrap">
-                          <Link className="text-green"
-                            href={`/admin/teams/${l._id}/edit`}
-                          >
-                            Edit
-                          </Link>
 
-                        </td>
-                      </tr>
-                    ))
-                  ) : (
-                    <tr>
-                      <td colSpan="5" className="text-center">Loading...</td>
+          <div className="table-responsive common-datatable">
+            <table id="example" className="table">
+              <thead>
+                <tr>
+                  <th scope="col">Team</th>
+                  <th scope="col">Manager</th>
+                  <th scope="col">Telephone</th>
+                  <th scope="col">Email</th>
+                  <th scope="col">Ground</th>
+                  <th scope="col">Edit</th>
+                </tr>
+              </thead>
+              <tbody>
+                {teams.length > 0 ? (
+                  teams.map((l, index) => (
+                    <tr key={l._id}>
+                      <td className="text-nowrap user-active">
+                        <Link
+                          href={`/admin/teams/${l._id}/view`}
+                        >
+                          {l.name}
+                        </Link>
+                      </td>
+                      <td className="text-nowrap"><a href="#">Marc Waters</a></td>
+                      <td className="text-nowrap"><a href="tel:+44 08564 346268">{l.phone}</a></td>
+                      <td className="text-nowrap"><a href="mailto:u7@phyl.co.uk">{l.email}</a></td>
+                      <td className="text-nowrap"><a href="mailto:u7@phyl.co.uk">{l.email}</a></td>
+                      <td className="text-nowrap">
+                        <Link className="text-green"
+                          href={`/admin/teams/${l._id}/edit`}
+                        >
+                          Edit
+                        </Link>
+                        {/* SweetAlert Delete Button */}
+                        <DeleteButton id={l._id} />
+                        {/* Hidden Form for Server Action POST */}
+                        <form
+                          id={`delete-form-${l._id}`}
+                          action={deleteTeam.bind(null, l._id)}
+                        />
+
+                      </td>
                     </tr>
-                  )}
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="5" className="text-center">Loading...</td>
+                  </tr>
+                )}
 
-                </tbody>
-              </table>
-            </div>
-          </form>
+              </tbody>
+            </table>
+          </div>
+
         </div>
 
       </main>
