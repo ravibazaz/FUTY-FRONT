@@ -5,6 +5,8 @@ import Link from "next/link";
 import { formatDate } from "@/lib/formatter";
 import Image from "next/image";
 import Swal from "sweetalert2";
+import DeleteButton from "@/components/DeleteButton";
+import { deleteTournaments } from "@/actions/tournamentsActions";
 const Toast = Swal.mixin({
   toast: true,
   position: "top-end",
@@ -111,48 +113,55 @@ export default function GroundTable() {
 
         <div className="body-main-cont">
 
-          <form>
-            <div className="table-responsive common-datatable">
-              <table id="example" className="table">
-                <thead>
-                  <tr>
-                    <th scope="col">Name</th>
-                    <th scope="col">Date</th>
-                    <th scope="col">time</th>
-                    <th scope="col">Profile</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {tournaments.length > 0 ? (
-                    tournaments.map((l, index) => (
-                      <tr key={l._id}>
-                        <td className="text-nowrap user-active"><Link
-                          href={`/admin/tournaments/${l._id}/view`}
+
+          <div className="table-responsive common-datatable">
+            <table id="example" className="table">
+              <thead>
+                <tr>
+                  <th scope="col">Name</th>
+                  <th scope="col">Date</th>
+                  <th scope="col">time</th>
+                  <th scope="col">Profile</th>
+                </tr>
+              </thead>
+              <tbody>
+                {tournaments.length > 0 ? (
+                  tournaments.map((l, index) => (
+                    <tr key={l._id}>
+                      <td className="text-nowrap user-active"><Link
+                        href={`/admin/tournaments/${l._id}/view`}
+                      >
+                        {l.name}
+                      </Link></td>
+                      <td className="text-nowrap">{formatDate(l.date)}</td>
+                      <td className="text-nowrap"><a href="#">{l.time}</a></td>
+                      <td className="text-nowrap">
+                        <Link className="text-green"
+                          href={`/admin/tournaments/${l._id}/edit`}
                         >
-                          {l.name}
-                        </Link></td>
-                        <td className="text-nowrap">{formatDate(l.date)}</td>
-                        <td className="text-nowrap"><a href="#">{l.time}</a></td>
-                        <td className="text-nowrap">
-                          <Link className="text-green"
-                            href={`/admin/tournaments/${l._id}/edit`}
-                          >
-                            Edit
-                          </Link>
+                          Edit
+                        </Link>
+                        {/* SweetAlert Delete Button */}
+                        <DeleteButton id={l._id} />
+                        {/* Hidden Form for Server Action POST */}
+                        <form
+                          id={`delete-form-${l._id}`}
+                          action={deleteTournaments.bind(null, l._id)}
+                        />
 
-                        </td>
-                      </tr>
-                    ))
-                  ) : (
-                    <tr>
-                      <td colSpan="5" className="text-center">Loading...</td>
+                      </td>
                     </tr>
-                  )}
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="5" className="text-center">Loading...</td>
+                  </tr>
+                )}
 
-                </tbody>
-              </table>
-            </div>
-          </form>
+              </tbody>
+            </table>
+          </div>
+
         </div>
 
       </main>
