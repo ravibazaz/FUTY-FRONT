@@ -41,7 +41,39 @@ export async function POST(req) {
     await connectDB();
 
     //await AgeGroups.create({ age_group: "Adult" });
-    const user = await User.findOne({ email: result.data.email, isVerified: true,isActive: true }).populate({
+    const useremail = await User.findOne({ email: result.data.email }).select("-__v").lean();
+    if (!useremail) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Invalid email address.",
+        },
+        { status: 200 }
+      );
+    }
+
+    if (useremail && useremail.isVerified == false) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "This email is not verified. Please verify first.",
+        },
+        { status: 200 }
+      );
+    }
+    if (useremail && useremail.isActive == false) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "User is inactivated. Please contact to support team.",
+        },
+        { status: 200 }
+      );
+    }
+
+   
+
+    const user = await User.findOne({ email: result.data.email, isVerified: true, isActive: true }).populate({
       path: "team_id",
       select: "name club",
       populate: {
@@ -59,7 +91,7 @@ export async function POST(req) {
       return NextResponse.json(
         {
           success: false,
-          message: "Invalid email or password or not verified or inactive!. Check your mail for code or resend again.",
+          message: "Invalid password. Please try again.",
         },
         { status: 200 }
       );
