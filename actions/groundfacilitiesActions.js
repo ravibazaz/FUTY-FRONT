@@ -59,7 +59,7 @@ export async function updateGroundFacilities(id, prevState, formData) {
   redirect("/admin/groundfacilities");
 }
 
-export async function deleteStore(id) {
+export async function deleteGroundFacilities(id) {
   "use server";
 
   const cookieStore = await cookies();
@@ -79,5 +79,5 @@ export async function deleteStore(id) {
   }
   await GroundFacilities.findByIdAndDelete(id);
   cookieStore.set("toastMessage", "Deleted");
-  redirect("/admin/agegroups");
+  redirect("/admin/groundfacilities");
 }

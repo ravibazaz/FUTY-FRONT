@@ -200,25 +200,25 @@ export async function updateManager(id, prevState, formData) {
   redirect("/admin/managers");
 }
 
-export async function deleteLeague(id) {
+export async function deleteManager(id) {
   "use server";
 
   const cookieStore = await cookies();
 
   await connectDB();
-  const league = await Leagues.findById(id);
+  const league = await Users.findById(id);
   if (!league) {
     throw new Error("League not found");
   }
-  if (league.image) {
+  if (league.profile_image) {
     // Construct the file path for the image
-    const imagePath = path.join(process.cwd(), league.image);
+    const imagePath = path.join(process.cwd(), league.profile_image);
     // Delete the image file from the folder
     await fs.unlink(imagePath).catch((err) => {
       console.warn(`Failed to delete image: ${err.message}`);
     });
   }
-  await Leagues.findByIdAndDelete(id);
+  await Users.findByIdAndDelete(id);
   cookieStore.set("toastMessage", "Deleted");
-  redirect("/admin/leagues");
+  redirect("/admin/managers");
 }

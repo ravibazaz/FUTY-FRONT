@@ -5,6 +5,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Swal from "sweetalert2";
+import DeleteButton from "@/components/DeleteButton";
+import { deleteCategory } from "@/actions/categoriesActions";
 const Toast = Swal.mixin({
   toast: true,
   position: "top-end",
@@ -110,56 +112,64 @@ export default function CategoriesTable() {
 
         <div className="body-main-cont">
 
-          <form>
-            <div className="table-responsive common-datatable">
-              <table id="example" className="table">
-                <thead>
-                  <tr>
-                    <th scope="col">Category</th>
-                    <th scope="col">Parent Category</th>
-                    <th scope="col">Edit</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {categories.length > 0 ? (
-                    categories.map((l, index) => (
-                      <tr key={l._id}>
+
+          <div className="table-responsive common-datatable">
+            <table id="example" className="table">
+              <thead>
+                <tr>
+                  <th scope="col">Category</th>
+                  <th scope="col">Parent Category</th>
+                  <th scope="col">Edit</th>
+                </tr>
+              </thead>
+              <tbody>
+                {categories.length > 0 ? (
+                  categories.map((l, index) => (
+                    <tr key={l._id}>
+                      <td className="text-nowrap user-active">
+                        <Link
+                          href={`/admin/categories/${l._id}/view`}
+                        >
+                          {l.title}
+                        </Link>
+                      </td>
+
+                      {l.parent_cat_id?.title ? (
                         <td className="text-nowrap user-active">
-                          <Link
-                            href={`/admin/categories/${l._id}/view`}
-                          >
-                            {l.title}
-                          </Link>
+                          {l.parent_cat_id?.title}
                         </td>
-
-                        {l.parent_cat_id?.title ? (
-                          <td className="text-nowrap user-active">
-                            {l.parent_cat_id?.title}
-                          </td>
-                        ) : (
-                          <td >
-                          </td>
-                        )}
-                        <td className="text-nowrap">
-                          <Link className="text-green"
-                            href={`/admin/categories/${l._id}/edit`}
-                          >
-                            Edit
-                          </Link>
-
+                      ) : (
+                        <td >
                         </td>
-                      </tr>
-                    ))
-                  ) : (
-                    <tr>
-                      <td colSpan="5" className="text-center">Loading...</td>
+                      )}
+                      <td className="text-nowrap">
+                        <Link className="text-green"
+                          href={`/admin/categories/${l._id}/edit`}
+                        >
+                          Edit
+                        </Link>
+
+                        {/* SweetAlert Delete Button */}
+                        <DeleteButton id={l._id} />
+                        {/* Hidden Form for Server Action POST */}
+                        <form
+                          id={`delete-form-${l._id}`}
+                          action={deleteCategory.bind(null, l._id)}
+                        />
+
+                      </td>
                     </tr>
-                  )}
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="5" className="text-center">Loading...</td>
+                  </tr>
+                )}
 
-                </tbody>
-              </table>
-            </div>
-          </form>
+              </tbody>
+            </table>
+          </div>
+
         </div>
 
       </main>

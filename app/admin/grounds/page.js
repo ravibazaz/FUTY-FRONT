@@ -5,6 +5,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Swal from "sweetalert2";
+import DeleteButton from "@/components/DeleteButton";
+import { deleteGround } from "@/actions/groundsActions";
 const Toast = Swal.mixin({
   toast: true,
   position: "top-end",
@@ -112,50 +114,56 @@ export default function GroundTable() {
 
         <div className="body-main-cont">
 
-          <form>
-            <div className="table-responsive common-datatable">
-              <table id="example" className="table">
-                <thead>
-                  <tr>
-                    <th scope="col">Name</th>
-                    <th scope="col">Town</th>
-                    <th scope="col">County</th>
-                    <th scope="col">Postcode</th>
-                    <th scope="col">Profile</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {grounds.length > 0 ? (
-                    grounds.map((l, index) => (
-                      <tr key={l._id}>
-                        <td className="text-nowrap user-active"><Link
-                          href={`/admin/grounds/${l._id}/view`}
+
+          <div className="table-responsive common-datatable">
+            <table id="example" className="table">
+              <thead>
+                <tr>
+                  <th scope="col">Name</th>
+                  <th scope="col">Town</th>
+                  <th scope="col">County</th>
+                  <th scope="col">Postcode</th>
+                  <th scope="col">Profile</th>
+                </tr>
+              </thead>
+              <tbody>
+                {grounds.length > 0 ? (
+                  grounds.map((l, index) => (
+                    <tr key={l._id}>
+                      <td className="text-nowrap user-active"><Link
+                        href={`/admin/grounds/${l._id}/view`}
+                      >
+                        {l.name}
+                      </Link></td>
+                      <td className="text-nowrap">Basingstoke</td>
+                      <td className="text-nowrap">Hampshire</td>
+                      <td className="text-nowrap"><a href="#">{l.pin}</a></td>
+                      <td className="text-nowrap">
+                        <Link className="text-green"
+                          href={`/admin/grounds/${l._id}/edit`}
                         >
-                          {l.name}
-                        </Link></td>
-                        <td className="text-nowrap">Basingstoke</td>
-                        <td className="text-nowrap">Hampshire</td>
-                        <td className="text-nowrap"><a href="#">{l.pin}</a></td>
-                        <td className="text-nowrap">
-                          <Link className="text-green"
-                            href={`/admin/grounds/${l._id}/edit`}
-                          >
-                            Edit
-                          </Link>
-
-                        </td>
-                      </tr>
-                    ))
-                  ) : (
-                    <tr>
-                      <td colSpan="5" className="text-center">Loading...</td>
+                          Edit
+                        </Link>
+                        {/* SweetAlert Delete Button */}
+                        <DeleteButton id={l._id} />
+                        {/* Hidden Form for Server Action POST */}
+                        <form
+                          id={`delete-form-${l._id}`}
+                          action={deleteGround.bind(null, l._id)}
+                        />
+                      </td>
                     </tr>
-                  )}
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="5" className="text-center">Loading...</td>
+                  </tr>
+                )}
 
-                </tbody>
-              </table>
-            </div>
-          </form>
+              </tbody>
+            </table>
+          </div>
+
         </div>
 
       </main>

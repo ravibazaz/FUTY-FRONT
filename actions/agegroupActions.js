@@ -59,7 +59,7 @@ export async function updateAgeGroups(id, prevState, formData) {
   redirect("/admin/agegroups");
 }
 
-export async function deleteStore(id) {
+export async function deleteAgeGroup(id) {
   "use server";
 
   const cookieStore = await cookies();

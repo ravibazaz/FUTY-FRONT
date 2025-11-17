@@ -5,6 +5,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Swal from "sweetalert2";
+import DeleteButton from "@/components/DeleteButton";
+import { deleteManager } from "@/actions/managersActions";
 const Toast = Swal.mixin({
   toast: true,
   position: "top-end",
@@ -108,60 +110,66 @@ export default function FanTable() {
         </div>
 
         <div className="body-main-cont">
-          <form>
-            <div className="table-responsive common-datatable">
-              <table id="example" className="table">
-                <thead>
-                  <tr>
-                    <th scope="col">Name</th>
-                    {/* <th scope="col">Team</th>
+
+          <div className="table-responsive common-datatable">
+            <table id="example" className="table">
+              <thead>
+                <tr>
+                  <th scope="col">Name</th>
+                  {/* <th scope="col">Team</th>
                     <th scope="col">Club</th>
                     <th scope="col">League</th> */}
-                    <th scope="col">Phone</th>
-                    <th scope="col">Email</th>
-                    <th scope="col">Friendleys</th>
-                    <th scope="col">Last Activity</th>
-                    <th scope="col">Profile</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {managers.length > 0 ? (
-                    managers.map((l, index) => (
-                      <tr key={l._id}>
-                        <td className="text-nowrap user-active">
-                          <Link
-                            href={`/admin/managers/${l._id}/view`}
-                          >
-                            {l.name}
-                          </Link>
-                        </td>
-                        {/* <td className="text-nowrap"><a href="teams-single.php">Pegasus U14</a></td>
+                  <th scope="col">Phone</th>
+                  <th scope="col">Email</th>
+                  <th scope="col">Friendleys</th>
+                  <th scope="col">Last Activity</th>
+                  <th scope="col">Profile</th>
+                </tr>
+              </thead>
+              <tbody>
+                {managers.length > 0 ? (
+                  managers.map((l, index) => (
+                    <tr key={l._id}>
+                      <td className="text-nowrap user-active">
+                        <Link
+                          href={`/admin/managers/${l._id}/view`}
+                        >
+                          {l.name}
+                        </Link>
+                      </td>
+                      {/* <td className="text-nowrap"><a href="teams-single.php">Pegasus U14</a></td>
                         <td className="text-nowrap"><a href="clubs-single.php">Pegasus FC</a></td>
                         <td className="text-nowrap"><a href="leagues-single.php">Peter Housman</a></td> */}
-                        <td className="text-nowrap"><a href="tel:+44 07453 234258">{l.telephone}</a></td>
-                        <td className="text-nowrap"><a href="mailto:csb9900@gmail.com">{l.email}</a></td>
-                        <td className="text-nowrap"><a href="#">6</a></td>
-                        <td className="text-nowrap">1 Nov</td>
-                        <td className="text-nowrap">
-                          <Link className="text-green"
-                            href={`/admin/managers/${l._id}/edit`}
-                          >
-                            Edit
-                          </Link>
+                      <td className="text-nowrap"><a href="tel:+44 07453 234258">{l.telephone}</a></td>
+                      <td className="text-nowrap"><a href="mailto:csb9900@gmail.com">{l.email}</a></td>
+                      <td className="text-nowrap"><a href="#">6</a></td>
+                      <td className="text-nowrap">1 Nov</td>
+                      <td className="text-nowrap">
+                        <Link className="text-green"
+                          href={`/admin/managers/${l._id}/edit`}
+                        >
+                          Edit
+                        </Link>
+                        {/* SweetAlert Delete Button */}
+                        <DeleteButton id={l._id} />
+                        {/* Hidden Form for Server Action POST */}
+                        <form
+                          id={`delete-form-${l._id}`}
+                          action={deleteManager.bind(null, l._id)}
+                        />
 
-
-                        </td>
-                      </tr>
-                    ))
-                  ) : (
-                    <tr>
-                      <td colSpan="9" className="text-center">Loading...</td>
+                      </td>
                     </tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
-          </form>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="9" className="text-center">Loading...</td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+
         </div>
       </main>
     </>

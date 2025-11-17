@@ -72,13 +72,13 @@ export async function updateGround(id, prevState, formData) {
   if (!result.success) {
     return { success: false, errors: result.error.flatten().fieldErrors };
   }
-  const { name, add1, add2, add3, pin, content , lat, long} = result.data;
+  const { name, add1, add2, add3, pin, content, lat, long } = result.data;
   const imageFiles = formData.getAll("images");
   const facilities = formData.getAll("facilities");
 
   // console.log(imageFiles);
-  
-  
+
+
   await connectDB();
   // Find the existing league in the database
   const ground = await Grounds.findById(id);
@@ -137,7 +137,7 @@ export async function updateGround(id, prevState, formData) {
       add3,
       pin,
       content,
-       lat, long,
+      lat, long,
       facilities: facilities,
       images: uploadedFiles,
     };
@@ -152,7 +152,7 @@ export async function updateGround(id, prevState, formData) {
       add3,
       pin,
       content,
-       lat, long,
+      lat, long,
       facilities: facilities,
     };
     // If no new image is uploaded, just update the title and isActive fields
@@ -167,25 +167,31 @@ export async function updateGround(id, prevState, formData) {
   redirect("/admin/grounds");
 }
 
-export async function deleteLeague(id) {
+export async function deleteGround(id) {
   "use server";
 
   const cookieStore = await cookies();
 
   await connectDB();
-  const league = await Leagues.findById(id);
+  const league = await Grounds.findById(id);
   if (!league) {
     throw new Error("League not found");
   }
-  if (league.image) {
-    // Construct the file path for the image
-    const imagePath = path.join(process.cwd(), league.image);
-    // Delete the image file from the folder
-    await fs.unlink(imagePath).catch((err) => {
-      console.warn(`Failed to delete image: ${err.message}`);
-    });
+  if (league.images) {
+    league.images.map((l, index) => {
+      const oldImagePath = path.join(process.cwd(), l);
+      // console.log(oldImagePath);
+      try {
+        fs.unlink(oldImagePath).catch((err) => {
+          console.warn(`Failed to delete image: ${err.message}`);
+        });
+
+      } catch (err) {
+        console.warn(`Failed to delete old image: ${err.message}`);
+      }
+    })
   }
-  await Leagues.findByIdAndDelete(id);
+  await Grounds.findByIdAndDelete(id);
   cookieStore.set("toastMessage", "Deleted");
-  redirect("/admin/leagues");
+  redirect("/admin/grounds");
 }
