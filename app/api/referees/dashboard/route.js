@@ -10,19 +10,14 @@ export async function GET(req) {
   if (authResult instanceof NextResponse) {
     return authResult;
   }
-
   // Otherwise, it means the user is authenticated
   await connectDB();
-  const managers = await Users.find({ account_type: "Manager" },"profile_image name surname").lean();
-
-
-
+  const referee = await Users.find({ account_type: "Referee" },"profile_image name surname referee_lavel referee_fee").lean();
 
   return NextResponse.json({
     success: true,
-    message: "Welcome to the Manager Dashboard!",
-    data: managers
-
+    message: "Welcome to the Referee Dashboard!",
+    data: referee
 
   });
 }

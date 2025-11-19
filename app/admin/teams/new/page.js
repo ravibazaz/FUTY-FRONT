@@ -292,7 +292,8 @@ export default function NewGroundPage() {
                     <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
                       <div className="info-text px-0">
                         <p className="mb-0">
-                          <input className="form-control" name="attack" type="text"></input>
+                          <input className="form-control" name="attack" min="0" max="100" type="number"></input>
+                          <span className="d-inline-block mt-10"  style={{ display: "block" }} >(between 0 and 100)</span>
                         </p>
                       </div>
                     </div>
@@ -308,7 +309,8 @@ export default function NewGroundPage() {
                     <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
                       <div className="info-text px-0">
                         <p className="mb-0">
-                          <input className="form-control" name="midfield" type="text"></input>
+                          <input className="form-control" name="midfield" min="0" max="100" type="number"></input>
+                           <span className="d-inline-block mt-10"  style={{ display: "block" }} >(between 0 and 100)</span>
                         </p>
                       </div>
                     </div>
@@ -324,7 +326,8 @@ export default function NewGroundPage() {
                     <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
                       <div className="info-text px-0">
                         <p className="mb-0">
-                          <input className="form-control" name="defence" type="text"></input>
+                          <input className="form-control" name="defence" min="0" max="100" type="number"></input>
+                           <span className="d-inline-block mt-10"  style={{ display: "block" }} >(between 0 and 100)</span>
                         </p>
                       </div>
                     </div>
