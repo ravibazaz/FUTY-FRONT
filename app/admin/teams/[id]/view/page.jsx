@@ -74,7 +74,7 @@ export default async function ViewFansPage({ params }) {
                                         <div className="info-text">
                                             {team.managers.map((manager) => (
                                                 <p className="mb-0" key={manager._id}>
-                                                    {manager.name}
+                                                    <Link className="text-primary text-decoration-none"  href={`/admin/managers/${manager._id}/view`} >{manager.name}</Link>
                                                 </p>
                                             ))
                                             }
@@ -94,7 +94,7 @@ export default async function ViewFansPage({ params }) {
                                     <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
                                         <div className="info-text">
                                             <p className="mb-0">
-                                                {team.club?.name}
+                                                <Link className="text-primary text-decoration-none"  href={`/admin/clubs/${team.club?._id}/view`} >{team.club?.name}</Link>
                                             </p>
                                         </div>
                                     </div>
@@ -127,7 +127,7 @@ export default async function ViewFansPage({ params }) {
                                     <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
                                         <div className="info-text">
                                             <p className="mb-0">
-                                                {team.club?.league?.title}
+                                                <Link className="text-primary text-decoration-none"  href={`/admin/leagues/${team.club?.league._id}/view`}>{team.club?.league?.title}</Link>
                                             </p>
                                         </div>
                                     </div>
@@ -144,7 +144,7 @@ export default async function ViewFansPage({ params }) {
                                     <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
                                         <div className="info-text">
                                             <p className="mb-0">
-                                                <a className="text-primary text-decoration-none" href="grounds-single.php">{team.ground?.name}</a>
+                                                <Link className="text-primary text-decoration-none"  href={`/admin/grounds/${team.ground._id}/view`}>{team.ground?.name}</Link>
                                             </p>
                                         </div>
                                     </div>
