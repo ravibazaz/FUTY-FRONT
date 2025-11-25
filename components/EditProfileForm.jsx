@@ -44,7 +44,11 @@ export const ProfileSchema = z.object({
         message: "Password must be at least 7 characters long",
       })
     : z.string().min(7, "Password must be at least 7 characters long"),
-  telephone: z.string().min(1, "Telephone is required"),
+  telephone: z.string()
+  .trim()
+  .min(10, { message: "Telephone must be at least 10 digits." })
+  .max(11, { message: "Telephone must be at most 11 digits." })
+  .regex(/^\d+$/, { message: " Digits only (0–9)" }),
 
 });
 
