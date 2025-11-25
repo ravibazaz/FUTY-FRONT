@@ -74,7 +74,7 @@ export default async function ViewFansPage({ params }) {
                                         <div className="info-text">
                                             {team.managers.map((manager) => (
                                                 <p className="mb-0" key={manager._id}>
-                                                    <a className="text-primary text-decoration-none" href="leagues-single.php">{manager.name}</a>
+                                                    {manager.name}
                                                 </p>
                                             ))
                                             }
@@ -94,7 +94,7 @@ export default async function ViewFansPage({ params }) {
                                     <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
                                         <div className="info-text">
                                             <p className="mb-0">
-                                                <a className="text-primary text-decoration-none" href="clubs-single.php">{team.club?.name}</a>
+                                                {team.club?.name}
                                             </p>
                                         </div>
                                     </div>
@@ -110,7 +110,7 @@ export default async function ViewFansPage({ params }) {
                                     <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
                                         <div className="info-text">
                                             <p className="mb-0">
-                                                <a className="text-primary text-decoration-none" href="leagues-single.php">{team.age_groups?.age_group}</a>
+                                                {team.age_groups?.age_group}
                                             </p>
                                         </div>
                                     </div>
@@ -127,7 +127,7 @@ export default async function ViewFansPage({ params }) {
                                     <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
                                         <div className="info-text">
                                             <p className="mb-0">
-                                                <a className="text-primary text-decoration-none" href="leagues-single.php">{team.club?.league?.title}</a>
+                                                {team.club?.league?.title}
                                             </p>
                                         </div>
                                     </div>
