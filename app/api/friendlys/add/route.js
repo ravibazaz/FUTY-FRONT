@@ -15,20 +15,20 @@ export const TournamentSchema = z.object({
   team_id: z.string().nonempty("Team is required").min(3, "Team at least 3 character"),
   manager_id: z.string().nonempty("Manager is required").min(3, "Manager at least 3 character"),
   league_id: z.string().nonempty("League is required").min(3, "League at least 3 character"),
-  images: z
-    .union([
-      z.string(),               // single base64 string
-      z.array(z.string()).nonempty("At least one image is required"), // multiple base64 strings
-    ])
-    .refine(
-      (val) => {
-        const imgs = Array.isArray(val) ? val : [val];
-        return imgs.every((img) =>
-          /^data:image\/(jpeg|png|webp|gif);base64,/.test(img)
-        );
-      },
-      { message: "Only valid Base64-encoded JPEG, PNG, GIF, or WebP images are allowed" }
-    ),
+  // images: z
+  //   .union([
+  //     z.string(),               // single base64 string
+  //     z.array(z.string()).nonempty("At least one image is required"), // multiple base64 strings
+  //   ])
+  //   .refine(
+  //     (val) => {
+  //       const imgs = Array.isArray(val) ? val : [val];
+  //       return imgs.every((img) =>
+  //         /^data:image\/(jpeg|png|webp|gif);base64,/.test(img)
+  //       );
+  //     },
+  //     { message: "Only valid Base64-encoded JPEG, PNG, GIF, or WebP images are allowed" }
+  //   ),
 });
 
 export async function POST(req) {
@@ -52,7 +52,7 @@ export async function POST(req) {
     if (!Array.isArray(images)) images = [images]; //  handle single upload gracefully
 
     //Validate with Zod
-    const result = TournamentSchema.safeParse({ ...rawData, images });
+    const result = TournamentSchema.safeParse({ ...rawData });
     // If validation fails, return an error response
     if (!result.success) {
       // Flatten errors to match your desired response structure
@@ -67,36 +67,36 @@ export async function POST(req) {
         { status: 200 }
       );
     }
-    const uploadDir = path.join(process.cwd(), "uploads/friendlys");
-    await fs.mkdir(uploadDir, { recursive: true });
-    // Save uploaded images
-    const imagePaths = [];
-    for (const image of images) {
+    // const uploadDir = path.join(process.cwd(), "uploads/friendlys");
+    // await fs.mkdir(uploadDir, { recursive: true });
+    // // Save uploaded images
+    // const imagePaths = [];
+    // for (const image of images) {
 
-    if (typeof image !== "string") continue;
-      // Remove base64 prefix if exists
-      const base64Data = image.replace(/^data:image\/\w+;base64,/, "");
-      const buffer = Buffer.from(base64Data, "base64");
+    // if (typeof image !== "string") continue;
+    //   // Remove base64 prefix if exists
+    //   const base64Data = image.replace(/^data:image\/\w+;base64,/, "");
+    //   const buffer = Buffer.from(base64Data, "base64");
 
-      // Extract file extension
-      const extMatch = image.match(/^data:image\/(\w+);base64,/);
-      const ext = extMatch ? extMatch[1] : "jpg";
+    //   // Extract file extension
+    //   const extMatch = image.match(/^data:image\/(\w+);base64,/);
+    //   const ext = extMatch ? extMatch[1] : "jpg";
 
-      const fileName = `${Date.now()}_${Math.random()
-        .toString(36)
-        .substring(2, 8)}.${ext}`;
-      const filePath = path.join(uploadDir, fileName);
+    //   const fileName = `${Date.now()}_${Math.random()
+    //     .toString(36)
+    //     .substring(2, 8)}.${ext}`;
+    //   const filePath = path.join(uploadDir, fileName);
 
-      await fs.writeFile(filePath, buffer);
-      imagePaths.push(`/uploads/friendlys/${fileName}`);
-    }
+    //   await fs.writeFile(filePath, buffer);
+    //   imagePaths.push(`/uploads/friendlys/${fileName}`);
+    // }
 
     // Otherwise, it means the user is authenticated
     await connectDB();
     const newGround = await Friendlies.create({
       ...rawData,
       accepted_by_user: user._id,
-      images: imagePaths,
+      // images: imagePaths,
     });
 
     return NextResponse.json({
