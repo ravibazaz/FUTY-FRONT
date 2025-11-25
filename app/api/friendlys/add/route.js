@@ -95,7 +95,7 @@ export async function POST(req) {
     await connectDB();
     const newGround = await Friendlies.create({
       ...rawData,
-      accepted_by_user: user._id,
+      created_by_user: user._id,
       // images: imagePaths,
     });
 
