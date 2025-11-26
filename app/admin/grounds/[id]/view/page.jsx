@@ -1,5 +1,6 @@
 import ChangeStatus from "@/components/ChangeStatus";
 import GroundFacilitiesCheckbox from "@/components/GroundFacilitiesCheckbox";
+import ShowImagesWithAlertClick from "@/components/ShowImagesWithAlertClick";
 import { connectDB } from "@/lib/db";
 import Grounds from "@/lib/models/Grounds";
 import Image from "next/image";
@@ -80,7 +81,7 @@ export default async function ViewFansPage({ params }) {
                                     </div>
                                 </div>
                             </div>
-                            <GroundFacilitiesCheckbox facilities={userdetails.facilities}></GroundFacilitiesCheckbox>
+                            <GroundFacilitiesCheckbox facilities={JSON.parse(JSON.stringify(userdetails.facilities))}></GroundFacilitiesCheckbox>
                             <div className="left-info-box">
                                 <div className="left-row row">
                                     <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
@@ -103,7 +104,8 @@ export default async function ViewFansPage({ params }) {
                             <div className="right-info-box">
 
                                 <div className="right-info mb-30 pt-30 pb-30">
-                                    <div className="d-flex flex-wrap gap-15">
+                                    <ShowImagesWithAlertClick images={JSON.parse(JSON.stringify(userdetails.images))}></ShowImagesWithAlertClick>
+                                    {/* <div className="d-flex flex-wrap gap-15">
                                         {userdetails.images.length > 0 ? (
                                             userdetails.images.map((l, index) => (
                                                 <Image
@@ -126,7 +128,7 @@ export default async function ViewFansPage({ params }) {
 
                                             />
                                         )}
-                                    </div>
+                                    </div> */}
                                     <p className="mb-0">
                                         <Link className="text-decoration-none fs-14 fw-bold text-primary underline-hover" href={`/admin/grounds/${userdetails._id}/edit`}>Ground Photos </Link>
 
