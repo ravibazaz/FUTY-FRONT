@@ -12,6 +12,11 @@ export default async function ViewFansPage({ params }) {
     await connectDB();
     const userdetails = await Grounds.findById(id).lean();
 
+    const latitude = userdetails.lat;
+    const longitude = userdetails.long;
+    const zoom = 15; // adjust zoom level (higher = closer)
+    const googleMapsUrl = `https://www.google.com/maps/@${latitude},${longitude},${zoom}z`;
+
     return (
         <>
             <main className="main-body col-md-9 col-lg-9 col-xl-10">
@@ -57,9 +62,11 @@ export default async function ViewFansPage({ params }) {
                                                     {userdetails.add2}
                                                     <br />
                                                     {userdetails.add3}
-
-
                                                 </a>
+                                                { userdetails.lat && userdetails.long && <Link href={googleMapsUrl} rel="nofollow" target="_blank">
+                                                    Open Location in Google Maps
+                                                </Link>
+                                                 }
                                             </p>
                                         </div>
                                     </div>
@@ -93,7 +100,7 @@ export default async function ViewFansPage({ params }) {
                                         <div className="info-text">
                                             <p className="mb-0">
                                                 <Link className="btn-common-text" href={`/admin/grounds/${userdetails._id}/edit`}>Edit</Link>
-                                                <Link className="btn-common-text mt-30 mb-30 ps-3"  href="/admin/grounds" >Back</Link>
+                                                <Link className="btn-common-text mt-30 mb-30 ps-3" href="/admin/grounds" >Back</Link>
                                             </p>
                                         </div>
                                     </div>

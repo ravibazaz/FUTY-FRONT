@@ -43,12 +43,5 @@ export default function ShowImagesWithAlertClick(props) {
                 />
             )}
         </div>
-        // <button
-        //     type="button"
-        //     onClick={handleDelete}
-        //     className="btn-common-text ps-2"
-        // >
-        //     Delete
-        // </button>
     );
 }
