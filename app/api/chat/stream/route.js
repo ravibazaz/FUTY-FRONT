@@ -18,35 +18,37 @@ export async function GET(req) {
 
   const roomInstance = chatManager.getRoom(room);
 
-const stream = new ReadableStream({
-  start(controller) {
-    const encoder = new TextEncoder();
 
-    // initial
-    controller.enqueue(encoder.encode(`data: ${JSON.stringify({ event: "connected" })}\n\n`));
+  
+  const stream = new ReadableStream({
+    start(controller) {
+      const encoder = new TextEncoder();
 
-    // keepalive ping
-    const ping = setInterval(() => {
-      controller.enqueue(encoder.encode(`data: ${JSON.stringify({ ping: Date.now() })}\n\n`));
-    }, 15000);
+      // initial
+      controller.enqueue(encoder.encode(`data: ${JSON.stringify({ event: "connected" })}\n\n`));
 
-    // attach events
-    const onEvent = (evt) => {
-      controller.enqueue(encoder.encode(`data: ${evt.data}\n\n`));
-    };
+      // keepalive ping
+      const ping = setInterval(() => {
+        controller.enqueue(encoder.encode(`data: ${JSON.stringify({ ping: Date.now() })}\n\n`));
+      }, 15000);
 
-    roomInstance.addEventListener("event", onEvent);
+      // attach events
+      const onEvent = (evt) => {
+        controller.enqueue(encoder.encode(`data: ${evt.data}\n\n`));
+      };
 
-    this.cleanup = () => {
-      clearInterval(ping);
-      roomInstance.removeEventListener("event", onEvent);
-    };
-  },
+      roomInstance.addEventListener("event", onEvent);
 
-  cancel() {
-    if (this.cleanup) this.cleanup();
-  },
-});
+      this.cleanup = () => {
+        clearInterval(ping);
+        roomInstance.removeEventListener("event", onEvent);
+      };
+    },
+
+    cancel() {
+      if (this.cleanup) this.cleanup();
+    },
+  });
 
   return new Response(stream, {
     headers: {

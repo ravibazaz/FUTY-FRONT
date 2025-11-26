@@ -3,7 +3,7 @@ import { chatManager } from "@/lib/chatManager";
 import { connectDB } from "@/lib/db";
 import Message from "@/lib/models/Message";
 import Conversation from "@/lib/models/Conversation";
-
+import { NextResponse } from "next/server";
 export async function POST(req) {
   const body = await req.json();
   const { room, senderId, receiverId, text, attachments = [] } = body;
@@ -23,13 +23,14 @@ export async function POST(req) {
     status: "sent",
   });
 
-  // Update conversation meta
-  await Conversation.findOneAndUpdate(
-    { roomId: room },
-    { $set: { lastMessageAt: new Date() }, $inc: { [`unreadCount.${receiverId}`]: 1 } },
-    { upsert: true }
-  );
+    // Update conversation meta
+    await Conversation.findOneAndUpdate(
+      { roomId: room },
+      { $set: { lastMessageAt: new Date() }, $inc: { [`unreadCount.${receiverId}`]: 1 } },
+      { upsert: true }
+    );
 
+    
   // Broadcast on room
   const roomInst = chatManager.getRoom(room);
   roomInst.send("message", {
@@ -46,5 +47,14 @@ export async function POST(req) {
     }
   });
 
-  return new Response(JSON.stringify({ success: true, message: msg }), { status: 200 });
+
+  return NextResponse.json(
+    {
+      success: true,
+      message: msg
+    },
+    { status: 200 }
+  );
+
+
 }
