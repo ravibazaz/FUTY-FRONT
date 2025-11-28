@@ -11,7 +11,7 @@ function SubmitButton() {
   const { pending } = useFormStatus();
   return (
     <>
-      <input className="btn-common-text mt-30 mb-30" disabled={pending} type="submit" value={pending ? "Editing" : "Edit Ground"}></input>
+      <input className="btn-common-text mt-30 mb-30" disabled={pending} type="submit" value={pending ? "Editing" : "Save"}></input>
        <Link className="btn-common-text mt-30 mb-30 ps-3"  href="/admin/grounds" >Back</Link>
     </>
   );

@@ -11,7 +11,7 @@ function SubmitButton() {
   return (
     <>
       <button type="submit" className="btn-common-text" disabled={pending}>
-        {pending ? "Adding" : "Save"}
+        {pending ? "Adding" : "Submit"}
       </button>
       <Link className="btn-common-text mt-30 mb-30 ps-3" href="/admin/fans" >Back</Link>
     </>
