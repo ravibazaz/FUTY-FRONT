@@ -69,6 +69,7 @@ export async function createManagers(prevState, formData) {
   await Users.create({
     ...result.data,
     account_type: 'Manager',
+    isVerified:true,
     playing_style: playing_style,
     password: hashedPassword,
     profile_image: `/uploads/managers/${uniqueName}`, // Save relative path to the image

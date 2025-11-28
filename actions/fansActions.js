@@ -51,6 +51,7 @@ export async function createFans(prevState, formData) {
   await Users.create({
     ...result.data,
     account_type: 'Fan',
+    isVerified:true,
     password: hashedPassword,
     profile_image: `/uploads/fans/${uniqueName}`, // Save relative path to the image
   });

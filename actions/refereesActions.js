@@ -54,6 +54,7 @@ export async function createReferees(prevState, formData) {
   await Users.create({
     ...result.data,
     account_type: 'Referee',
+    isVerified:true,
     password: hashedPassword,
     profile_image: `/uploads/referees/${uniqueName}`, // Save relative path to the image
   });
