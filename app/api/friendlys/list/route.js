@@ -5,6 +5,7 @@ import Friendlies from "@/lib/models/Friendlies";
 import Teams from "@/lib/models/Teams";
 import Clubs from "@/lib/models/Clubs";
 import Leagues from "@/lib/models/Leagues";
+import Grounds from "@/lib/models/Grounds";
 export async function GET(req) {
   const authResult = await protectApiRoute(req);
 
@@ -13,6 +14,7 @@ export async function GET(req) {
     return authResult;
   }
 
+  const { user } = authResult;
   // Otherwise, it means the user is authenticated
   await connectDB();
 
@@ -32,8 +34,9 @@ export async function GET(req) {
   tomorrowEnd.setHours(23, 59, 59, 999);
 
   // const friendlies = await Friendlies.find({},'name images date time').select("-__v").lean();
-  const all_accepted_friendlies = await Friendlies.find({
-    accepted_by_user: { $ne: null },
+
+  const all_friendlies_created_others = await Friendlies.find({
+    created_by_user: { $ne: user._id },
   }).sort({ date: -1 }).populate('team_id').populate('manager_id').populate('ground_id').populate('league_id').select("-__v").populate({
     path: "created_by_user",
     select: "name team_id",
@@ -73,11 +76,98 @@ export async function GET(req) {
   }).lean();
 
 
-  const todays_friendlies = await Friendlies.find({
+
+  const all_friendlies_created_me_accepted_by_others = await Friendlies.find({
+    accepted_by_user: { $exists: true, $ne: null },
+    created_by_user: user._id
+  }).sort({ date: -1 }).populate('team_id').populate('manager_id').populate('ground_id').populate('league_id').select("-__v").populate({
+    path: "created_by_user",
+    select: "name team_id",
+    populate: {
+      path: "team_id",
+      model: "Teams",
+      select: "label name club", // whatever fields you want
+      populate: {
+        path: "club",
+        model: "Clubs",
+        select: "label name league", // whatever fields you want
+        populate: {
+          path: "league",
+          model: "Leagues",
+          select: "label title", // whatever fields you want
+        }
+      }
+    }
+  }).populate({
+    path: "accepted_by_user",
+    select: "name team_id",
+    populate: {
+      path: "team_id",
+      model: "Teams",
+      select: "label name club", // whatever fields you want
+      populate: {
+        path: "club",
+        model: "Clubs",
+        select: "label name league", // whatever fields you want
+        populate: {
+          path: "league",
+          model: "Leagues",
+          select: "label title", // whatever fields you want
+        }
+      }
+    }
+  }).lean();
+
+
+  const all_friendlies_created_me_not_accepted = await Friendlies.find({
+    accepted_by_user: { $exists: false, $eq: null },
+    created_by_user: user._id
+  }).sort({ date: -1 }).populate('team_id').populate('manager_id').populate('ground_id').populate('league_id').select("-__v").populate({
+    path: "created_by_user",
+    select: "name team_id",
+    populate: {
+      path: "team_id",
+      model: "Teams",
+      select: "label name club", // whatever fields you want
+      populate: {
+        path: "club",
+        model: "Clubs",
+        select: "label name league", // whatever fields you want
+        populate: {
+          path: "league",
+          model: "Leagues",
+          select: "label title", // whatever fields you want
+        }
+      }
+    }
+  }).populate({
+    path: "accepted_by_user",
+    select: "name team_id",
+    populate: {
+      path: "team_id",
+      model: "Teams",
+      select: "label name club", // whatever fields you want
+      populate: {
+        path: "club",
+        model: "Clubs",
+        select: "label name league", // whatever fields you want
+        populate: {
+          path: "league",
+          model: "Leagues",
+          select: "label title", // whatever fields you want
+        }
+      }
+    }
+  }).lean();
+
+
+  const todays_friendlies_created_me = await Friendlies.find({
     date: {
       $gte: todayStart,
       $lte: todayEnd,
     },
+    created_by_user: user._id
+
   }).sort({ date: -1 }).populate('team_id').populate('manager_id').populate('ground_id').populate('league_id').select("-__v").populate({
     path: "created_by_user",
     select: "name team_id",
@@ -117,10 +207,12 @@ export async function GET(req) {
   }).lean();
 
 
-  const upcomings_friendlies = await Friendlies.find({
+  const upcomings_friendlies_created_me = await Friendlies.find({
     date: {
       $gte: tomorrowStart
     },
+    created_by_user: user._id
+
   }).sort({ date: -1 }).populate('team_id').populate('manager_id').populate('ground_id').populate('league_id').select("-__v").populate({
     path: "created_by_user",
     select: "name team_id",
@@ -160,10 +252,11 @@ export async function GET(req) {
   }).lean();
 
 
-  const archive_friendlies = await Friendlies.find({
+  const archive_friendlies_created_me = await Friendlies.find({
     date: {
       $lt: todayStart
     },
+    created_by_user: user._id
   }).sort({ date: -1 }).populate('team_id').populate('manager_id').populate('ground_id').populate('league_id').select("-__v").populate({
     path: "created_by_user",
     select: "name team_id",
@@ -204,6 +297,13 @@ export async function GET(req) {
   return NextResponse.json({
     success: true,
     message: "Welcome to the friendlies List!",
-    data: {'all_accepted_friendlies':all_accepted_friendlies,'todays_friendlies': todays_friendlies, 'upcomings_friendlies': upcomings_friendlies, 'archive_friendlies': archive_friendlies }
+    data: {
+      'all_friendlies_created_others': all_friendlies_created_others,
+      'all_friendlies_created_me_not_accepted': all_friendlies_created_me_not_accepted,
+      'all_friendlies_created_me_accepted_by_others': all_friendlies_created_me_accepted_by_others,
+      'todays_friendlies_created_me': todays_friendlies_created_me,
+      'upcomings_friendlies_created_me': upcomings_friendlies_created_me,
+      'archive_friendlies_created_me': archive_friendlies_created_me
+    }
   });
 }
