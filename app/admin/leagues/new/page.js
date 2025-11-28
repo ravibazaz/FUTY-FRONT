@@ -71,7 +71,7 @@ export default function NewGroundPage() {
       <main className="main-body col-md-9 col-lg-9 col-xl-10">
         <div className="body-top d-flex flex-wrap justify-content-between align-items-center gap-20 mb-10">
           <div className="top-left">
-            <p className="top-breadcrumb mb-0">{'> Clubs'}</p>
+            <p className="top-breadcrumb mb-0">{'> League'}</p>
           </div>
           <div className="top-right d-flex justify-content-between align-items-center gap-10">
             {/* <a className="btn btn-common" href="#">Back</a> */}

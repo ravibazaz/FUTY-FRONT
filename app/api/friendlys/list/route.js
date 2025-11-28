@@ -43,11 +43,11 @@ export async function GET(req) {
     populate: {
       path: "team_id",
       model: "Teams",
-      select: "label name club", // whatever fields you want
+      select: "label name image club", // whatever fields you want
       populate: {
         path: "club",
         model: "Clubs",
-        select: "label name league", // whatever fields you want
+        select: "label name image league", // whatever fields you want
         populate: {
           path: "league",
           model: "Leagues",
@@ -61,11 +61,11 @@ export async function GET(req) {
     populate: {
       path: "team_id",
       model: "Teams",
-      select: "label name club", // whatever fields you want
+      select: "label name image club", // whatever fields you want
       populate: {
         path: "club",
         model: "Clubs",
-        select: "label name league", // whatever fields you want
+        select: "label name image league", // whatever fields you want
         populate: {
           path: "league",
           model: "Leagues",
@@ -86,11 +86,11 @@ export async function GET(req) {
     populate: {
       path: "team_id",
       model: "Teams",
-      select: "label name club", // whatever fields you want
+      select: "label name image club", // whatever fields you want
       populate: {
         path: "club",
         model: "Clubs",
-        select: "label name league", // whatever fields you want
+        select: "label name image league", // whatever fields you want
         populate: {
           path: "league",
           model: "Leagues",
@@ -104,11 +104,11 @@ export async function GET(req) {
     populate: {
       path: "team_id",
       model: "Teams",
-      select: "label name club", // whatever fields you want
+      select: "label name image club", // whatever fields you want
       populate: {
         path: "club",
         model: "Clubs",
-        select: "label name league", // whatever fields you want
+        select: "label name image league", // whatever fields you want
         populate: {
           path: "league",
           model: "Leagues",
@@ -128,11 +128,11 @@ export async function GET(req) {
     populate: {
       path: "team_id",
       model: "Teams",
-      select: "label name club", // whatever fields you want
+      select: "label name image club", // whatever fields you want
       populate: {
         path: "club",
         model: "Clubs",
-        select: "label name league", // whatever fields you want
+        select: "label name image league", // whatever fields you want
         populate: {
           path: "league",
           model: "Leagues",
@@ -146,11 +146,11 @@ export async function GET(req) {
     populate: {
       path: "team_id",
       model: "Teams",
-      select: "label name club", // whatever fields you want
+      select: "label name image club", // whatever fields you want
       populate: {
         path: "club",
         model: "Clubs",
-        select: "label name league", // whatever fields you want
+        select: "label name image league", // whatever fields you want
         populate: {
           path: "league",
           model: "Leagues",
@@ -174,11 +174,11 @@ export async function GET(req) {
     populate: {
       path: "team_id",
       model: "Teams",
-      select: "label name club", // whatever fields you want
+      select: "label name image club", // whatever fields you want
       populate: {
         path: "club",
         model: "Clubs",
-        select: "label name league", // whatever fields you want
+        select: "label name image league", // whatever fields you want
         populate: {
           path: "league",
           model: "Leagues",
@@ -192,11 +192,11 @@ export async function GET(req) {
     populate: {
       path: "team_id",
       model: "Teams",
-      select: "label name club", // whatever fields you want
+      select: "label name image club", // whatever fields you want
       populate: {
         path: "club",
         model: "Clubs",
-        select: "label name league", // whatever fields you want
+        select: "label name image league", // whatever fields you want
         populate: {
           path: "league",
           model: "Leagues",
@@ -207,23 +207,21 @@ export async function GET(req) {
   }).lean();
 
 
-  const upcomings_friendlies_created_me = await Friendlies.find({
+  const upcomings_friendlies_created_me_and_others = await Friendlies.find({
     date: {
       $gte: tomorrowStart
-    },
-    created_by_user: user._id
-
+    }
   }).sort({ date: -1 }).populate('team_id').populate('manager_id').populate('ground_id').populate('league_id').select("-__v").populate({
     path: "created_by_user",
     select: "name team_id",
     populate: {
       path: "team_id",
       model: "Teams",
-      select: "label name club", // whatever fields you want
+      select: "label name image club", // whatever fields you want
       populate: {
         path: "club",
         model: "Clubs",
-        select: "label name league", // whatever fields you want
+        select: "label name image league", // whatever fields you want
         populate: {
           path: "league",
           model: "Leagues",
@@ -237,11 +235,11 @@ export async function GET(req) {
     populate: {
       path: "team_id",
       model: "Teams",
-      select: "label name club", // whatever fields you want
+      select: "label name image club", // whatever fields you want
       populate: {
         path: "club",
         model: "Clubs",
-        select: "label name league", // whatever fields you want
+        select: "label name image league", // whatever fields you want
         populate: {
           path: "league",
           model: "Leagues",
@@ -263,11 +261,11 @@ export async function GET(req) {
     populate: {
       path: "team_id",
       model: "Teams",
-      select: "label name club", // whatever fields you want
+      select: "label name image club", // whatever fields you want
       populate: {
         path: "club",
         model: "Clubs",
-        select: "label name league", // whatever fields you want
+        select: "label name image league", // whatever fields you want
         populate: {
           path: "league",
           model: "Leagues",
@@ -281,11 +279,11 @@ export async function GET(req) {
     populate: {
       path: "team_id",
       model: "Teams",
-      select: "label name club", // whatever fields you want
+      select: "label name image club", // whatever fields you want
       populate: {
         path: "club",
         model: "Clubs",
-        select: "label name league", // whatever fields you want
+        select: "label name image league", // whatever fields you want
         populate: {
           path: "league",
           model: "Leagues",
@@ -302,7 +300,7 @@ export async function GET(req) {
       'all_friendlies_created_me_not_accepted': all_friendlies_created_me_not_accepted,
       'all_friendlies_created_me_accepted_by_others': all_friendlies_created_me_accepted_by_others,
       'todays_friendlies_created_me': todays_friendlies_created_me,
-      'upcomings_friendlies_created_me': upcomings_friendlies_created_me,
+      'upcomings_friendlies_created_me_and_others': upcomings_friendlies_created_me_and_others,
       'archive_friendlies_created_me': archive_friendlies_created_me
     }
   });
