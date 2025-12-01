@@ -5,6 +5,7 @@ import Clubs from "@/lib/models/Clubs";
 import Teams from "@/lib/models/Teams";
 import Image from "next/image";
 import Link from "next/link";
+import AgeGroups from "@/lib/models/AgeGroups";
 
 export default async function ViewFansPage({ params }) {
     const id = (await params).id;

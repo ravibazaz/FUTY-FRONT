@@ -92,6 +92,7 @@ export async function POST(req) {
     const newGround = await Tournaments.create({
       ...rawData,
       accepted_by_user: user._id,
+      created_by_user: user._id,
       images: imagePaths,
     });
 
