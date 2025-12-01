@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { protectApiRoute } from "@/lib/middleware";
 import { connectDB } from '@/lib/db';
 import Grounds from "@/lib/models/Grounds";
+import GroundFacilities from "@/lib/models/GroundFacilities";
 
 export async function GET(req,{ params }) {
   const authResult = await protectApiRoute(req);
