@@ -69,7 +69,6 @@ export default async function ViewFansPage({ params }) {
                 <div className="body-title-bar d-flex flex-wrap justify-content-between align-items-center gap-20 mb-20">
                     <div className="body-title-bar-left d-flex flex-wrap align-items-center gap-20-70">
                         <h1 className="page-title">{friendlies.name}</h1>
-
                     </div>
                 </div>
 
@@ -124,7 +123,6 @@ export default async function ViewFansPage({ params }) {
                                     </div>
                                 </div>
                             </div>
-
                             <div className="left-info-box">
                                 <div className="left-row row">
                                     <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
@@ -161,13 +159,13 @@ export default async function ViewFansPage({ params }) {
                                 <div className="left-row row">
                                     <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
                                         <div className="label-text">
-                                            <p className="mb-0">Product Size</p>
+                                            <p className="mb-0">Created By</p>
                                         </div>
                                     </div>
                                     <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
                                         <div className="info-text">
                                             <p className="mb-0">
-                                                <a className="text-primary text-decoration-none" href="#">{friendlies.size}</a>
+                                                <a className="text-primary text-decoration-none" href="#">{friendlies.created_by_user?.name}</a>
                                             </p>
                                         </div>
                                     </div>
@@ -177,19 +175,19 @@ export default async function ViewFansPage({ params }) {
                                 <div className="left-row row">
                                     <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
                                         <div className="label-text">
-                                            <p className="mb-0">Product Color</p>
+                                            <p className="mb-0">Accepted By</p>
                                         </div>
                                     </div>
                                     <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
                                         <div className="info-text">
                                             <p className="mb-0">
-                                                <a className="text-primary text-decoration-none" href="#">{friendlies.color}</a>
+                                                <a className="text-primary text-decoration-none" href="#">{friendlies.accepted_by_user?.name}</a>
                                             </p>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div className="left-info-box">
+                            {/* <div className="left-info-box">
                                 <div className="left-row row">
                                     <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
                                         <div className="label-text">
@@ -237,7 +235,7 @@ export default async function ViewFansPage({ params }) {
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            </div> */}
 
                             <div className="left-info-box">
                                 <div className="left-row row">
@@ -249,8 +247,8 @@ export default async function ViewFansPage({ params }) {
                                     <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
                                         <div className="info-text">
                                             <p className="mb-0">
-                                                <Link className="btn-common-text" href={`/admin/stores/${friendlies._id}/edit`} >Edit</Link>
-                                                <Link className="btn-common-text ps-3" href={`/admin/stores`} >Back</Link>
+                                                {/* <Link className="btn-common-text" href={`/admin/stores/${friendlies._id}/edit`} >Edit</Link> */}
+                                                <Link className="btn-common-text ps-3" href={`/admin/friendlies`} >Back</Link>
 
                                             </p>
                                         </div>
