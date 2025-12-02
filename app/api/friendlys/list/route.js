@@ -208,6 +208,7 @@ export async function GET(req) {
 
 
   const upcomings_friendlies_created_me_and_others = await Friendlies.find({
+    accepted_by_user: { $exists: true, $ne: null },
     date: {
       $gte: tomorrowStart
     }

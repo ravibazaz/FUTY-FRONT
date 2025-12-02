@@ -12,6 +12,7 @@ export async function GET(req, { params }) {
   }
 
   const league = (await params).league_id;
+  const age_groups = (await params).age_id;
   // Otherwise, it means the user is authenticated
   await connectDB();
   const { searchParams } = new URL(req.url);
@@ -20,6 +21,7 @@ export async function GET(req, { params }) {
   const query = {
     ...(q && { name: { $regex: q, $options: 'i' } }),
     ...(league && { league }), // filter by league if provided
+    ...(age_groups && { age_groups }), // filter by league if provided
   };
   const grounds = await Clubs.find(query, 'name image secretary_name').populate('age_groups','age_group').select("-__v").lean();
 

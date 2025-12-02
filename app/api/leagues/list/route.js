@@ -22,10 +22,7 @@ export async function GET(req) {
   };
 
 
-  const leagues = await Leagues.find(query, "title image").lean();
-
-
-
+  const leagues = await Leagues.find(query, "title image").populate('age_groups','age_group').lean();
 
   return NextResponse.json({
     success: true,
