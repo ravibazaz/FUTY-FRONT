@@ -23,6 +23,7 @@ export default function DeleteButton({ id }) {
         <button
             type="button"
             onClick={handleDelete}
+            style={{ color: 'red'}}
             className="btn-common-text ps-2"
         >
             Delete
