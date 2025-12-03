@@ -163,7 +163,7 @@ export default function NewGroundPage() {
                   </div>
                 </div>
 
-                <div className="left-info-box">
+                {/* <div className="left-info-box">
                   <div className="left-row row">
                     <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
                       <div className="label-text">
@@ -194,7 +194,7 @@ export default function NewGroundPage() {
                       </div>
                     </div>
                   </div>
-                </div>
+                </div> */}
                 <div className="left-info-box">
                   <div className="left-row row">
                     <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
