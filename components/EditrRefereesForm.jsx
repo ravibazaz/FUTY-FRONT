@@ -153,7 +153,7 @@ export default function EditRefereeForm({ user }) {
                   <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
                     <div className="info-text px-0">
                       <p className="mb-0">
-                        <input className="form-control" type="email" name="email" defaultValue={user.email}></input>
+                        <input className="form-control" type="text" name="email" defaultValue={user.email}></input>
                         {clientErrors.email && (
                           <span className="invalid-feedback" style={{ display: "block" }} >{clientErrors.email}</span>
                         )}

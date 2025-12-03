@@ -187,7 +187,7 @@ export default function NewFanPage() {
                                         <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
                                             <div className="info-text px-0">
                                                 <p className="mb-0">
-                                                    <input className="form-control" type="email" name="email" placeholder="Email"></input>
+                                                    <input className="form-control" type="text" name="email" placeholder="Email"></input>
                                                     {state.errors?.email && (
                                                         <span className="invalid-feedback" style={{ display: "block" }}>{state.errors.email}</span>
                                                     )}
