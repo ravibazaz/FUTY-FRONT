@@ -59,44 +59,44 @@ export default function NewGroundPage() {
 
 
   // Initialize TomSelect every time clubId (and thus ageGroups) changes
-    useEffect(() => {
-      if (!selectRef.current) return;
-  
-      // Destroy previous instance
+  useEffect(() => {
+    if (!selectRef.current) return;
+
+    // Destroy previous instance
+    if (tomSelectRef.current) {
+      tomSelectRef.current.destroy();
+      tomSelectRef.current = null;
+    }
+
+    // Only initialize if we have options
+    if (ageGroups.length > 0) {
+      // Create the base options HTML
+      const select = selectRef.current;
+      select.innerHTML = `<option value="">Choose an Age</option>`;
+      ageGroups.forEach((agegroup) => {
+        const opt = document.createElement("option");
+        opt.value = agegroup._id;
+        opt.textContent = agegroup.age_group;
+        select.appendChild(opt);
+      });
+
+      // Initialize new TomSelect
+      tomSelectRef.current = new TomSelect(selectRef.current, {
+        placeholder: "Choose an Age Group",
+        sortField: { field: "text", direction: "asc" }
+
+      });
+
+    }
+
+    // Cleanup
+    return () => {
       if (tomSelectRef.current) {
         tomSelectRef.current.destroy();
         tomSelectRef.current = null;
       }
-  
-      // Only initialize if we have options
-      if (ageGroups.length > 0) {
-        // Create the base options HTML
-        const select = selectRef.current;
-        select.innerHTML = `<option value="">Choose an Age</option>`;
-        ageGroups.forEach((agegroup) => {
-          const opt = document.createElement("option");
-          opt.value = agegroup._id;
-          opt.textContent = agegroup.age_group;
-          select.appendChild(opt);
-        });
-  
-        // Initialize new TomSelect
-        tomSelectRef.current = new TomSelect(selectRef.current, {
-          placeholder: "Choose an Age Group",
-          sortField: { field: "text", direction: "asc" }
-         
-        });
-  
-      }
-  
-      // Cleanup
-      return () => {
-        if (tomSelectRef.current) {
-          tomSelectRef.current.destroy();
-          tomSelectRef.current = null;
-        }
-      };
-    }, [ageGroups]);
+    };
+  }, [ageGroups]);
 
 
 
@@ -292,8 +292,13 @@ export default function NewGroundPage() {
                     <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
                       <div className="info-text px-0">
                         <p className="mb-0">
-                          <input className="form-control" name="attack" min="0" max="100" type="number"></input>
-                          <span className="d-inline-block mt-10"  style={{ display: "block" }} >(between 0 and 100)</span>
+                          <input className="form-control" name="attack" min="0" max="100"
+                            onInput={(e) => {
+                              if (e.target.value.length > 3) {
+                                e.target.value = e.target.value.slice(0, 3);
+                              }
+                            }} type="number"></input>
+                          <span className="d-inline-block mt-10" style={{ display: "block" }} >(between 0 and 100)</span>
                         </p>
                       </div>
                     </div>
@@ -309,8 +314,12 @@ export default function NewGroundPage() {
                     <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
                       <div className="info-text px-0">
                         <p className="mb-0">
-                          <input className="form-control" name="midfield" min="0" max="100" type="number"></input>
-                           <span className="d-inline-block mt-10"  style={{ display: "block" }} >(between 0 and 100)</span>
+                          <input className="form-control" name="midfield" min="0" max="100" onInput={(e) => {
+                            if (e.target.value.length > 3) {
+                              e.target.value = e.target.value.slice(0, 3);
+                            }
+                          }} type="number"></input>
+                          <span className="d-inline-block mt-10" style={{ display: "block" }} >(between 0 and 100)</span>
                         </p>
                       </div>
                     </div>
@@ -326,8 +335,12 @@ export default function NewGroundPage() {
                     <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
                       <div className="info-text px-0">
                         <p className="mb-0">
-                          <input className="form-control" name="defence" min="0" max="100" type="number"></input>
-                           <span className="d-inline-block mt-10"  style={{ display: "block" }} >(between 0 and 100)</span>
+                          <input className="form-control" name="defence" min="0" max="100" onInput={(e) => {
+                            if (e.target.value.length > 3) {
+                              e.target.value = e.target.value.slice(0, 3);
+                            }
+                          }} type="number"></input>
+                          <span className="d-inline-block mt-10" style={{ display: "block" }} >(between 0 and 100)</span>
                         </p>
                       </div>
                     </div>

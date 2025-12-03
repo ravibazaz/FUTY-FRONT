@@ -224,7 +224,7 @@ export default function EditTeamForm({ team }) {
                               ref={selectRef}
                             >
                               <option value="">Choose a Age</option>
-                              
+
                             </select>
                           </p>
                         </div>
@@ -267,7 +267,7 @@ export default function EditTeamForm({ team }) {
                     <div className="left-row row">
                       <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
                         <div className="label-text mb-0 pt-0">
-                          <p className="mb-0">Shorts:</p>
+                          <p className="mb-0">Shorts colour:</p>
                         </div>
                       </div>
                       <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
@@ -283,7 +283,7 @@ export default function EditTeamForm({ team }) {
                     <div className="left-row row">
                       <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
                         <div className="label-text mb-0 pt-0">
-                          <p className="mb-0">Socks:</p>
+                          <p className="mb-0">Socks colour:</p>
                         </div>
                       </div>
                       <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
@@ -306,8 +306,12 @@ export default function EditTeamForm({ team }) {
                     <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
                       <div className="info-text px-0">
                         <p className="mb-0">
-                          <input className="form-control" name="attack" defaultValue={team.attack} min="0" max="100" type="number"></input>
-                          <span className="d-inline-block mt-10"  style={{ display: "block" }} >(between 0 and 100)</span>
+                          <input className="form-control" name="attack" onInput={(e) => {
+                            if (e.target.value.length > 3) {
+                              e.target.value = e.target.value.slice(0, 3);
+                            }
+                          }} defaultValue={team.attack} min="0" max="100" type="number"></input>
+                          <span className="d-inline-block mt-10" style={{ display: "block" }} >(between 0 and 100)</span>
                         </p>
                       </div>
                     </div>
@@ -323,8 +327,12 @@ export default function EditTeamForm({ team }) {
                     <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
                       <div className="info-text px-0">
                         <p className="mb-0">
-                          <input className="form-control" name="midfield" defaultValue={team.midfield} min="0" max="100" type="number"></input>
-                          <span className="d-inline-block mt-10"  style={{ display: "block" }} >(between 0 and 100)</span>
+                          <input className="form-control" name="midfield" onInput={(e) => {
+                            if (e.target.value.length > 3) {
+                              e.target.value = e.target.value.slice(0, 3);
+                            }
+                          }} defaultValue={team.midfield} min="0" max="100" type="number"></input>
+                          <span className="d-inline-block mt-10" style={{ display: "block" }} >(between 0 and 100)</span>
                         </p>
                       </div>
                     </div>
@@ -340,8 +348,12 @@ export default function EditTeamForm({ team }) {
                     <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
                       <div className="info-text px-0">
                         <p className="mb-0">
-                          <input className="form-control" name="defence" defaultValue={team.defence} min="0" max="100" type="number"></input>
-                          <span className="d-inline-block mt-10"  style={{ display: "block" }} >(between 0 and 100)</span>
+                          <input className="form-control" name="defence" onInput={(e) => {
+                            if (e.target.value.length > 3) {
+                              e.target.value = e.target.value.slice(0, 3);
+                            }
+                          }} defaultValue={team.defence} min="0" max="100" type="number"></input>
+                          <span className="d-inline-block mt-10" style={{ display: "block" }} >(between 0 and 100)</span>
                         </p>
                       </div>
                     </div>

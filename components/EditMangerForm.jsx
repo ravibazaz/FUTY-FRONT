@@ -268,7 +268,7 @@ export default function EditMangerForm({ user }) {
                   <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
                     <div className="info-text px-0">
                       <p className="mb-0">
-                        <input className="form-control" name="travel_distance" defaultValue={user.travel_distance} type="text" ></input>
+                        <input className="form-control" name="travel_distance" placeholder="Unit of distance" defaultValue={user.travel_distance} type="text" ></input>
                       </p>
                     </div>
                   </div>
@@ -289,7 +289,7 @@ export default function EditMangerForm({ user }) {
                           className="form-control"
                           name="team_id"
                           ref={selectRef}
-                          defaultValue={selectedTeam} 
+                          defaultValue={selectedTeam}
 
                         >
                           <option value="">Choose a Team</option>
@@ -353,7 +353,12 @@ export default function EditMangerForm({ user }) {
                   <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
                     <div className="info-text px-0">
                       <p className="mb-0">
-                        <input className="form-control" name="win" defaultValue={user.playing_style?.win.percentage} type="text" ></input>
+                        <input className="form-control" min={0} max={100} onInput={(e) => {
+                          if (e.target.value.length > 3) {
+                            e.target.value = e.target.value.slice(0, 3);
+                          }
+                        }} name="win" defaultValue={user.playing_style?.win.percentage} type="number" ></input>
+                        <span className="d-inline-block mt-10" style={{ display: "block" }} >(between 0 and 100)</span>
                       </p>
                     </div>
                   </div>
@@ -369,7 +374,12 @@ export default function EditMangerForm({ user }) {
                   <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
                     <div className="info-text px-0">
                       <p className="mb-0">
-                        <input className="form-control" name="style" defaultValue={user.playing_style?.style.percentage} type="text" ></input>
+                        <input className="form-control" min={0} max={100} onInput={(e) => {
+                          if (e.target.value.length > 3) {
+                            e.target.value = e.target.value.slice(0, 3);
+                          }
+                        }} name="style" defaultValue={user.playing_style?.style.percentage} type="number" ></input>
+                        <span className="d-inline-block mt-10" style={{ display: "block" }} >(between 0 and 100)</span>
                       </p>
                     </div>
                   </div>
@@ -385,7 +395,12 @@ export default function EditMangerForm({ user }) {
                   <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
                     <div className="info-text px-0">
                       <p className="mb-0">
-                        <input className="form-control" name="trophy" defaultValue={user.playing_style?.trophy.percentage} type="text" ></input>
+                        <input className="form-control" min={0} max={100} onInput={(e) => {
+                          if (e.target.value.length > 3) {
+                            e.target.value = e.target.value.slice(0, 3);
+                          }
+                        }} name="trophy" defaultValue={user.playing_style?.trophy.percentage} type="number" ></input>
+                        <span className="d-inline-block mt-10" style={{ display: "block" }} >(between 0 and 100)</span>
                       </p>
                     </div>
                   </div>

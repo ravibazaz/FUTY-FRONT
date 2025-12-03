@@ -176,7 +176,7 @@ export default function NewGroundPage() {
                     <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
                       <div className="info-text px-0">
                         <p className="mb-0">
-                          <input className="form-control" name="telephone" type="text"></input>
+                          <input className="form-control" name="telephone" type="number"></input>
                           {state.errors?.telephone && (
                             <span className="invalid-feedback" style={{ display: "block" }}>{state.errors.telephone}</span>
                           )}

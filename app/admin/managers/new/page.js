@@ -249,7 +249,7 @@ export default function NewFanPage() {
                                         <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
                                             <div className="info-text px-0">
                                                 <p className="mb-0">
-                                                    <input name="travel_distance" className="form-control" type="text"></input>
+                                                    <input name="travel_distance" className="form-control" placeholder="Unit of distance" type="text"></input>
                                                 </p>
                                             </div>
                                         </div>
@@ -335,7 +335,12 @@ export default function NewFanPage() {
                                         <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
                                             <div className="info-text px-0">
                                                 <p className="mb-0">
-                                                    <input name="win" className="form-control" type="text"></input>
+                                                    <input name="win" min={0} max={100} onInput={(e) => {
+                                                        if (e.target.value.length > 3) {
+                                                            e.target.value = e.target.value.slice(0, 3);
+                                                        }
+                                                    }} className="form-control" type="number"></input>
+                                                    <span className="d-inline-block mt-10" style={{ display: "block" }} >(between 0 and 100)</span>
                                                 </p>
                                             </div>
                                         </div>
@@ -351,7 +356,12 @@ export default function NewFanPage() {
                                         <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
                                             <div className="info-text px-0">
                                                 <p className="mb-0">
-                                                    <input name="style" className="form-control" type="text"></input>
+                                                    <input name="style" min={0} max={100} onInput={(e) => {
+                                                        if (e.target.value.length > 3) {
+                                                            e.target.value = e.target.value.slice(0, 3);
+                                                        }
+                                                    }} className="form-control" type="number"></input>
+                                                    <span className="d-inline-block mt-10" style={{ display: "block" }} >(between 0 and 100)</span>
                                                 </p>
                                             </div>
                                         </div>
@@ -367,7 +377,12 @@ export default function NewFanPage() {
                                         <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
                                             <div className="info-text px-0">
                                                 <p className="mb-0">
-                                                    <input name="trophy" className="form-control" type="text"></input>
+                                                    <input name="trophy" min={0} max={100} onInput={(e) => {
+                                                        if (e.target.value.length > 3) {
+                                                            e.target.value = e.target.value.slice(0, 3);
+                                                        }
+                                                    }} className="form-control" type="number"></input>
+                                                    <span className="d-inline-block mt-10" style={{ display: "block" }} >(between 0 and 100)</span>
                                                 </p>
                                             </div>
                                         </div>
