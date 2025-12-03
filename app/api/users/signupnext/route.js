@@ -54,6 +54,14 @@ export async function POST(req) {
   const referee_lavel = data.referee_lavel;
   const travel_distance = data.travel_distance;
   const referee_fee = data.referee_fee;
+  const palyer_position = data.palyer_position;
+  const palyer_pace = data.palyer_pace;
+  const palyer_skill = data.palyer_skill;
+  const palyer_power = data.palyer_power;
+  const palyer_defence = data.palyer_defence;
+  const palyer_teamwork = data.palyer_teamwork;
+  const palyer_discipline = data.palyer_discipline;
+  const palyer_rating = data.palyer_rating;
 
   const result = UserSchema.safeParse(data);
   // If validation fails, return an error response
@@ -95,6 +103,14 @@ export async function POST(req) {
     travel_distance,
     referee_lavel,
     referee_fee,
+    palyer_position,
+    palyer_pace,
+    palyer_skill,
+    palyer_power,
+    palyer_defence,
+    palyer_teamwork,
+    palyer_discipline,
+    palyer_rating,
   };
 
   if (profile_image) {
@@ -113,7 +129,8 @@ export async function POST(req) {
       uploadtype = "uploads/fans";
     if (user.account_type == "Referee")
       uploadtype = "uploads/referees";
-
+    if (user.account_type == "Player")
+      uploadtype = "uploads/players";
 
     const uploadDir = path.join(process.cwd(), uploadtype);
 

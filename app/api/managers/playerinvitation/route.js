@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { protectApiRoute } from "@/lib/middleware";
 import { connectDB } from '@/lib/db';
 import { z } from "zod";
-import PlayerInvitatins from "@/lib/models/PlayerInvitatins";
+import PlayerInvitations from "@/lib/models/PlayerInvitations";
 export const InvitationSchema = z.object({
   player_email: z.string().nonempty("Email is required").email("Invalid email format"),
   player_name: z.string().nonempty("Name is required").min(2, "Name must be at least 2 character"),
@@ -67,7 +67,7 @@ export async function POST(req) {
       throw new Error(emailcheck.message || "Failed to send email");
     }
     await connectDB();
-    await PlayerInvitatins.create({
+    await PlayerInvitations.create({
       ...data,
       player_invitation_code: uniqueId,
       manager_id: user._id

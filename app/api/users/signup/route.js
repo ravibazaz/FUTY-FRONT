@@ -7,6 +7,7 @@ import { z } from "zod";
 import { v4 as uuidv4 } from "uuid";
 import path from "path";
 import { promises as fs } from "fs";
+import PlayerInvitations from "@/lib/models/PlayerInvitations";
 export const UserSchema = z.object({
   email: z.string().nonempty("Email is required").email("Invalid email format"),
   password: z.string().nonempty("Password is required").min(7, "Password must be at least 7 character"),
@@ -14,9 +15,21 @@ export const UserSchema = z.object({
   name: z.string().nonempty("Name is required").min(2, "Name must be at least 2 character"),
   telephone: z.string().nonempty("Telephone is required").min(2, "Telephone must be at least 2 character"),
   account_type: z.string().nonempty("Account Type is required").min(2, "Account Type must be at least 2 character"),
+  player_invitation_code: z.string().optional(),
 }).refine((data) => data.password === data.confirm_password, {
   message: "Passwords don't match",
   path: ["confirm_password"],
+}).superRefine((data, ctx) => {
+  if (data.account_type === "Player") {
+    // console.log(data.player_invitation_code);
+    if (!data.player_invitation_code) {
+      ctx.addIssue({
+        path: ["player_invitation_code"],
+        message: "Invitation Code is required",
+        code: z.ZodIssueCode.custom,
+      });
+    }
+  }
 });
 
 export async function POST(req) {
@@ -29,8 +42,14 @@ export async function POST(req) {
     const surname = data.surname;
     const telephone = data.telephone;
     const account_type = data.account_type;
+    const player_invitation_code = data.player_invitation_code;
+    let palyer_manger_id = null;
+
+
+    //console.log(data.player_invitation_code);
 
     const result = UserSchema.safeParse(data);
+    //console.log(data);
     // If validation fails, return an error response
     if (!result.success) {
       // Flatten errors to match your desired response structure
@@ -47,6 +66,22 @@ export async function POST(req) {
       );
     }
     await connectDB();
+
+    if (account_type == "Player" && player_invitation_code != '') {
+      const existing = await PlayerInvitations.findOne({ player_email: result.data.email, player_invitation_code: result.data.player_invitation_code });
+          //console.log(existing);
+      
+      if (!existing) {
+        return NextResponse.json(
+          {
+            success: false,
+            message: "Wrong invitation code or email. Please check again.",
+          },
+          { status: 200 }
+        );
+      }
+       palyer_manger_id = existing._id;
+    }
     const existing = await User.findOne({ email: result.data.email });
     if (existing) {
       return NextResponse.json(
@@ -73,6 +108,7 @@ export async function POST(req) {
     const newuser = await User.create({
       email,
       password: hashedPassword,
+      palyer_manger_id : palyer_manger_id,
       name,
       surname,
       telephone,
@@ -119,12 +155,12 @@ export async function POST(req) {
         body: JSON.stringify({
           sender: { email: process.env.BREVO_MAIL_FROM, name: process.env.MAIL_FROM_NAME },
           to: [{ email: email }],
-          subject : subject,
+          subject: subject,
           htmlContent: `<p>${message}</p>`,
         }),
       });
-     
-      
+
+
       const data = await res.json();
 
       if (!res.ok) {
