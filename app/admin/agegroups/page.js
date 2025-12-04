@@ -99,7 +99,7 @@ export default function AgeGroupsTable() {
             <p className="top-breadcrumb mb-0">{'> Age Groups'}</p>
           </div>
           <div className="top-right d-flex justify-content-between align-items-center gap-10">
-            <Link className="btn btn-common" href={`/admin/agegroups/new`} >New</Link>
+            <Link prefetch={false} className="btn btn-common" href={`/admin/agegroups/new`} >New</Link>
             <a href="#">
               <Image src="/images/icon-setting.svg" width={33} height={33} alt="Settings" />
             </a>
@@ -128,7 +128,7 @@ export default function AgeGroupsTable() {
                   ageGroups.map((l, index) => (
                     <tr key={l._id}>
                       <td className="text-nowrap user-active">
-                        <Link
+                        <Link prefetch={false} 
                           href={`/admin/agegroups/${l._id}/view`}
                         >
                           {l.age_group}
@@ -136,7 +136,7 @@ export default function AgeGroupsTable() {
                       </td>
 
                       <td className="text-nowrap">
-                        <Link className="text-green"
+                        <Link prefetch={false}  className="text-green"
                           href={`/admin/agegroups/${l._id}/edit`}
                         >
                           Edit

@@ -128,7 +128,7 @@ export default function GroundTable() {
                 {friendlies.length > 0 ? (
                   friendlies.map((l, index) => (
                     <tr key={l._id}>
-                      <td className="text-nowrap user-active"><Link
+                      <td className="text-nowrap user-active"><Link prefetch={false}
                         href={`/admin/friendlies/${l._id}/view`}
                       >
                         {l.name}
@@ -136,7 +136,7 @@ export default function GroundTable() {
                       <td className="text-nowrap">{formatDate(l.date)}</td>
                       <td className="text-nowrap"><a href="#">{l.time}</a></td>
                       <td className="text-nowrap">
-                        <Link className="text-green"
+                        <Link prefetch={false} className="text-green"
                           href={`/admin/friendlies/${l._id}/edit`}
                         >
                           Edit

@@ -20,26 +20,26 @@ export default function Sidebar() {
                         </Link>
                         <ul className="nav flex-column">
                             <li className="nav-item">
-                                <Link className={`nav-link ${pathname.startsWith('/admin/leagues') ? 'active' : ''}`} aria-current="page" href="/admin/leagues"><span className="link-text">Leagues</span></Link>
+                                <Link prefetch={false} className={`nav-link ${pathname.startsWith('/admin/leagues') ? 'active' : ''}`} aria-current="page" href="/admin/leagues"><span className="link-text">Leagues</span></Link>
                             </li>
                             <li className="nav-item">
-                                <Link className={`nav-link ${pathname.startsWith('/admin/clubs') ? 'active' : ''}`} href="/admin/clubs"><span className="link-text">Clubs</span></Link>
+                                <Link prefetch={false} className={`nav-link ${pathname.startsWith('/admin/clubs') ? 'active' : ''}`} href="/admin/clubs"><span className="link-text">Clubs</span></Link>
                             </li>
                             <li className="nav-item">
-                                <Link className={`nav-link ${pathname.startsWith('/admin/teams') ? 'active' : ''}`} href="/admin/teams"><span className="link-text">Teams</span></Link>
+                                <Link prefetch={false} className={`nav-link ${pathname.startsWith('/admin/teams') ? 'active' : ''}`} href="/admin/teams"><span className="link-text">Teams</span></Link>
                             </li>
                             <li className="nav-item">
-                                <Link className={`nav-link ${pathname.startsWith('/admin/managers') ? 'active' : ''}`} href="/admin/managers"><span className="link-text">Managers</span></Link>
+                                <Link prefetch={false} className={`nav-link ${pathname.startsWith('/admin/managers') ? 'active' : ''}`} href="/admin/managers"><span className="link-text">Managers</span></Link>
                             </li>
                             <li className="nav-item">
-                                <Link className={`nav-link ${pathname.startsWith('/admin/referees') ? 'active' : ''}`} href="/admin/referees"><span className="link-text">Referees</span></Link>
+                                <Link prefetch={false} className={`nav-link ${pathname.startsWith('/admin/referees') ? 'active' : ''}`} href="/admin/referees"><span className="link-text">Referees</span></Link>
                             </li>
                              <li className="nav-item">
-                                <Link className={`nav-link ${pathname.startsWith('/admin/players') ? 'active' : ''}`} href="/admin/players"><span className="link-text">Players</span></Link>
+                                <Link  prefetch={false} className={`nav-link ${pathname.startsWith('/admin/players') ? 'active' : ''}`} href="/admin/players"><span className="link-text">Players</span></Link>
                             </li>
 
                             <li className="nav-item">
-                                <Link className={`nav-link ${pathname.startsWith('/admin/fans') ? 'active' : ''}`} href="/admin/fans"><span className="link-text">Fans</span></Link>
+                                <Link  prefetch={false} className={`nav-link ${pathname.startsWith('/admin/fans') ? 'active' : ''}`} href="/admin/fans"><span className="link-text">Fans</span></Link>
                             </li>
 
                             <li className="nav-item with-submenu" >
@@ -47,27 +47,27 @@ export default function Sidebar() {
                                     <span className="link-text">Grounds</span>
                                 </a>
                                 <div className="collapse submenu" id="submenu3">
-                                    <Link className={`nav-link ${pathname.startsWith('/admin/grounds') ? 'active' : ''}`} href="/admin/grounds" >Grounds</Link>
-                                    <Link className={`nav-link ${pathname.startsWith('/admin/groundfacilities') ? 'active' : ''}`} href="/admin/groundfacilities" >Facilities</Link>
+                                    <Link prefetch={false} className={`nav-link ${pathname.startsWith('/admin/grounds') ? 'active' : ''}`} href="/admin/grounds" >Grounds</Link>
+                                    <Link prefetch={false} className={`nav-link ${pathname.startsWith('/admin/groundfacilities') ? 'active' : ''}`} href="/admin/groundfacilities" >Facilities</Link>
 
                                 </div>
                             </li>
                             <li className="nav-item">
-                                <Link className={`nav-link ${pathname.startsWith('/admin/friendlies') ? 'active' : ''}`} href="/admin/friendlies"><span className="link-text">Friendlies</span></Link>
+                                <Link prefetch={false} className={`nav-link ${pathname.startsWith('/admin/friendlies') ? 'active' : ''}`} href="/admin/friendlies"><span className="link-text">Friendlies</span></Link>
                             </li>
                             <li className="nav-item">
-                                <Link className={`nav-link ${pathname.startsWith('/admin/tournaments') ? 'active' : ''}`} href="/admin/tournaments"><span className="link-text">Tournaments</span></Link>
+                                <Link prefetch={false} className={`nav-link ${pathname.startsWith('/admin/tournaments') ? 'active' : ''}`} href="/admin/tournaments"><span className="link-text">Tournaments</span></Link>
                             </li>
                             <li className="nav-item">
-                                <Link className={`nav-link ${pathname.startsWith('/admin/adverts') ? 'active' : ''}`} href="/admin/adverts"><span className="link-text">Adverts</span></Link>
+                                <Link prefetch={false}  className={`nav-link ${pathname.startsWith('/admin/adverts') ? 'active' : ''}`} href="/admin/adverts"><span className="link-text">Adverts</span></Link>
                             </li>
                             <li className="nav-item with-submenu" >
                                 <a className="nav-link collapsed" href="#submenu2" data-bs-toggle="collapse" role="button" aria-expanded="false" >
                                     <span className="link-text">Stores</span>
                                 </a>
                                 <div className="collapse submenu" id="submenu2">
-                                    <Link className={`nav-link ${pathname.startsWith('/admin/stores') ? 'active' : ''}`} href="/admin/stores" >Products</Link>
-                                    <Link className={`nav-link ${pathname.startsWith('/admin/categories') ? 'active' : ''}`} href="/admin/categories"  >Categories</Link>
+                                    <Link prefetch={false}  className={`nav-link ${pathname.startsWith('/admin/stores') ? 'active' : ''}`} href="/admin/stores" >Products</Link>
+                                    <Link prefetch={false} className={`nav-link ${pathname.startsWith('/admin/categories') ? 'active' : ''}`} href="/admin/categories"  >Categories</Link>
 
                                 </div>
                             </li>
@@ -77,8 +77,8 @@ export default function Sidebar() {
                                     <span className="link-text">Settings</span>
                                 </a>
                                 <div className="collapse submenu" id="submenu1">
-                                    <Link className={`nav-link ${pathname.startsWith('/admin/agegroups') ? 'active' : ''}`} href="/admin/agegroups" >Age Groups</Link>
-                                    <Link className={`nav-link ${pathname.startsWith('/admin/profiles') ? 'active' : ''}`} href="/admin/profiles" >Profile</Link>
+                                    <Link prefetch={false} className={`nav-link ${pathname.startsWith('/admin/agegroups') ? 'active' : ''}`} href="/admin/agegroups" >Age Groups</Link>
+                                    <Link prefetch={false} className={`nav-link ${pathname.startsWith('/admin/profiles') ? 'active' : ''}`} href="/admin/profiles" >Profile</Link>
 
                                 </div>
                             </li>

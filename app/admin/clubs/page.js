@@ -99,7 +99,7 @@ export default function GroundTable() {
             <p className="top-breadcrumb mb-0">{'> Clubs'}</p>
           </div>
           <div className="top-right d-flex justify-content-between align-items-center gap-10">
-            <Link className="btn btn-common" href={`/admin/clubs/new`} >New</Link>
+            <Link prefetch={false} className="btn btn-common" href={`/admin/clubs/new`} >New</Link>
 
             <a href="#">
               <Image src="/images/icon-setting.svg" width={33} height={33} alt="Settings" />
@@ -132,7 +132,7 @@ export default function GroundTable() {
                   clubs.map((l, index) => (
                     <tr key={l._id}>
                       <td className="text-nowrap user-active">
-                        <Link
+                        <Link prefetch={false}
                           href={`/admin/clubs/${l._id}/view`}
                         >
                           {l.name}
@@ -142,7 +142,7 @@ export default function GroundTable() {
                       <td className="text-nowrap"><a href="tel:+44 08564 346268">{l.phone}</a></td>
                       <td className="text-nowrap"><a href="mailto:u7@phyl.co.uk">{l.email}</a></td>
                       <td className="text-nowrap">
-                        <Link className="text-green"
+                        <Link prefetch={false} className="text-green"
                           href={`/admin/clubs/${l._id}/edit`}
                         >
                           Edit

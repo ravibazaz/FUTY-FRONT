@@ -99,7 +99,7 @@ export default function GroundFacilityTable() {
             <p className="top-breadcrumb mb-0">{'> Ground Facilities'}</p>
           </div>
           <div className="top-right d-flex justify-content-between align-items-center gap-10">
-            <Link className="btn btn-common" href={`/admin/groundfacilities/new`} >New</Link>
+            <Link prefetch={false} className="btn btn-common" href={`/admin/groundfacilities/new`} >New</Link>
             <a href="#">
               <Image src="/images/icon-setting.svg" width={33} height={33} alt="Settings" />
             </a>
@@ -128,7 +128,7 @@ export default function GroundFacilityTable() {
                   ageGroundFacility.map((l, index) => (
                     <tr key={l._id}>
                       <td className="text-nowrap user-active">
-                        <Link
+                        <Link prefetch={false}
                           href={`/admin/groundfacilities/${l._id}/view`}
                         >
                           {l.facilities}
@@ -136,7 +136,7 @@ export default function GroundFacilityTable() {
                       </td>
 
                       <td className="text-nowrap">
-                        <Link className="text-green"
+                        <Link prefetch={false}  className="text-green"
                           href={`/admin/groundfacilities/${l._id}/edit`}
                         >
                           Edit
