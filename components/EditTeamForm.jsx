@@ -310,6 +310,9 @@ export default function EditTeamForm({ team }) {
                             if (e.target.value.length > 3) {
                               e.target.value = e.target.value.slice(0, 3);
                             }
+                            if (e.target.value.length == 3 && e.target.value > 100) {
+                              e.target.value = e.target.value.slice(0, 2);
+                            }
                           }} defaultValue={team.attack} min="0" max="100" type="number"></input>
                           <span className="d-inline-block mt-10" style={{ display: "block" }} >(between 0 and 100)</span>
                         </p>
@@ -331,6 +334,9 @@ export default function EditTeamForm({ team }) {
                             if (e.target.value.length > 3) {
                               e.target.value = e.target.value.slice(0, 3);
                             }
+                            if (e.target.value.length == 3 && e.target.value > 100) {
+                              e.target.value = e.target.value.slice(0, 2);
+                            }
                           }} defaultValue={team.midfield} min="0" max="100" type="number"></input>
                           <span className="d-inline-block mt-10" style={{ display: "block" }} >(between 0 and 100)</span>
                         </p>
@@ -351,6 +357,9 @@ export default function EditTeamForm({ team }) {
                           <input className="form-control" name="defence" onInput={(e) => {
                             if (e.target.value.length > 3) {
                               e.target.value = e.target.value.slice(0, 3);
+                            }
+                            if (e.target.value.length == 3 && e.target.value > 100) {
+                              e.target.value = e.target.value.slice(0, 2);
                             }
                           }} defaultValue={team.defence} min="0" max="100" type="number"></input>
                           <span className="d-inline-block mt-10" style={{ display: "block" }} >(between 0 and 100)</span>

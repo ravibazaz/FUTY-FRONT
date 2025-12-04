@@ -357,6 +357,9 @@ export default function EditMangerForm({ user }) {
                           if (e.target.value.length > 3) {
                             e.target.value = e.target.value.slice(0, 3);
                           }
+                          if (e.target.value.length == 3 && e.target.value > 100) {
+                            e.target.value = e.target.value.slice(0, 2);
+                          }
                         }} name="win" defaultValue={user.playing_style?.win.percentage} type="number" ></input>
                         <span className="d-inline-block mt-10" style={{ display: "block" }} >(between 0 and 100)</span>
                       </p>
@@ -378,6 +381,9 @@ export default function EditMangerForm({ user }) {
                           if (e.target.value.length > 3) {
                             e.target.value = e.target.value.slice(0, 3);
                           }
+                          if (e.target.value.length == 3 && e.target.value > 100) {
+                            e.target.value = e.target.value.slice(0, 2);
+                          }
                         }} name="style" defaultValue={user.playing_style?.style.percentage} type="number" ></input>
                         <span className="d-inline-block mt-10" style={{ display: "block" }} >(between 0 and 100)</span>
                       </p>
@@ -398,6 +404,9 @@ export default function EditMangerForm({ user }) {
                         <input className="form-control" min={0} max={100} onInput={(e) => {
                           if (e.target.value.length > 3) {
                             e.target.value = e.target.value.slice(0, 3);
+                          }
+                          if (e.target.value.length == 3 && e.target.value > 100) {
+                            e.target.value = e.target.value.slice(0, 2);
                           }
                         }} name="trophy" defaultValue={user.playing_style?.trophy.percentage} type="number" ></input>
                         <span className="d-inline-block mt-10" style={{ display: "block" }} >(between 0 and 100)</span>

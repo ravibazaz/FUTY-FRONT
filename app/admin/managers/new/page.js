@@ -339,6 +339,9 @@ export default function NewFanPage() {
                                                         if (e.target.value.length > 3) {
                                                             e.target.value = e.target.value.slice(0, 3);
                                                         }
+                                                        if (e.target.value.length == 3 && e.target.value > 100) {
+                                                            e.target.value = e.target.value.slice(0, 2);
+                                                        }
                                                     }} className="form-control" type="number"></input>
                                                     <span className="d-inline-block mt-10" style={{ display: "block" }} >(between 0 and 100)</span>
                                                 </p>
@@ -360,6 +363,9 @@ export default function NewFanPage() {
                                                         if (e.target.value.length > 3) {
                                                             e.target.value = e.target.value.slice(0, 3);
                                                         }
+                                                        if (e.target.value.length == 3 && e.target.value > 100) {
+                                                            e.target.value = e.target.value.slice(0, 2);
+                                                        }
                                                     }} className="form-control" type="number"></input>
                                                     <span className="d-inline-block mt-10" style={{ display: "block" }} >(between 0 and 100)</span>
                                                 </p>
@@ -380,7 +386,12 @@ export default function NewFanPage() {
                                                     <input name="trophy" min={0} max={100} onInput={(e) => {
                                                         if (e.target.value.length > 3) {
                                                             e.target.value = e.target.value.slice(0, 3);
+     
                                                         }
+                                                        if (e.target.value.length == 3 && e.target.value > 100) {
+                                                            e.target.value = e.target.value.slice(0, 2);
+                                                        }
+                                                        
                                                     }} className="form-control" type="number"></input>
                                                     <span className="d-inline-block mt-10" style={{ display: "block" }} >(between 0 and 100)</span>
                                                 </p>
