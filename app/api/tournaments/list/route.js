@@ -13,7 +13,25 @@ export async function GET(req) {
 
   // Otherwise, it means the user is authenticated
   await connectDB();
-  const tournaments = await Tournaments.find().populate('ground').populate('club').select("-__v").lean();
+  const tournaments = await Tournaments.find().populate('ground').populate('club').populate({
+    path: "created_by_user",
+    select: "name team_id",
+    populate: {
+      path: "team_id",
+      model: "Teams",
+      select: "label name image club", // whatever fields you want
+      populate: {
+        path: "club",
+        model: "Clubs",
+        select: "label name image league", // whatever fields you want
+        populate: {
+          path: "league",
+          model: "Leagues",
+          select: "label title", // whatever fields you want
+        }
+      }
+    }
+  }).select("-__v").lean();
 
 
 
