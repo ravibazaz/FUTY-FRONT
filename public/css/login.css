@@ -251,25 +251,3 @@ input[type="password"]:placeholder {
 .forgot-password {
   font-size: 14px;
 }
-.password-container {
-  display: inline-block;
-  position: relative;
-  width: 85%;
-}
-.password-container #password {
-  margin-left: 0;
-  margin-right: 0;
-  width: 100%;
-}
-.password-container .eye-icon {
-  position: absolute;
-  right: 10px;
-  top: 50%;
-  transform: translateY(-50%);
-  cursor: pointer;
-}
-.password-container .eye-icon img {
-  display: block;
-  height: 16px;
-  width: 16px;
-}
