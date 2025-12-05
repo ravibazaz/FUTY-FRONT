@@ -190,6 +190,9 @@ textarea.form-control {
 .password-container {
   display: inline-block;
   position: relative;
+  width: 100%;
+}
+.password-container.w85 {
   width: 85%;
 }
 .password-container #password {

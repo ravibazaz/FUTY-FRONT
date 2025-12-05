@@ -50,7 +50,7 @@ export default function Home() {
           {/* <!-- Login Form --> */}
           <form action={formAction}>
             <input type="text" id="login" className="fadeIn second" name="email" placeholder="Email"></input>
-            <div className="password-container">
+            <div className="password-container w85">
               <input type={showPassword ? "text" : "password"} id="password" className="fadeIn third" name="password" placeholder="Password"></input>
               <span id="showPasswordImg" className="eye-icon" onClick={() => setShowPassword((prev) => !prev)}
                 style={{ cursor: "pointer" }}>

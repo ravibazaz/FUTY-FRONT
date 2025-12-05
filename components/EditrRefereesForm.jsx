@@ -21,7 +21,7 @@ function SubmitButton() {
 export default function EditRefereeForm({ user }) {
 
   //console.log(user);
-
+  const [showPassword, setShowPassword] = useState(false);
   const fileInputRef = useRef(null);
   const handleUploadClick = () => {
     fileInputRef.current.click();
@@ -375,8 +375,17 @@ export default function EditRefereeForm({ user }) {
                   </div>
                   <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
                     <div className="info-text px-0">
-                      <p className="mb-0">
-                        <input className="form-control" name="password" placeholder="Password" type="password" ></input>
+                      <p className="mb-0 password-container">
+                        <input className="form-control" name="password" placeholder="Password" type={showPassword ? "text" : "password"} ></input>
+                        <span id="showPasswordImg" className="eye-icon" onClick={() => setShowPassword((prev) => !prev)}
+                          style={{ cursor: "pointer" }}>
+                          <Image
+                            src={showPassword ? "/images/icon-closed-eye.svg" : "/images/icon-open-eye.svg"}
+                            alt={showPassword ? "Closed Eye" : "Open Eye"}
+                            width={24}
+                            height={24}
+                          />
+                        </span>
                         {clientErrors.password && (
                           <span className="invalid-feedback" style={{ display: "block" }} >{clientErrors.password}</span>
                         )}

@@ -46,6 +46,7 @@ export default function EditFanForm({ user }) {
     }
   );
 
+  const [showPassword, setShowPassword] = useState(false);
   const [clientErrors, setClientErrors] = useState({});
   const [preview, setPreview] = useState(user.profile_image ? '/api' + user.profile_image : '/images/profile-picture.jpg');
   // if (user.profile_image)
@@ -246,8 +247,18 @@ export default function EditFanForm({ user }) {
                   </div>
                   <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
                     <div className="info-text px-0">
-                      <p className="mb-0">
-                        <input className="form-control" name="password" placeholder="Password" type="password" ></input>
+                      <p className="password-container mb-0">
+                        <input className="form-control" name="password" placeholder="Password" type={showPassword ? "text" : "password"} ></input>
+                        <span id="showPasswordImg" className="eye-icon" onClick={() => setShowPassword((prev) => !prev)}
+                          style={{ cursor: "pointer" }}>
+                          <Image
+                            src={showPassword ? "/images/icon-closed-eye.svg" : "/images/icon-open-eye.svg"}
+                            alt={showPassword ? "Closed Eye" : "Open Eye"}
+                            width={24}
+                            height={24}
+                          />
+                        </span>
+
                         {clientErrors.password && (
                           <span className="invalid-feedback" style={{ display: "block" }} >{clientErrors.password}</span>
                         )}
