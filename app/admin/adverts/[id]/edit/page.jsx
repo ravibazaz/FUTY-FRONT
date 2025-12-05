@@ -1,11 +1,13 @@
 import { connectDB } from "@/lib/db";
-import Leagues from "@/lib/models/Leagues";
-import EditLeagueForm from "@/components/EditLeagueForm"; // move your current component to a separate file
+import EditAdvertForm from "@/components/EditAdvertForm"; // move your current component to a separate file
+import Adverts from "@/lib/models/Adverts";
 
-export default async function EditLeaguePage({ params }) {
+export default async function EditStorePage({ params }) {
   const id = (await params).id;
 
   await connectDB();
-  const league = await Leagues.findById(id).lean();
-  return <EditLeagueForm league={JSON.parse(JSON.stringify(league))} />;
+  const adverts = await Adverts.findById(id).lean();
+  return <EditAdvertForm adverts={JSON.parse(JSON.stringify(adverts))} />;
+
+  
 }
