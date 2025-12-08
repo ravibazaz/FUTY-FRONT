@@ -4,10 +4,7 @@ import { connectDB } from '@/lib/db';
 import { z } from "zod";
 import PlayerInvitations from "@/lib/models/PlayerInvitations";
 export const InvitationSchema = z.object({
-  player_email: z.string().nonempty("Email is required").email("Invalid email format"),
-  player_name: z.string().nonempty("Name is required").min(2, "Name must be at least 2 character"),
-  player_nick_name: z.string().nonempty("Nick name is required").min(2, "Nick name must be at least 2 character"),
-  player_phone: z.string().nonempty("Telephone is required").min(2, "Telephone must be at least 2 character"),
+  player_email: z.string().nonempty("Email is required").email("Invalid email format")
 });
 
 export async function POST(req) {
