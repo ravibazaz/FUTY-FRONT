@@ -2,8 +2,9 @@
 
 import { updateProfile } from  "@/app/admin/profiles/profileActions";
 import { useFormStatus } from "react-dom";
-import { useActionState, useState, startTransition, useRef } from "react";
+import { useActionState, useState, startTransition, useRef,useEffect } from "react";
 import Image from "next/image";
+import Swal from "sweetalert2";
 import Link from "next/link";
 import { z } from "zod";
 function SubmitButton() {
@@ -17,6 +18,18 @@ function SubmitButton() {
     </>
   );
 }
+
+const Toast = Swal.mixin({
+  toast: true,
+  position: "top-end",
+  showConfirmButton: false,
+  timer: 3000,
+  timerProgressBar: true,
+  didOpen: (toast) => {
+    toast.onmouseenter = Swal.stopTimer;
+    toast.onmouseleave = Swal.resumeTimer;
+  },
+});
 
 export const ProfileSchema = z.object({
   name: z.string().min(2, "First Name is required"),
@@ -101,6 +114,22 @@ export default function EditProfileForm({ user }) {
 
 
   };
+
+    useEffect(() => {
+       const toastMessage = document.cookie
+        .split("; ")
+        .find((row) => row.startsWith("toastMessage="));
+  
+      if (toastMessage) {
+        Toast.fire({
+          icon: "success",
+          title: decodeURIComponent(toastMessage.split("=")[1]),
+        });
+        document.cookie = "toastMessage=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+      }
+   
+    }, []);
+
 
   return (
     <main className="main-body col-md-9 col-lg-9 col-xl-10">

@@ -48,7 +48,7 @@ export async function updateProfile(id, prevState, formData) {
   await Users.findByIdAndUpdate(id, updateData);
   cookieStore.set({
     name: "toastMessage",
-    value: "Updated Profile",
+    value: "Profile Updated",
     path: "/",
   });
   redirect("/admin/profiles");
