@@ -17,6 +17,7 @@ export default async function AdminDashboard() {
   const teams = await Teams.find().countDocuments();
   const mangers = await Users.find({ account_type: "Manager" }).countDocuments();
   const referee = await Users.find({ account_type: "Referee" }).countDocuments();
+  const player = await Users.find({ account_type: "Player" }).countDocuments();
 
 
   return (
@@ -70,7 +71,7 @@ export default async function AdminDashboard() {
               <div className="card">
                 <div className="card-body text-center">
                   <h5 className="card-title">Total Players</h5>
-                  <p className="card-text">0</p>
+                  <p className="card-text">{player}</p>
 
                 </div>
               </div>
