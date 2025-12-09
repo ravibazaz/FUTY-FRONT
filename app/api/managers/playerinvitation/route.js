@@ -40,7 +40,7 @@ export async function POST(req) {
     console.log("Unique ID:", uniqueId);
 
 
-    const message = `<p>Manager ${user.name}, invited you for joining in FUTY. Please check the invitation code below. Do not share this code to anyone!</p><p>invitatin Code : ${uniqueId}</p>`;
+    const message = `<p>Manager ${user.name}, invited you for joining in FUTY. Please check the invitation code below. Do not share this code to anyone!</p><p>Invitation Code : ${uniqueId}</p>`;
     const subject = "invitation Code";
     const res2 = await fetch(process.env.BREVO_REST_URL, {
       method: "POST",

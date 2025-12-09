@@ -80,7 +80,7 @@ export async function POST(req) {
           { status: 200 }
         );
       }
-       palyer_manger_id = existing._id;
+       palyer_manger_id = existing.manager_id;
     }
     const existing = await User.findOne({ email: result.data.email });
     if (existing) {
