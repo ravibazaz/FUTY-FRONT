@@ -15,9 +15,6 @@ export async function GET(req) {
   await connectDB();
   const players = await Users.find({ account_type: "Player" },"profile_image name surname").lean();
 
-
-
-
   return NextResponse.json({
     success: true,
     message: "Welcome to the Player Dashboard!",

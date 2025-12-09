@@ -22,25 +22,30 @@ export async function GET(req) {
   const skip = (page - 1) * limit;
 
   const query = {
-    account_type: "Manager",
+    account_type: "Player",
     ...(q && { name: { $regex: q, $options: 'i' } }),
   };
 
   const total = await Users.countDocuments(query);
   const managers = await Users.find(query, "profile_image name surname").populate({
-    path: "team_id",
-    select: "name club",
-    populate: {
-      path: "club",
-      model: "Clubs",
-      select: "label name league", // whatever fields you want
+      path: "palyer_manger_id",
+      select: "name team_id",
       populate: {
-        path: "league",
-        model: "Leagues",
-        select: "label title", // whatever fields you want
+        path: "team_id",
+        model: "Teams",
+        select: "label name club",
+        populate: {
+          path: "club",
+          model: "Clubs",
+          select: "label name league", // whatever fields you want
+          populate: {
+            path: "league",
+            model: "Leagues",
+            select: "label title", // whatever fields you want
+          }
+        }
       }
-    }
-  })
+    })
     .skip(skip)
     .limit(limit)
     .sort({ _id: -1 }) // optional sorting
@@ -51,7 +56,7 @@ export async function GET(req) {
 
   return NextResponse.json({
     success: true,
-    message: "Welcome to the Manager List!",
+    message: "Welcome to the Player List!",
     data: managers,
     pagination: {
       total,

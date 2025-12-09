@@ -74,6 +74,24 @@ export async function POST(req) {
    
 
     const user = await User.findOne({ email: result.data.email, isVerified: true, isActive: true }).populate({
+      path: "palyer_manger_id",
+      select: "name team_id",
+      populate: {
+        path: "team_id",
+        model: "Teams",
+        select: "label name club",
+        populate: {
+          path: "club",
+          model: "Clubs",
+          select: "label name league", // whatever fields you want
+          populate: {
+            path: "league",
+            model: "Leagues",
+            select: "label title", // whatever fields you want
+          }
+        }
+      }
+    }).populate({
       path: "team_id",
       select: "name club",
       populate: {
