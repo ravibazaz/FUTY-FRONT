@@ -52,7 +52,7 @@ export async function POST(req) {
         await TournamentOrderHistories.findByIdAndUpdate(orderId, {
             status: "canceled"
         });
-        console.log("Payment failed:", orderId);
+        console.log("Payment canceled:", orderId);
     }
     // ---- PROCESSING ----
     if (event.type === "payment_intent.processing") {
@@ -61,7 +61,7 @@ export async function POST(req) {
         await TournamentOrderHistories.findByIdAndUpdate(orderId, {
             status: "processing"
         });
-        console.log("Payment failed:", orderId);
+        console.log("Payment processing:", orderId);
     }
     return new Response("OK", { status: 200 });
 }
