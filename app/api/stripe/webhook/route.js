@@ -24,7 +24,7 @@ export async function POST(req) {
         return new Response("Webhook Error", { status: 400 });
     }
 
-    console.log("Started",event);
+    console.log("Started",event.type);
     // Connect DB
     await connectDB();
     // ---- SUCCESS ----
