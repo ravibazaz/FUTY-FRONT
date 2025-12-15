@@ -1,11 +1,13 @@
 "use client";
 
 import { useFormStatus } from "react-dom";
-import { useActionState, useState, useRef, useTransition } from "react";
+import { useActionState, useState, useRef, useTransition,useEffect } from "react";
 import { createPlayers } from "@/actions/playersActions";
 import { PlayersSchema } from "@/lib/validation/players";
 import Image from "next/image";
 import Link from "next/link";
+import TomSelect from "tom-select";
+import "tom-select/dist/css/tom-select.bootstrap5.css";
 function SubmitButton() {
     const { pending } = useFormStatus();
     return (
@@ -27,6 +29,53 @@ export default function NewPlayerPage() {
     const [clientErrors, setClientErrors] = useState({});
     const [preview, setPreview] = useState("/images/profile-picture.jpg");
     const fileInputRef = useRef(null);
+
+    const selectRef = useRef(null);
+    const tomSelectRef = useRef(null);
+    const [managers, setManagers] = useState([]);
+
+
+    useEffect(() => {
+
+        const fetchManagers = async () => {
+            try {
+                const response = await fetch("/api/managers");
+                const data = await response.json();
+                setManagers(data.managers);
+
+            } catch (error) {
+                console.error("Error fetching manger:", error);
+            }
+        };
+        fetchManagers();
+    }, []);
+
+
+    // Initialize Tom Select after type are loaded
+    useEffect(() => {
+        //console.log(categories);
+        if (!selectRef.current || managers.length === 0) return;
+        // Destroy any previous instance
+        if (tomSelectRef.current) {
+            tomSelectRef.current.destroy();
+            tomSelectRef.current = null;
+        }
+        // Initialize Tom Select
+        tomSelectRef.current = new TomSelect(selectRef.current, {
+            create: false,
+            placeholder: "Choose a Manager",
+            sortField: { field: "text", direction: "asc" },
+
+        });
+
+        // Cleanup
+        return () => {
+            tomSelectRef.current?.destroy();
+            tomSelectRef.current = null;
+        };
+    }, [managers]);
+
+
 
     const handleUploadClick = () => {
         fileInputRef.current.click();
@@ -104,6 +153,46 @@ export default function NewPlayerPage() {
                     <div className="body-main-cont">
                         <div className="single-body-row row">
                             <div className="single-body-left col-lg-12 col-xl-7">
+
+                                <div className="left-info-box">
+                                    <div className="left-row row">
+                                        <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
+                                            <div className="label-text">
+                                                <p className="mb-0">Invited By</p>
+                                            </div>
+                                        </div>
+                                        <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
+                                            <div className="info-text px-0">
+                                                <p className="mb-0">
+                                                    <select
+                                                        className="form-control"
+                                                        name="palyer_manger_id"
+                                                        ref={selectRef}
+                                                    >
+                                                        <option value="">Choose a Manager</option>
+                                                        {managers.map((manager) => (
+                                                            <option key={manager._id} value={manager._id}>
+                                                                {manager.name}
+                                                            </option>
+                                                        ))}
+
+
+                                                    </select>
+                                                    {state.errors?.palyer_manger_id && (
+                                                        <span className="invalid-feedback" style={{ display: "block" }}>{state.errors.palyer_manger_id}</span>
+                                                    )}
+                                                    {clientErrors.palyer_manger_id && (
+                                                        <span className="invalid-feedback" style={{ display: "block" }} >{clientErrors.palyer_manger_id}</span>
+                                                    )}
+
+
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
                                 <div className="left-info-box">
                                     <div className="left-row row">
                                         <div className="left-label-col col-md-5 col-lg-4 col-xl-4">

@@ -3,9 +3,11 @@
 import { updatePlayers } from "@/actions/playersActions";
 import { PlayersSchema } from "@/lib/validation/players";
 import { useFormStatus } from "react-dom";
-import { useActionState, useState, startTransition, useRef } from "react";
+import { useActionState, useState, startTransition, useRef,useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import TomSelect from "tom-select";
+import "tom-select/dist/css/tom-select.bootstrap5.css";
 function SubmitButton() {
   const { pending } = useFormStatus();
   return (
@@ -49,9 +51,65 @@ export default function EditPlayersForm({ user }) {
 
   const [clientErrors, setClientErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
+  const selectRef = useRef(null);
+  const tomSelectRef = useRef(null);
+  const [managers, setManagers] = useState([]);
+  const [selectedCategory, setselectedCategory,] = useState(user.palyer_manger_id ? user.palyer_manger_id : '');
   const [preview, setPreview] = useState(user.profile_image ? '/api' + user.profile_image : '/images/profile-picture.jpg');
   // if (user.profile_image)
   // setPreview(user.profile_image);
+
+
+  useEffect(() => {
+
+    const fetchManagers = async () => {
+      try {
+        const response = await fetch("/api/managers");
+        const data = await response.json();
+        setManagers(data.managers);
+
+      } catch (error) {
+        console.error("Error fetching Manger:", error);
+      }
+    };
+    fetchManagers();
+  }, []);
+  // Initialize Tom Select after type are loaded
+  useEffect(() => {
+    //console.log(categories);
+    if (!selectRef.current || managers.length === 0) return;
+    // Destroy any previous instance
+    if (tomSelectRef.current) {
+      tomSelectRef.current.destroy();
+      tomSelectRef.current = null;
+    }
+    // Initialize Tom Select
+    tomSelectRef.current = new TomSelect(selectRef.current, {
+      create: false,
+      placeholder: "Choose a Manager",
+      sortField: { field: "text", direction: "asc" },
+
+    });
+
+    // ✅ Preselect value in edit mode
+    if (selectedCategory) {
+      tomSelectRef.current.setValue(selectedCategory, true);
+    }
+
+    // Cleanup
+    return () => {
+      tomSelectRef.current?.destroy();
+      tomSelectRef.current = null;
+    };
+  }, [managers]);
+
+  // ✅ Keep TomSelect synced if selectedClub changes later
+  useEffect(() => {
+    if (tomSelectRef.current && selectedCategory) {
+      tomSelectRef.current.setValue(selectedCategory, true);
+    }
+  }, [selectedCategory]);
+
 
 
   const handleSubmit = async (e) => {
@@ -123,6 +181,45 @@ export default function EditPlayersForm({ user }) {
         <div className="body-main-cont">
           <div className="single-body-row row">
             <div className="single-body-left col-lg-12 col-xl-7">
+
+              <div className="left-info-box">
+                <div className="left-row row">
+                  <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
+                    <div className="label-text">
+                      <p className="mb-0">Invited By</p>
+                    </div>
+                  </div>
+                  <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
+                    <div className="info-text px-0">
+                      <p className="mb-0">
+                        <select
+                          className="form-control"
+                          name="palyer_manger_id"
+                          ref={selectRef}
+                          defaultValue={selectedCategory}
+                        >
+                          <option value="">Choose a Manager</option>
+                          {managers.map((manager) => (
+                            <option key={manager._id} value={manager._id}>
+                              {manager.name}
+                            </option>
+                          ))}
+                        </select>
+                        {state.errors?.palyer_manger_id && (
+                          <span className="invalid-feedback" style={{ display: "block" }}>{state.errors.palyer_manger_id}</span>
+                        )}
+                        {clientErrors.palyer_manger_id && (
+                          <span className="invalid-feedback" style={{ display: "block" }} >{clientErrors.palyer_manger_id}</span>
+                        )}
+
+
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
               <div className="left-info-box">
                 <div className="left-row row">
                   <div className="left-label-col col-md-5 col-lg-4 col-xl-4">

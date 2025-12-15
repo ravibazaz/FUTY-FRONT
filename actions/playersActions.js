@@ -73,7 +73,7 @@ export async function updatePlayers(id, prevState, formData) {
   if (!result.success) {
     return { success: false, errors: result.error.flatten().fieldErrors };
   }
-  const { name, email, telephone, nick_name, post_code, profile_description, palyer_position, palyer_pace, palyer_skill, palyer_power, palyer_defence, palyer_teamwork, palyer_discipline, palyer_rating } = result.data;
+  const { name, email, telephone, nick_name, post_code, profile_description, palyer_position, palyer_pace, palyer_skill, palyer_power, palyer_defence, palyer_teamwork, palyer_discipline, palyer_rating, palyer_manger_id } = result.data;
   const imageFile = formData.get("profile_image");
   const password = formData.get("password");
 
@@ -137,6 +137,7 @@ export async function updatePlayers(id, prevState, formData) {
       palyer_teamwork,
       palyer_discipline,
       palyer_rating,
+      palyer_manger_id,
       profile_image: `/uploads/players/${imageName}`, // Save relative path to the image
     };
 
@@ -160,7 +161,8 @@ export async function updatePlayers(id, prevState, formData) {
       palyer_defence,
       palyer_teamwork,
       palyer_discipline,
-      palyer_rating
+      palyer_rating,
+      palyer_manger_id
     };
     if (password) {
       updateData.password = await bcrypt.hash(password, 10);

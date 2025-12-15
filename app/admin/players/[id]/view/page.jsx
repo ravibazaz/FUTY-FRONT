@@ -1,17 +1,40 @@
 import ChangeStatus from "@/components/ChangeStatus";
 import { connectDB } from "@/lib/db";
-import User from "@/lib/models/Users";
 import Image from "next/image";
 import Link from "next/link";
+import User from '@/lib/models/Users';
+import Teams from "@/lib/models/Teams";
+import Clubs from "@/lib/models/Clubs";
+import Leagues from "@/lib/models/Leagues";
 
 export default async function ViewFansPage({ params }) {
   const id = (await params).id;
   let preview = "/images/profile-picture.jpg";
   await connectDB();
-  const userdetails = await User.findById(id).lean();
+  const userdetails = await User.findById(id).populate({
+      path: "palyer_manger_id",
+      select: "name team_id",
+      populate: {
+        path: "team_id",
+        model: "Teams",
+        select: "label name club",
+        populate: {
+          path: "club",
+          model: "Clubs",
+          select: "label name league", // whatever fields you want
+          populate: {
+            path: "league",
+            model: "Leagues",
+            select: "label title", // whatever fields you want
+          }
+        }
+      }
+    }).lean();
   if (userdetails.profile_image)
     preview = '/api'+userdetails.profile_image;
 
+  console.log(userdetails);
+  
   return (
 
     <>
@@ -166,6 +189,12 @@ export default async function ViewFansPage({ params }) {
             <div className="single-body-right col-lg-12 col-xl-5">
               <div className="right-info-box">
                 <h2 className="info-box-title fs-14 fw-bold mb-30">Contact Details</h2>
+                <div className="right-info mb-30">
+                  <p className="mb-0 fs-14 d-flex align-items-center gap-30">
+                    <span className="info-span">Invited By: <a className="text-decoration-none text-body underline-hover"   >{userdetails.palyer_manger_id?.name}</a></span>
+                  </p>
+                </div>
+
                 <div className="right-info mb-30">
                   <p className="mb-0 fs-14 d-flex align-items-center gap-30">
                     <span className="info-span">E-mail: <a className="text-decoration-none text-body underline-hover" href={'mailto:'+userdetails.email}  >{userdetails.email}</a></span>
