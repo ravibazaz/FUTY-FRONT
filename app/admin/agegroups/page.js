@@ -120,7 +120,7 @@ export default function AgeGroupsTable() {
               <thead>
                 <tr>
                   <th scope="col">Age Group</th>
-                  <th scope="col">Edit</th>
+                  <th scope="col">Action</th>
                 </tr>
               </thead>
               <tbody>

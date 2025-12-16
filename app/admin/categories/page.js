@@ -119,7 +119,7 @@ export default function CategoriesTable() {
                 <tr>
                   <th scope="col">Category</th>
                   <th scope="col">Parent Category</th>
-                  <th scope="col">Edit</th>
+                  <th scope="col">Action</th>
                 </tr>
               </thead>
               <tbody>

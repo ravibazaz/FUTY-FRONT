@@ -124,7 +124,7 @@ export default function GroundTable() {
                   <th scope="col">Secretary</th>
                   <th scope="col">Telephone</th>
                   <th scope="col">Email</th>
-                  <th scope="col">Edit</th>
+                  <th scope="col">Action</th>
                 </tr>
               </thead>
               <tbody>

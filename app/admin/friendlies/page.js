@@ -121,7 +121,7 @@ export default function GroundTable() {
                   <th scope="col">Name</th>
                   <th scope="col">Date</th>
                   <th scope="col">time</th>
-                  <th scope="col">Profile</th>
+                  <th scope="col">Action</th>
                 </tr>
               </thead>
               <tbody>

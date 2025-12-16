@@ -123,7 +123,7 @@ export default function FanTable() {
                   <th scope="col">Email</th>
                   <th scope="col">Friendleys</th>
                   <th scope="col">Last Activity</th>
-                  <th scope="col">Profile</th>
+                  <th scope="col">Action</th>
                 </tr>
               </thead>
               <tbody>

@@ -125,7 +125,7 @@ export default function GroundTable() {
                   <th scope="col">Telephone</th>
                   <th scope="col">Email</th>
                   <th scope="col">Ground</th>
-                  <th scope="col">Edit</th>
+                  <th scope="col">Action</th>
                 </tr>
               </thead>
               <tbody>
@@ -142,7 +142,7 @@ export default function GroundTable() {
                       <td className="text-nowrap"><a href="#">Marc Waters</a></td>
                       <td className="text-nowrap"><a href="tel:+44 08564 346268">{l.phone}</a></td>
                       <td className="text-nowrap"><a href="mailto:u7@phyl.co.uk">{l.email}</a></td>
-                      <td className="text-nowrap"><a href="mailto:u7@phyl.co.uk">{l.email}</a></td>
+                      <td className="text-nowrap"><a href="mailto:u7@phyl.co.uk">{l.ground?.name}</a></td>
                       <td className="text-nowrap">
                         <Link prefetch={false}  className="text-green"
                           href={`/admin/teams/${l._id}/edit`}

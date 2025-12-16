@@ -121,7 +121,7 @@ export default function StoreTable() {
               <thead>
                 <tr>
                   <th scope="col">Advert Title</th>
-                  <th scope="col">Edit</th>
+                  <th scope="col">Action</th>
                 </tr>
               </thead>
               <tbody>

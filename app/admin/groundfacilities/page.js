@@ -120,7 +120,7 @@ export default function GroundFacilityTable() {
               <thead>
                 <tr>
                   <th scope="col">Ground Facility</th>
-                  <th scope="col">Edit</th>
+                  <th scope="col">Action</th>
                 </tr>
               </thead>
               <tbody>

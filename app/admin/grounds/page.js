@@ -123,7 +123,7 @@ export default function GroundTable() {
                   <th scope="col">Town</th>
                   <th scope="col">County</th>
                   <th scope="col">Postcode</th>
-                  <th scope="col">Profile</th>
+                  <th scope="col">Action</th>
                 </tr>
               </thead>
               <tbody>
