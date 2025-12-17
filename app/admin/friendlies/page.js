@@ -136,11 +136,11 @@ export default function GroundTable() {
                       <td className="text-nowrap">{formatDate(l.date)}</td>
                       <td className="text-nowrap"><a href="#">{l.time}</a></td>
                       <td className="text-nowrap">
-                        <Link prefetch={false} className="text-green"
+                        {/* <Link prefetch={false} className="text-green"
                           href={`/admin/friendlies/${l._id}/edit`}
                         >
                           Edit
-                        </Link>
+                        </Link> */}
                         {/* SweetAlert Delete Button */}
                         <DeleteButton id={l._id} />
                         {/* Hidden Form for Server Action POST */}
