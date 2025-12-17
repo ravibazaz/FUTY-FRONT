@@ -85,7 +85,7 @@ export default async function ViewFansPage({ params }) {
                                     <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
                                         <div className="info-text">
                                             <p className="mb-0">
-                                                <a className="text-primary text-decoration-none" href="#">{new Date(friendlies.date).toLocaleDateString()}</a>
+                                                {new Date(friendlies.date).toLocaleDateString()}
                                             </p>
                                         </div>
                                     </div>
@@ -101,7 +101,7 @@ export default async function ViewFansPage({ params }) {
                                     <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
                                         <div className="info-text">
                                             <p className="mb-0">
-                                                <a className="text-primary text-decoration-none" href="#">{friendlies.time}</a>
+                                                {friendlies.time}
                                             </p>
                                         </div>
                                     </div>
@@ -117,7 +117,7 @@ export default async function ViewFansPage({ params }) {
                                     <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
                                         <div className="info-text">
                                             <p className="mb-0">
-                                                <a className="text-primary text-decoration-none" href="#">{friendlies.description}</a>
+                                                {friendlies.description}
                                             </p>
                                         </div>
                                     </div>
@@ -133,7 +133,7 @@ export default async function ViewFansPage({ params }) {
                                     <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
                                         <div className="info-text">
                                             <p className="mb-0">
-                                                <a className="text-primary text-decoration-none" href="#">{friendlies.created_by_user_score}</a>
+                                                {friendlies.created_by_user_score}
                                             </p>
                                         </div>
                                     </div>
@@ -149,7 +149,7 @@ export default async function ViewFansPage({ params }) {
                                     <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
                                         <div className="info-text">
                                             <p className="mb-0">
-                                                <a className="text-primary text-decoration-none" href="#">{friendlies.accepted_by_user_score}</a>
+                                                {friendlies.accepted_by_user_score}
                                             </p>
                                         </div>
                                     </div>
@@ -165,7 +165,7 @@ export default async function ViewFansPage({ params }) {
                                     <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
                                         <div className="info-text">
                                             <p className="mb-0">
-                                                <a className="text-primary text-decoration-none" href="#">{friendlies.created_by_user?.name}</a>
+                                                {friendlies.created_by_user?.name}
                                             </p>
                                         </div>
                                     </div>
@@ -181,7 +181,7 @@ export default async function ViewFansPage({ params }) {
                                     <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
                                         <div className="info-text">
                                             <p className="mb-0">
-                                                <a className="text-primary text-decoration-none" href="#">{friendlies.accepted_by_user?.name}</a>
+                                                {friendlies.accepted_by_user?.name}
                                             </p>
                                         </div>
                                     </div>

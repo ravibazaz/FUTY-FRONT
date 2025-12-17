@@ -45,7 +45,7 @@ export default async function ViewTournamentPage({ params }) {
                                     <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
                                         <div className="info-text">
                                             <p className="mb-0">
-                                                <a className="text-primary text-decoration-none" href="#">{new Date(tournaments.date).toLocaleDateString()}</a>
+                                                {new Date(tournaments.date).toLocaleDateString()}
                                             </p>
                                         </div>
                                     </div>
@@ -61,7 +61,7 @@ export default async function ViewTournamentPage({ params }) {
                                     <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
                                         <div className="info-text">
                                             <p className="mb-0">
-                                                <a className="text-primary text-decoration-none" href="#">{tournaments.time}</a>
+                                                {tournaments.time}
                                             </p>
                                         </div>
                                     </div>
@@ -77,7 +77,7 @@ export default async function ViewTournamentPage({ params }) {
                                     <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
                                         <div className="info-text">
                                             <p className="mb-0">
-                                                <a className="text-primary text-decoration-none" href="#">{tournaments.description}</a>
+                                                {tournaments.description}
                                             </p>
                                         </div>
                                     </div>
@@ -93,7 +93,7 @@ export default async function ViewTournamentPage({ params }) {
                                     <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
                                         <div className="info-text">
                                             <p className="mb-0">
-                                                <a className="text-primary text-decoration-none" href="#">{tournaments.venue}</a>
+                                                {tournaments.venue}
                                             </p>
                                         </div>
                                     </div>
@@ -109,7 +109,7 @@ export default async function ViewTournamentPage({ params }) {
                                     <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
                                         <div className="info-text">
                                             <p className="mb-0">
-                                                <a className="text-primary text-decoration-none" href="#">{tournaments.total_amount}</a>
+                                                {tournaments.total_amount}
                                             </p>
                                         </div>
                                     </div>
@@ -125,7 +125,7 @@ export default async function ViewTournamentPage({ params }) {
                                     <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
                                         <div className="info-text">
                                             <p className="mb-0">
-                                                <a className="text-primary text-decoration-none" href="#">{tournaments.email}</a>
+                                                {tournaments.email}
                                             </p>
                                         </div>
                                     </div>
@@ -141,7 +141,7 @@ export default async function ViewTournamentPage({ params }) {
                                     <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
                                         <div className="info-text">
                                             <p className="mb-0">
-                                                <a className="text-primary text-decoration-none" href="#">{tournaments.contact}</a>
+                                               {tournaments.contact}
                                             </p>
                                         </div>
                                     </div>
@@ -157,7 +157,7 @@ export default async function ViewTournamentPage({ params }) {
                                     <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
                                         <div className="info-text">
                                             <p className="mb-0">
-                                                <a className="text-primary text-decoration-none" href="#">{tournaments.notes}</a>
+                                               {tournaments.notes}
                                             </p>
                                         </div>
                                     </div>
@@ -173,7 +173,7 @@ export default async function ViewTournamentPage({ params }) {
                                     <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
                                         <div className="info-text">
                                             <p className="mb-0">
-                                                <a className="text-primary text-decoration-none" href="#">{tournaments.team_id?.name}</a>
+                                                {tournaments.team_id?.name}
                                             </p>
                                         </div>
                                     </div>
@@ -190,7 +190,7 @@ export default async function ViewTournamentPage({ params }) {
                                     <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
                                         <div className="info-text">
                                             <p className="mb-0">
-                                                <a className="text-primary text-decoration-none" href="#">{tournaments.manager_id?.name}</a>
+                                                {tournaments.manager_id?.name}
                                             </p>
                                         </div>
                                     </div>
@@ -207,7 +207,7 @@ export default async function ViewTournamentPage({ params }) {
                                     <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
                                         <div className="info-text">
                                             <p className="mb-0">
-                                                <a className="text-primary text-decoration-none" href="#">{tournaments.league_id?.title}</a>
+                                                {tournaments.league_id?.title}
                                             </p>
                                         </div>
                                     </div>
@@ -223,7 +223,7 @@ export default async function ViewTournamentPage({ params }) {
                                     <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
                                         <div className="info-text">
                                             <p className="mb-0">
-                                                <a className="text-primary text-decoration-none" href="#">{tournaments.club?.name}</a>
+                                                {tournaments.club?.name}
                                             </p>
                                         </div>
                                     </div>
@@ -239,7 +239,7 @@ export default async function ViewTournamentPage({ params }) {
                                     <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
                                         <div className="info-text">
                                             <p className="mb-0">
-                                                <a className="text-primary text-decoration-none" href="#">{tournaments.ground?.name}</a>
+                                                {tournaments.ground?.name}
                                             </p>
                                         </div>
                                     </div>
