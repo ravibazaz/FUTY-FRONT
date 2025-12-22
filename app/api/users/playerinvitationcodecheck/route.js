@@ -30,7 +30,25 @@ export async function POST(req) {
     }
     await connectDB();
 
-    const existing = await PlayerInvitations.findOne({ player_invitation_code: result.data.player_invitation_code });
+    const existing = await PlayerInvitations.findOne({ player_invitation_code: result.data.player_invitation_code }).select("-__v").populate({
+      path: "manager_id",
+      select: "name team_id",
+      populate: {
+        path: "team_id",
+        model: "Teams",
+        select: "label name club",
+        populate: {
+          path: "club",
+          model: "Clubs",
+          select: "label name league", // whatever fields you want
+          populate: {
+            path: "league",
+            model: "Leagues",
+            select: "label title", // whatever fields you want
+          }
+        }
+      }
+    }).lean();
     if (!existing) {
       return NextResponse.json(
         {
@@ -44,6 +62,7 @@ export async function POST(req) {
     return NextResponse.json(
         {
           success: true,
+          data: existing,
           message: "Found invitation code",
         },
         { status: 200 }
