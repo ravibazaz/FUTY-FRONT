@@ -8,6 +8,7 @@ import { generateToken } from '@/lib/jwt';
 import Teams from "@/lib/models/Teams";
 import Clubs from "@/lib/models/Clubs";
 import Leagues from "@/lib/models/Leagues";
+import PlayerInvitations from "@/lib/models/PlayerInvitations";
 
 export const UserSchema = z.object({
   login_code: z.string().nonempty("Login Code is required").min(5, "Login Code must be at least 5 character"),
@@ -81,11 +82,12 @@ export async function POST(req) {
       }
     }).lean();
 
+    const existing = await PlayerInvitations.findOne({ player_email: updated_user.email })
     return NextResponse.json({
       success: true,
       message: "Login successfully",
-      data: updated_user,
-      token: token,
+      data: { ...updated_user, nick_name: updated_user.account_type === "Player" ? existing.player_nick_name : updated_user.nick_name },
+     token: token,
     });
   } catch (err) {
     console.error("Login error:", err);

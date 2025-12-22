@@ -9,6 +9,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { generateToken } from '@/lib/jwt';
 import AgeGroups from "@/lib/models/AgeGroups";
+import PlayerInvitations from "@/lib/models/PlayerInvitations";
 
 export const UserSchema = z.object({
   email: z.string().nonempty("Email is required").email("Invalid email format"),
@@ -117,10 +118,13 @@ export async function POST(req) {
 
     const token = await generateToken({ email: user.email, user_id: user.id });
 
+    const existing = await PlayerInvitations.findOne({ player_email: user.email })
+    //console.log(existing);
+    
     return NextResponse.json({
       success: true,
       message: "Login successfully",
-      data: user,
+      data: { ...user, nick_name: user.account_type === "Player" && existing  ? existing.player_nick_name : user.nick_name },
       token: token,
     });
   } catch (err) {
