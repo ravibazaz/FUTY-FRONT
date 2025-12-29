@@ -9,6 +9,7 @@ import Teams from "@/lib/models/Teams";
 import Clubs from "@/lib/models/Clubs";
 import Leagues from "@/lib/models/Leagues";
 import PlayerInvitations from "@/lib/models/PlayerInvitations";
+import FanInvitations from "@/lib/models/FanInvitations";
 
 export const UserSchema = z.object({
   login_code: z.string().nonempty("Login Code is required").min(5, "Login Code must be at least 5 character"),
@@ -50,6 +51,24 @@ export async function POST(req) {
     await User.findByIdAndUpdate(user._id, { isVerified: true, isActive: true });
 
     const updated_user = await User.findOne({ login_code: result.data.login_code }).select("-__v").populate({
+      path: "fan_manger_id",
+      select: "name team_id",
+      populate: {
+        path: "team_id",
+        model: "Teams",
+        select: "label name club",
+        populate: {
+          path: "club",
+          model: "Clubs",
+          select: "label name league", // whatever fields you want
+          populate: {
+            path: "league",
+            model: "Leagues",
+            select: "label title", // whatever fields you want
+          }
+        }
+      }
+    }).populate({
       path: "palyer_manger_id",
       select: "name team_id",
       populate: {
@@ -83,11 +102,21 @@ export async function POST(req) {
     }).lean();
 
     const existing = await PlayerInvitations.findOne({ player_email: updated_user.email })
+    const existing_fan = await FanInvitations.findOne({ fan_email: updated_user.email })
+
+    const nick_name =
+      updated_user.account_type === "Player" && existing
+        ? existing.player_nick_name
+        : updated_user.account_type === "Fan" && existing_fan
+          ? existing_fan.fan_nick_name
+          : updated_user.nick_name;
+
+
     return NextResponse.json({
       success: true,
       message: "Login successfully",
-      data: { ...updated_user, nick_name: updated_user.account_type === "Player" ? existing.player_nick_name : updated_user.nick_name },
-     token: token,
+      data: { ...updated_user,nick_name  },
+      token: token,
     });
   } catch (err) {
     console.error("Login error:", err);

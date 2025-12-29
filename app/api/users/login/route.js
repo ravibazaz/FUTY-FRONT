@@ -10,6 +10,7 @@ import { z } from "zod";
 import { generateToken } from '@/lib/jwt';
 import AgeGroups from "@/lib/models/AgeGroups";
 import PlayerInvitations from "@/lib/models/PlayerInvitations";
+import FanInvitations from "@/lib/models/FanInvitations";
 
 export const UserSchema = z.object({
   email: z.string().nonempty("Email is required").email("Invalid email format"),
@@ -72,9 +73,27 @@ export async function POST(req) {
       );
     }
 
-   
+
 
     const user = await User.findOne({ email: result.data.email, isVerified: true, isActive: true }).populate({
+      path: "fan_manger_id",
+      select: "name team_id",
+      populate: {
+        path: "team_id",
+        model: "Teams",
+        select: "label name club",
+        populate: {
+          path: "club",
+          model: "Clubs",
+          select: "label name league", // whatever fields you want
+          populate: {
+            path: "league",
+            model: "Leagues",
+            select: "label title", // whatever fields you want
+          }
+        }
+      }
+    }).populate({
       path: "palyer_manger_id",
       select: "name team_id",
       populate: {
@@ -119,12 +138,19 @@ export async function POST(req) {
     const token = await generateToken({ email: user.email, user_id: user.id });
 
     const existing = await PlayerInvitations.findOne({ player_email: user.email })
+    const existing_fan = await FanInvitations.findOne({ fan_email: user.email })
     //console.log(existing);
-    
+    const nick_name =
+      user.account_type === "Player" && existing
+        ? existing.player_nick_name
+        : user.account_type === "Fan" && existing_fan
+          ? existing_fan.fan_nick_name
+          : user.nick_name;
+
     return NextResponse.json({
       success: true,
       message: "Login successfully",
-      data: { ...user, nick_name: user.account_type === "Player" && existing  ? existing.player_nick_name : user.nick_name },
+      data: { ...user, nick_name },
       token: token,
     });
   } catch (err) {
