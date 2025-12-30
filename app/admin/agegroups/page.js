@@ -99,7 +99,7 @@ export default function AgeGroupsTable() {
             <p className="top-breadcrumb mb-0">{'> Age Groups'}</p>
           </div>
           <div className="top-right d-flex justify-content-between align-items-center gap-10">
-            <Link prefetch={false} className="btn btn-common" href={`/admin/agegroups/new`} >New</Link>
+            <Link prefetch={false} className="btn btn-common" href={`/admin/agegroups/new`} >New Age Group</Link>
             <a href="#">
               <Image src="/images/icon-setting.svg" width={33} height={33} alt="Settings" />
             </a>

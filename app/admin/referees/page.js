@@ -97,7 +97,7 @@ export default function FanTable() {
             <p className="top-breadcrumb mb-0">{'> Referees'}</p>
           </div>
           <div className="top-right d-flex justify-content-between align-items-center gap-10">
-            <Link prefetch={false} className="btn btn-common" href="/admin/referees/new">New</Link>
+            <Link prefetch={false} className="btn btn-common" href="/admin/referees/new">New Referee</Link>
             <a href="#">
               <Image src="/images/icon-setting.svg" width={33} height={33} alt="Settings" />
             </a>

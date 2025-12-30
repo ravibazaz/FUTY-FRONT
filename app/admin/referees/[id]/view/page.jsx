@@ -244,7 +244,7 @@ export default async function ViewFansPage({ params }) {
                       <td className="text-nowrap"><a href="#">Marc Waters</a></td>
                       <td className="text-nowrap">3-2</td>
                       <td className="text-nowrap">Win</td>
-                      <td className="text-nowrap"><a className="text-green" href="managers-edit.php">Edit</a></td>
+                      <td className="text-nowrap"><a className="text-green" href="#">Edit</a></td>
                     </tr>
                     <tr>
                       <td className="text-nowrap">11.01.24</td>
@@ -255,7 +255,7 @@ export default async function ViewFansPage({ params }) {
                       <td className="text-nowrap"><a href="#">Paul Tader</a></td>
                       <td className="text-nowrap">1-0</td>
                       <td className="text-nowrap">Loss</td>
-                      <td className="text-nowrap"><a className="text-green" href="managers-edit.php">Edit</a></td>
+                      <td className="text-nowrap"><a className="text-green" href="#">Edit</a></td>
                     </tr>
                   </tbody>
                 </table>
@@ -292,7 +292,7 @@ export default async function ViewFansPage({ params }) {
                       <td className="text-nowrap"><a href="#">Marc Waters</a></td>
                       <td className="text-nowrap">3-2</td>
                       <td className="text-nowrap">Win</td>
-                      <td className="text-nowrap"><a className="text-green" href="managers-edit.php">Edit</a></td>
+                      <td className="text-nowrap"><a className="text-green" href="#">Edit</a></td>
                     </tr>
                     <tr>
                       <td className="text-nowrap">11.01.24</td>
@@ -303,7 +303,7 @@ export default async function ViewFansPage({ params }) {
                       <td className="text-nowrap"><a href="#">Paul Tader</a></td>
                       <td className="text-nowrap">1-0</td>
                       <td className="text-nowrap">Loss</td>
-                      <td className="text-nowrap"><a className="text-green" href="managers-edit.php">Edit</a></td>
+                      <td className="text-nowrap"><a className="text-green" href="#">Edit</a></td>
                     </tr>
                   </tbody>
                 </table>
