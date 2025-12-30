@@ -8,11 +8,17 @@ import AgeGroups from "@/lib/models/AgeGroups";
 import Users from "@/lib/models/Users";
 import Image from "next/image";
 import Link from "next/link";
+import Friendlies from "@/lib/models/Friendlies";
 
 export default async function ViewFansPage({ params }) {
     const id = (await params).id;
     let preview = "/images/club-badge.jpg";
     await connectDB();
+    const todayStart = new Date();
+    todayStart.setHours(0, 0, 0, 0);
+
+    const todayEnd = new Date();
+    todayEnd.setHours(23, 59, 59, 999);
     const team = await Teams.findById(id).populate("age_groups", "age_group").populate({
         path: "club",
         select: "name league",
@@ -31,6 +37,22 @@ export default async function ViewFansPage({ params }) {
         preview = '/api' + team.image;
 
     //console.log(team);
+    const todays_friendlies_this_team = await Friendlies.find({
+        date: {
+            $gte: todayStart,
+            $lte: todayEnd,
+        },
+        team_id: id
+
+    }).sort({ date: -1 }).populate('team_id').populate('manager_id').populate('ground_id').populate('league_id').select("-__v").lean();
+
+    // console.log(todays_friendlies_created_me);
+    const archive_friendlies_this_team = await Friendlies.find({
+        date: {
+            $lt: todayStart
+        },
+        team_id: id
+    }).sort({ date: -1 }).populate('team_id').populate('manager_id').populate('ground_id').populate('league_id').select("-__v").lean();
 
     return (
         <>
@@ -74,7 +96,7 @@ export default async function ViewFansPage({ params }) {
                                         <div className="info-text">
                                             {team.managers.map((manager) => (
                                                 <p className="mb-0" key={manager._id}>
-                                                    <Link className="text-primary text-decoration-none"  href={`/admin/managers/${manager._id}/view`} >{manager.name}</Link>
+                                                    <Link className="text-primary text-decoration-none" href={`/admin/managers/${manager._id}/view`} >{manager.name}</Link>
                                                 </p>
                                             ))
                                             }
@@ -94,7 +116,7 @@ export default async function ViewFansPage({ params }) {
                                     <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
                                         <div className="info-text">
                                             <p className="mb-0">
-                                                <Link className="text-primary text-decoration-none"  href={`/admin/clubs/${team.club?._id}/view`} >{team.club?.name}</Link>
+                                                <Link className="text-primary text-decoration-none" href={`/admin/clubs/${team.club?._id}/view`} >{team.club?.name}</Link>
                                             </p>
                                         </div>
                                     </div>
@@ -127,7 +149,7 @@ export default async function ViewFansPage({ params }) {
                                     <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
                                         <div className="info-text">
                                             <p className="mb-0">
-                                                <Link className="text-primary text-decoration-none"  href={`/admin/leagues/${team.club?.league._id}/view`}>{team.club?.league?.title}</Link>
+                                                <Link className="text-primary text-decoration-none" href={`/admin/leagues/${team.club?.league._id}/view`}>{team.club?.league?.title}</Link>
                                             </p>
                                         </div>
                                     </div>
@@ -144,7 +166,7 @@ export default async function ViewFansPage({ params }) {
                                     <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
                                         <div className="info-text">
                                             <p className="mb-0">
-                                                <Link className="text-primary text-decoration-none"  href={`/admin/grounds/${team.ground._id}/view`}>{team.ground?.name}</Link>
+                                                <Link className="text-primary text-decoration-none" href={`/admin/grounds/${team.ground._id}/view`}>{team.ground?.name}</Link>
                                             </p>
                                         </div>
                                     </div>
@@ -321,28 +343,20 @@ export default async function ViewFansPage({ params }) {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td className="text-nowrap">11.01.24</td>
-                                            <td className="text-nowrap">1pm</td>
-                                            <td className="text-nowrap"><a href="#">Blueline U14s</a></td>
-                                            <td className="text-nowrap"><a href="#">OakPark</a></td>
-                                            <td className="text-nowrap">Complete</td>
-                                            <td className="text-nowrap"><a href="#">Paul Tader</a></td>
-                                            <td className="text-nowrap">1-0</td>
-                                            <td className="text-nowrap">Loss</td>
-                                            <td className="text-nowrap"><a className="text-green" href="#">Edit</a></td>
-                                        </tr>
-                                        <tr>
-                                            <td className="text-nowrap">12.02.24</td>
-                                            <td className="text-nowrap">3pm</td>
-                                            <td className="text-nowrap"><a href="#">CPR U14s</a></td>
-                                            <td className="text-nowrap"><a href="#">Waterend</a></td>
-                                            <td className="text-nowrap">Complete</td>
-                                            <td className="text-nowrap"><a href="#">Marc Waters</a></td>
-                                            <td className="text-nowrap">3-2</td>
-                                            <td className="text-nowrap">Win</td>
-                                            <td className="text-nowrap"><a className="text-green" href="#">Edit</a></td>
-                                        </tr>
+                                        {todays_friendlies_this_team.map((l, index) => (
+                                            <tr key={index}>
+                                                <td className="text-nowrap">{formatDate(l.date)}</td>
+                                                <td className="text-nowrap">{l.time}</td>
+                                                <td className="text-nowrap"><a href="#">CPR U14s</a></td>
+                                                <td className="text-nowrap"><a href="#">{l.ground_id?.name}</a></td>
+                                                <td className="text-nowrap">Complete</td>
+                                                <td className="text-nowrap"><a href="#">Marc Waters</a></td>
+                                                <td className="text-nowrap">3-2</td>
+                                                <td className="text-nowrap">Win</td>
+                                                <td className="text-nowrap"><a className="text-green" href="#">Edit</a></td>
+                                            </tr>
+                                        )
+                                        )}
                                     </tbody>
                                 </table>
                             </div>
@@ -368,28 +382,20 @@ export default async function ViewFansPage({ params }) {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td className="text-nowrap">12.02.24</td>
-                                            <td className="text-nowrap">3pm</td>
-                                            <td className="text-nowrap"><a href="#">CPR U14s</a></td>
-                                            <td className="text-nowrap"><a href="#">Waterend</a></td>
-                                            <td className="text-nowrap">Complete</td>
-                                            <td className="text-nowrap"><a href="#">Marc Waters</a></td>
-                                            <td className="text-nowrap">3-2</td>
-                                            <td className="text-nowrap">Win</td>
-                                            <td className="text-nowrap"><a className="text-green" href="#">Edit</a></td>
-                                        </tr>
-                                        <tr>
-                                            <td className="text-nowrap">11.01.24</td>
-                                            <td className="text-nowrap">1pm</td>
-                                            <td className="text-nowrap"><a href="#">Blueline U14s</a></td>
-                                            <td className="text-nowrap"><a href="#">OakPark</a></td>
-                                            <td className="text-nowrap">Complete</td>
-                                            <td className="text-nowrap"><a href="#">Paul Tader</a></td>
-                                            <td className="text-nowrap">1-0</td>
-                                            <td className="text-nowrap">Loss</td>
-                                            <td className="text-nowrap"><a className="text-green" href="#">Edit</a></td>
-                                        </tr>
+                                        {archive_friendlies_this_team.map((l, index) => (
+                                            <tr key={index}>
+                                                <td className="text-nowrap">{formatDate(l.date)}</td>
+                                                <td className="text-nowrap">{l.time}</td>
+                                                <td className="text-nowrap"><a href="#">CPR U14s</a></td>
+                                                <td className="text-nowrap"><a href="#">{l.ground_id?.name}</a></td>
+                                                <td className="text-nowrap">Complete</td>
+                                                <td className="text-nowrap"><a href="#">Marc Waters</a></td>
+                                                <td className="text-nowrap">3-2</td>
+                                                <td className="text-nowrap">Win</td>
+                                                <td className="text-nowrap"><a className="text-green" href="#">Edit</a></td>
+                                            </tr>
+                                        )
+                                        )}
                                     </tbody>
                                 </table>
                             </div>
