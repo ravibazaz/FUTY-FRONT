@@ -127,6 +127,29 @@ export default function EditAdvertForm({ adverts }) {
               </div>
 
 
+              <div className="left-info-box">
+                <div className="left-row row">
+                  <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
+                    <div className="label-text">
+                      <p className="mb-0">Link</p>
+                    </div>
+                  </div>
+                  <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
+                    <div className="info-text px-0">
+                      <p className="mb-0">
+                        <input className="form-control" name="link" defaultValue={adverts.link} type="text" ></input>
+                        {clientErrors.link && (
+                          <span className="invalid-feedback" style={{ display: "block" }}>
+                            {clientErrors.link}
+                          </span>
+                        )}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
               
 
 

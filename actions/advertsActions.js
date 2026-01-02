@@ -66,7 +66,7 @@ export async function updateAdvert(id, prevState, formData) {
   if (!result.success) {
     return { success: false, errors: result.error.flatten().fieldErrors };
   }
-  const { name, content } = result.data;
+  const { name, content , link } = result.data;
   const imageFile = formData.get("image");
 
   // console.log(imageFiles);
@@ -116,6 +116,7 @@ export async function updateAdvert(id, prevState, formData) {
     const updateData = {
       name,
       content,
+      link,
       image: `/uploads/adverts/${imageName}`, // Save relative path to the image
     };
     // Update the advert document with the new image name
@@ -123,7 +124,8 @@ export async function updateAdvert(id, prevState, formData) {
   } else {
     const updateData = {
       name,
-      content
+      content,
+      link
     };
     // If no new image is uploaded, just update the name and isActive fields
     await Adverts.findByIdAndUpdate(id, updateData);
