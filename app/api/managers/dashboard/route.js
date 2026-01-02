@@ -22,7 +22,20 @@ export async function GET(req) {
 
   // Otherwise, it means the user is authenticated
   await connectDB();
-  const managers = await Users.find({ account_type: "Manager" }, "profile_image name surname").lean();
+
+  const now = new Date();
+
+  // Monday start
+  const startOfWeek = new Date(now);
+  startOfWeek.setDate(now.getDate() - ((now.getDay() + 6) % 7));
+  startOfWeek.setHours(0, 0, 0, 0);
+
+  // Sunday end
+  const endOfWeek = new Date(startOfWeek);
+  endOfWeek.setDate(startOfWeek.getDate() + 6);
+  endOfWeek.setHours(23, 59, 59, 999);
+
+  //const managers = await Users.find({ account_type: "Manager" }, "profile_image name surname").lean();
 
   const [random_advert] = await Adverts.aggregate([
     { $sample: { size: 1 } }, // pick 1 random doc
@@ -77,7 +90,7 @@ export async function GET(req) {
   }).lean();
 
 
-    const the_managers_next_upcomng_schedule_friendly_recent_date_limit_one = await Friendlies.findOne({
+  const the_managers_next_upcomng_schedule_friendly_recent_date_limit_one = await Friendlies.findOne({
     created_by_user: user._id,
   }).sort({ date: -1 }).populate('team_id').populate('manager_id').populate('ground_id').populate('league_id').select("-__v").populate({
     path: "created_by_user",
@@ -117,6 +130,23 @@ export async function GET(req) {
     }
   }).lean();
 
+
+  const friendlies_posted_in_this_week = await Friendlies.countDocuments({
+    date: {
+      $gte: startOfWeek,
+      $lte: endOfWeek,
+    },
+  });
+
+    const friendlies_accepted_in_this_week = await Friendlies.countDocuments({
+      accepted_by_user: { $exists: true, $ne: null },
+    date: {
+      $gte: startOfWeek,
+      $lte: endOfWeek,
+    },
+  });
+
+
   return NextResponse.json({
     success: true,
     message: "Welcome to the Manager Dashboard!",
@@ -125,8 +155,12 @@ export async function GET(req) {
       my_team: my_team,
       my_club: my_club,
       my_league: my_league,
-      show_next_applicable_friendly_created_by_others_recent_date_limit_one : show_next_applicable_friendly_created_by_others_recent_date_limit_one,
+      show_next_applicable_friendly_created_by_others_recent_date_limit_one: show_next_applicable_friendly_created_by_others_recent_date_limit_one,
       the_managers_next_upcomng_schedule_friendly_recent_date_limit_one: the_managers_next_upcomng_schedule_friendly_recent_date_limit_one,
+      activity: {
+        friendlies_posted_in_this_week: friendlies_posted_in_this_week,
+        friendlies_accepted_in_this_week: friendlies_accepted_in_this_week
+      }
     },
   });
 }
