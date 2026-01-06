@@ -208,10 +208,20 @@ export async function GET(req) {
 
 
   const upcomings_friendlies_created_me_and_others = await Friendlies.find({
-    accepted_by_user: { $exists: true, $ne: null },
+
     date: {
       $gte: tomorrowStart
-    }
+    },
+    $or: [
+      {
+        created_by_user: user._id,
+        accepted_by_user: { $exists: true, $nin: [null, user._id] },
+      },
+      {
+        created_by_user: { $ne: user._id },
+        accepted_by_user: user._id,
+      },
+    ],
   }).sort({ date: -1 }).populate('team_id').populate('manager_id').populate('ground_id').populate('league_id').select("-__v").populate({
     path: "created_by_user",
     select: "name team_id",
