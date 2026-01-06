@@ -6,7 +6,9 @@ import Teams from "@/lib/models/Teams";
 import Image from "next/image";
 import Link from "next/link";
 import AgeGroups from "@/lib/models/AgeGroups";
-
+import Friendlies from "@/lib/models/Friendlies";
+import mongoose from "mongoose";
+import { formatDate } from "@/lib/formatter";
 export default async function ViewFansPage({ params }) {
     const id = (await params).id;
     let preview = "/images/club-badge.jpg";
@@ -24,10 +26,61 @@ export default async function ViewFansPage({ params }) {
         })
         .lean();
 
-    const teams = await Teams.find({ 'club': club._id }).lean();
+    const teams = await Teams.find({ 'club': id }).lean();
     if (club.image)
         preview = '/api' + club.image;
     //console.log(teams);
+
+
+    // const friendlies_this_club = await Friendlies.aggregate([
+    //     {
+    //         $lookup: {
+    //             from: "teams",
+    //             localField: "team_id",
+    //             foreignField: "_id",
+    //             as: "team",
+    //         },
+    //     },
+    //     { $unwind: "$team" },
+    //     {
+    //         $match: {
+    //             "team.club": new mongoose.Types.ObjectId(club._id),
+    //         },
+    //     },
+    //     { $sort: { date: -1 } },
+    // ]);
+
+
+    const friendlies_this_club = await Friendlies.find()
+  .sort({ date: -1 })
+  .populate({
+    path: "team_id",
+    match: { club: club._id }, // 👈 filter by club
+    select: "label name image club",
+    populate: {
+      path: "club",
+      select: "label name image league",
+      populate: {
+        path: "league",
+        select: "label title",
+      },
+    },
+  })
+  .populate("manager_id")
+  .populate("ground_id")
+  .populate("league_id")
+  .select("-__v")
+  .lean();
+
+// remove non-matching teams
+const filteredFriendlies = friendlies_this_club.filter(
+  f => f.team_id !== null
+);
+
+
+       console.log(friendlies_this_club);
+
+
     return (
         <>
             <main className="main-body col-md-9 col-lg-9 col-xl-10">
@@ -262,6 +315,7 @@ export default async function ViewFansPage({ params }) {
                                     <thead>
                                         <tr>
                                             <th scope="col">Date</th>
+                                            <th scope="col">Team</th>
                                             <th scope="col">Time</th>
                                             <th scope="col">Opposition</th>
                                             <th scope="col">Ground</th>
@@ -273,50 +327,21 @@ export default async function ViewFansPage({ params }) {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td className="text-nowrap">11.01.24</td>
-                                            <td className="text-nowrap">1pm</td>
-                                            <td className="text-nowrap"><a href="#">Blueline U14s</a></td>
-                                            <td className="text-nowrap"><a href="#">OakPark</a></td>
-                                            <td className="text-nowrap">Complete</td>
-                                            <td className="text-nowrap"><a href="#">Paul Tader</a></td>
-                                            <td className="text-nowrap">1-0</td>
-                                            <td className="text-nowrap">Loss</td>
-                                            <td className="text-nowrap"><a className="text-green" href="#">Edit</a></td>
-                                        </tr>
-                                        <tr>
-                                            <td className="text-nowrap">12.02.24</td>
-                                            <td className="text-nowrap">3pm</td>
-                                            <td className="text-nowrap"><a href="#">CPR U14s</a></td>
-                                            <td className="text-nowrap"><a href="#">Waterend</a></td>
-                                            <td className="text-nowrap">Complete</td>
-                                            <td className="text-nowrap"><a href="#">Marc Waters</a></td>
-                                            <td className="text-nowrap">3-2</td>
-                                            <td className="text-nowrap">Win</td>
-                                            <td className="text-nowrap"><a className="text-green" href="#">Edit</a></td>
-                                        </tr>
-                                        <tr>
-                                            <td className="text-nowrap">11.01.24</td>
-                                            <td className="text-nowrap">1pm</td>
-                                            <td className="text-nowrap"><a href="#">Blueline U14s</a></td>
-                                            <td className="text-nowrap"><a href="#">OakPark</a></td>
-                                            <td className="text-nowrap">Complete</td>
-                                            <td className="text-nowrap"><a href="#">Paul Tader</a></td>
-                                            <td className="text-nowrap">1-0</td>
-                                            <td className="text-nowrap">Loss</td>
-                                            <td className="text-nowrap"><a className="text-green" href="#">Edit</a></td>
-                                        </tr>
-                                        <tr>
-                                            <td className="text-nowrap">12.02.24</td>
-                                            <td className="text-nowrap">3pm</td>
-                                            <td className="text-nowrap"><a href="#">CPR U14s</a></td>
-                                            <td className="text-nowrap"><a href="#">Waterend</a></td>
-                                            <td className="text-nowrap">Complete</td>
-                                            <td className="text-nowrap"><a href="#">Marc Waters</a></td>
-                                            <td className="text-nowrap">3-2</td>
-                                            <td className="text-nowrap">Win</td>
-                                            <td className="text-nowrap"><a className="text-green" href="#">Edit</a></td>
-                                        </tr>
+                                       {filteredFriendlies.map((l, index) => (
+                                            <tr key={index}>
+                                                <td className="text-nowrap">{formatDate(l.date)}</td>
+                                                <td className="text-nowrap"><a href="#">{l.team_id?.name}</a></td>
+                                                <td className="text-nowrap">{l.time}</td>
+                                                <td className="text-nowrap"><a href="#">CPR U14s</a></td>
+                                                <td className="text-nowrap"><a href="#">{l.ground_id?.name}</a></td>
+                                                <td className="text-nowrap">Complete</td>
+                                                <td className="text-nowrap"><a href="#">Marc Waters</a></td>
+                                                <td className="text-nowrap">3-2</td>
+                                                <td className="text-nowrap">Win</td>
+                                                <td className="text-nowrap"><a className="text-green" href="#">Edit</a></td>
+                                            </tr>
+                                        )
+                                        )}
                                     </tbody>
                                 </table>
                             </div>

@@ -138,8 +138,8 @@ export async function GET(req) {
     },
   });
 
-    const friendlies_accepted_in_this_week = await Friendlies.countDocuments({
-      accepted_by_user: { $exists: true, $ne: null },
+  const friendlies_accepted_in_this_week = await Friendlies.countDocuments({
+    accepted_by_user: { $exists: true, $ne: null },
     date: {
       $gte: startOfWeek,
       $lte: endOfWeek,
