@@ -12,6 +12,8 @@ export const GroundSchema = z.object({
   content: z.string().nonempty("Ground Facilities is required").min(2, "Ground Facilities must be at least 2 character"),
   county: z.string().nonempty("County is required").min(2, "County must be at least 2 character"),
   pin: z.string().nonempty("Post Code is required").min(2, "Post Code must be at least 2 character"),
+  lat: z.string().nonempty("Latitude is required").min(2, "Latitude must be at least 2 character"),
+  long: z.string().nonempty("Longitude is required").min(2, "Longitude must be at least 2 character"),
   isHomeGround: z.string().nonempty("Home Ground is required").min(2, "Home Ground must be at least 2 character"),
   images: z
     .union([
