@@ -43,6 +43,53 @@ export async function GET(req) {
   ]);
 
 
+  const [random_team] = await Teams.aggregate([
+    // 1️⃣ Pick 1 random team
+    { $sample: { size: 1 } },
+
+    // 2️⃣ Lookup Ground
+    {
+      $lookup: {
+        from: "grounds",            // collection name (plural, lowercase)
+        localField: "ground",
+        foreignField: "_id",
+        as: "ground"
+      }
+    },
+    { $unwind: { path: "$ground", preserveNullAndEmptyArrays: true } },
+
+    // 3️⃣ Lookup Club
+    {
+      $lookup: {
+        from: "clubs",
+        localField: "club",
+        foreignField: "_id",
+        as: "club"
+      }
+    },
+    { $unwind: { path: "$club", preserveNullAndEmptyArrays: true } },
+
+    // 4️⃣ Select required fields only
+    {
+      $project: {
+        name: 1,
+        image: 1,
+        link: 1,
+        content: 1,
+
+        "ground._id": 1,
+        "ground.name": 1,
+        "ground.images": 1,
+
+        "club._id": 1,
+        "club.name": 1,
+        "club.image": 1
+      }
+    }
+  ]);
+
+
+
   const my_team = await Teams.findOne({ _id: user.team_id._id }, "name image").lean();
   const my_club = await Clubs.findOne({ _id: user.team_id?.club?._id }, "name image").lean();
   const my_league = await Leagues.findOne({ _id: user.team_id?.club?.league?._id }, "title image").lean();
@@ -155,6 +202,7 @@ export async function GET(req) {
       my_team: my_team,
       my_club: my_club,
       my_league: my_league,
+      random_team : random_team,
       show_next_applicable_friendly_created_by_others_recent_date_limit_one: show_next_applicable_friendly_created_by_others_recent_date_limit_one,
       the_managers_next_upcomng_schedule_friendly_recent_date_limit_one: the_managers_next_upcomng_schedule_friendly_recent_date_limit_one,
       activity: {
