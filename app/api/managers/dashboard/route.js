@@ -90,7 +90,81 @@ export async function GET(req) {
 
 
 
-  const my_team = await Teams.findOne({ _id: user.team_id._id }, "name image").lean();
+  const [random_friendly] = await Friendlies.aggregate([
+    // 1️⃣ Pick 1 random team
+    { $sample: { size: 1 } },
+
+    // 2️⃣ Lookup Ground
+    {
+      $lookup: {
+        from: "grounds",            // collection name (plural, lowercase)
+        localField: "ground_id",
+        foreignField: "_id",
+        as: "ground_id"
+      }
+    },
+    { $unwind: { path: "$ground_id", preserveNullAndEmptyArrays: true } },
+
+    // 3️⃣ Lookup manger
+    {
+      $lookup: {
+        from: "users",
+        localField: "manager_id",
+        foreignField: "_id",
+        as: "manager_id"
+      }
+    },
+    { $unwind: { path: "$manager_id", preserveNullAndEmptyArrays: true } },
+
+
+    // 3️⃣ Lookup league_id
+    {
+      $lookup: {
+        from: "leagues",
+        localField: "league_id",
+        foreignField: "_id",
+        as: "league_id"
+      }
+    },
+    { $unwind: { path: "$league_id", preserveNullAndEmptyArrays: true } },
+
+
+    // 3️⃣ Lookup league_id
+    {
+      $lookup: {
+        from: "teams",
+        localField: "team_id",
+        foreignField: "_id",
+        as: "team_id"
+      }
+    },
+    { $unwind: { path: "$team_id", preserveNullAndEmptyArrays: true } },
+
+
+    // // 4️⃣ Select required fields only
+    // {
+    //   $project: {
+    //     name: 1,
+    //     date: 1,
+    //     time: 1,
+    //     "ground_id._id": 1,
+    //     "ground_id.name": 1,
+    //     "ground_id.images": 1,
+
+    //     "manager_id._id": 1,
+    //     "manager_id.name": 1,
+    //     "league_id._id": 1,
+    //     "league_id.title": 1,
+    //     "team_id._id": 1,
+    //     "team_id.name": 1
+
+    //   }
+    // }
+  ]);
+
+
+
+  const my_team = await Teams.findOne({ _id: user.team_id._id }, "name image").populate('ground').lean();
   const my_club = await Clubs.findOne({ _id: user.team_id?.club?._id }, "name image").lean();
   const my_league = await Leagues.findOne({ _id: user.team_id?.club?.league?._id }, "title image").lean();
 
@@ -202,9 +276,10 @@ export async function GET(req) {
       my_team: my_team,
       my_club: my_club,
       my_league: my_league,
-      random_team : random_team,
+      random_team: random_team,
       show_next_applicable_friendly_created_by_others_recent_date_limit_one: show_next_applicable_friendly_created_by_others_recent_date_limit_one,
       the_managers_next_upcomng_schedule_friendly_recent_date_limit_one: the_managers_next_upcomng_schedule_friendly_recent_date_limit_one,
+      random_friendly: random_friendly,
       activity: {
         friendlies_posted_in_this_week: friendlies_posted_in_this_week,
         friendlies_accepted_in_this_week: friendlies_accepted_in_this_week

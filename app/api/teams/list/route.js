@@ -17,7 +17,7 @@ export async function GET(req) {
   const { searchParams } = new URL(req.url);
   const q = searchParams.get("q");
   const page = parseInt(searchParams.get("page")) || 1; // current page (default 1)
-  const limit = parseInt(searchParams.get("limit")) || 10; // items per page (default 10)
+  const limit = parseInt(searchParams.get("limit")) || 1000; // items per page (default 10)
   const skip = (page - 1) * limit;
 
   const query = {
