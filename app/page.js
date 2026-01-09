@@ -33,7 +33,7 @@ export default function Home() {
     checkAuth();
   }, [router]);
 
-  if (loading) return <p className="top-breadcrumb mb-0">Loading...</p>;
+  if (loading) return <p>Loading...</p>;
 
   return (
     <>
