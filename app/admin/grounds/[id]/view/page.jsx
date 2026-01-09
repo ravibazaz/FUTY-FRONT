@@ -5,7 +5,7 @@ import { connectDB } from "@/lib/db";
 import Grounds from "@/lib/models/Grounds";
 import Image from "next/image";
 import Link from "next/link";
-
+import { Suspense } from 'react';
 export default async function ViewFansPage({ params }) {
     const id = (await params).id;
     let preview = "/images/profile-picture.jpg";
@@ -112,7 +112,10 @@ export default async function ViewFansPage({ params }) {
                             <div className="right-info-box">
 
                                 <div className="right-info mb-30 pt-30 pb-30">
+                                    <Suspense fallback={<div>Loading...</div>}>
+                                   
                                     <ShowImagesWithAlertClick images={JSON.parse(JSON.stringify(userdetails.images))}></ShowImagesWithAlertClick>
+                                     </Suspense>
                                     {/* <div className="d-flex flex-wrap gap-15">
                                         {userdetails.images.length > 0 ? (
                                             userdetails.images.map((l, index) => (
