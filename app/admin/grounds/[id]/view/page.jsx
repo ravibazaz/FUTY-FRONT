@@ -63,6 +63,7 @@ export default async function ViewFansPage({ params }) {
                                                     <br />
                                                     {userdetails.add3}
                                                 </a>
+                                                <br></br>
                                                 { userdetails.lat && userdetails.long && <Link href={googleMapsUrl} rel="nofollow" target="_blank">
                                                     Open Location in Google Maps
                                                 </Link>
@@ -163,60 +164,60 @@ export default async function ViewFansPage({ params }) {
                                     </thead>
                                     <tbody>
                                         <tr>
-                                            <td className="text-nowrap"><a href="grounds-single.php">Pegasus Under 7’s</a></td>
+                                            <td className="text-nowrap"><a href="#">Pegasus Under 7’s</a></td>
                                             <td className="text-nowrap"><a href="#">Marc Winters</a></td>
                                             <td className="text-nowrap"><a href="tel:+44 08564 346268">+44 08564 346268</a></td>
                                             <td className="text-nowrap"><a href="mailto:u7@phyl.co.uk">u7@phyl.co.uk</a></td>
-                                            <td className="text-nowrap"><a className="text-green" href="grounds-edit">Edit</a></td>
+                                            <td className="text-nowrap"><a className="text-green" href="#">Edit</a></td>
                                         </tr>
                                         <tr>
-                                            <td className="text-nowrap"><a href="grounds-single.php">Chineham Under 7’s</a></td>
+                                            <td className="text-nowrap"><a href="#">Chineham Under 7’s</a></td>
                                             <td className="text-nowrap"><a href="#">Gary Byrne</a></td>
                                             <td className="text-nowrap"><a href="tel:+44 08564 346268">+44 08564 346268</a></td>
                                             <td className="text-nowrap"><a href="mailto:u7@phyl.co.uk">u7@phyl.co.uk</a></td>
-                                            <td className="text-nowrap"><a className="text-green" href="grounds-edit">Edit</a></td>
+                                            <td className="text-nowrap"><a className="text-green" href="#">Edit</a></td>
                                         </tr>
                                         <tr>
-                                            <td className="text-nowrap"><a href="grounds-single.php">Blue Star  Under 7’s</a></td>
+                                            <td className="text-nowrap"><a href="#">Blue Star  Under 7’s</a></td>
                                             <td className="text-nowrap"><a href="#">Michael Star</a></td>
                                             <td className="text-nowrap"><a href="tel:+44 08564 346268">+44 08564 346268</a></td>
                                             <td className="text-nowrap"><a href="mailto:u7@phyl.co.uk">u7@phyl.co.uk</a></td>
-                                            <td className="text-nowrap"><a className="text-green" href="grounds-edit">Edit</a></td>
+                                            <td className="text-nowrap"><a className="text-green" href="#">Edit</a></td>
                                         </tr>
                                         <tr>
-                                            <td className="text-nowrap"><a href="grounds-single.php">CPR Under 7’s</a></td>
+                                            <td className="text-nowrap"><a href="#">CPR Under 7’s</a></td>
                                             <td className="text-nowrap"><a href="#">Michael Star</a></td>
                                             <td className="text-nowrap"><a href="tel:+44 08564 346268">+44 08564 346268</a></td>
                                             <td className="text-nowrap"><a href="mailto:u7@phyl.co.uk">u7@phyl.co.uk</a></td>
-                                            <td className="text-nowrap"><a className="text-green" href="grounds-edit">Edit</a></td>
+                                            <td className="text-nowrap"><a className="text-green" href="#">Edit</a></td>
                                         </tr>
                                         <tr>
-                                            <td className="text-nowrap"><a href="grounds-single.php">Philly Under</a></td>
+                                            <td className="text-nowrap"><a href="#">Philly Under</a></td>
                                             <td className="text-nowrap"><a href="#">Michael Star</a></td>
                                             <td className="text-nowrap"><a href="tel:+44 08564 346268">+44 08564 346268</a></td>
                                             <td className="text-nowrap"><a href="mailto:u7@phyl.co.uk">u7@phyl.co.uk</a></td>
-                                            <td className="text-nowrap"><a className="text-green" href="grounds-edit">Edit</a></td>
+                                            <td className="text-nowrap"><a className="text-green" href="#">Edit</a></td>
                                         </tr>
                                         <tr>
-                                            <td className="text-nowrap"><a href="grounds-single.php">Chineham Under 7’s</a></td>
+                                            <td className="text-nowrap"><a href="#">Chineham Under 7’s</a></td>
                                             <td className="text-nowrap"><a href="#">Michael Star</a></td>
                                             <td className="text-nowrap"><a href="tel:+44 08564 346268">+44 08564 346268</a></td>
                                             <td className="text-nowrap"><a href="mailto:u7@phyl.co.uk">u7@phyl.co.uk</a></td>
-                                            <td className="text-nowrap"><a className="text-green" href="grounds-edit">Edit</a></td>
+                                            <td className="text-nowrap"><a className="text-green" href="#">Edit</a></td>
                                         </tr>
                                         <tr>
-                                            <td className="text-nowrap"><a href="grounds-single.php">Brighton Under 7’s</a></td>
+                                            <td className="text-nowrap"><a href="#">Brighton Under 7’s</a></td>
                                             <td className="text-nowrap"><a href="#">Michael Star</a></td>
                                             <td className="text-nowrap"><a href="tel:+44 08564 346268">+44 08564 346268</a></td>
                                             <td className="text-nowrap"><a href="mailto:u7@phyl.co.uk">u7@phyl.co.uk</a></td>
-                                            <td className="text-nowrap"><a className="text-green" href="grounds-edit">Edit</a></td>
+                                            <td className="text-nowrap"><a className="text-green" href="#">Edit</a></td>
                                         </tr>
                                         <tr>
-                                            <td className="text-nowrap"><a href="grounds-single.php">Wembley Under 7’s</a></td>
+                                            <td className="text-nowrap"><a href="#">Wembley Under 7’s</a></td>
                                             <td className="text-nowrap"><a href="#">Michael Star</a></td>
                                             <td className="text-nowrap"><a href="tel:+44 08564 346268">+44 08564 346268</a></td>
                                             <td className="text-nowrap"><a href="mailto:u7@phyl.co.uk">u7@phyl.co.uk</a></td>
-                                            <td className="text-nowrap"><a className="text-green" href="grounds-edit">Edit</a></td>
+                                            <td className="text-nowrap"><a className="text-green" href="#">Edit</a></td>
                                         </tr>
                                     </tbody>
                                 </table>
