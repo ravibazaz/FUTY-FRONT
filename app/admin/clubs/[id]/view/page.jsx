@@ -8,7 +8,9 @@ import Link from "next/link";
 import AgeGroups from "@/lib/models/AgeGroups";
 import Friendlies from "@/lib/models/Friendlies";
 import mongoose from "mongoose";
-import { formatDate } from "@/lib/formatter";
+import TeamTable from "@/components/TeamTable";
+import { Suspense } from 'react';
+import FriendliesTable from "@/components/FriendliesTable";
 export default async function ViewFansPage({ params }) {
     const id = (await params).id;
     let preview = "/images/club-badge.jpg";
@@ -78,7 +80,7 @@ const filteredFriendlies = friendlies_this_club.filter(
 );
 
 
-       console.log(friendlies_this_club);
+       //console.log(friendlies_this_club);
 
 
     return (
@@ -252,101 +254,15 @@ const filteredFriendlies = friendlies_this_club.filter(
                     </div>
 
 
-                    {teams.length > 0 && <div className="single-bottom-table-cont mt-30">
-                        <h2 className="fs-14 fw-bold mb-20">Teams</h2>
+                   
+                    <TeamTable teams={JSON.parse(JSON.stringify(teams))}></TeamTable>
+                   
 
-                        <div className="table-responsive common-datatable">
-                            <table id="example" className="table">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">Team</th>
-                                        <th scope="col">Phone</th>
-                                        <th scope="col">Email</th>
-                                        <th scope="col">Edit</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {teams.length > 0 ? (
-                                        teams.map((l, index) => (
-                                            <tr key={l._id}>
-                                                <td className="text-nowrap">
-                                                    <Link
-                                                        href={`/admin/teams/${l._id}/view`}
-                                                    >
-                                                        {l.name}
-                                                    </Link>
-                                                </td>
-                                                <td className="text-nowrap">
-                                                    {l.phone}
-                                                </td>
-                                                <td className="text-nowrap">
-                                                    {l.email}
-                                                </td>
-
-                                                <td className="text-nowrap">
-                                                    <Link className="text-green"
-                                                        href={`/admin/teams/${l._id}/edit`}
-                                                    >
-                                                        Edit
-                                                    </Link>
-
-                                                </td>
-                                            </tr>
-                                        ))
-                                    ) : (
-                                        <tr>
-                                            <td colSpan="2" className="text-center">Loading...</td>
-                                        </tr>
-                                    )}
-                                </tbody>
-                            </table>
-                        </div>
-
-                    </div>
-                    }
+                    
+                    <FriendliesTable friendlies={JSON.parse(JSON.stringify(filteredFriendlies))}></FriendliesTable>
+                    
 
 
-                    <div className="single-bottom-table-cont mt-30">
-                        <h2 className="fs-14 fw-bold mb-20">Friendlies</h2>
-                        <form>
-
-                            <div className="table-responsive common-datatable">
-                                <table id="example" className="table">
-                                    <thead>
-                                        <tr>
-                                            <th scope="col">Date</th>
-                                            <th scope="col">Team</th>
-                                            <th scope="col">Time</th>
-                                            <th scope="col">Opposition</th>
-                                            <th scope="col">Ground</th>
-                                            <th scope="col">Status</th>
-                                            <th scope="col">Opp Manager</th>
-                                            <th scope="col">Score</th>
-                                            <th scope="col">Outcome</th>
-                                            <th scope="col">Edit</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                       {filteredFriendlies.map((l, index) => (
-                                            <tr key={index}>
-                                                <td className="text-nowrap">{formatDate(l.date)}</td>
-                                                <td className="text-nowrap"><a href="#">{l.team_id?.name}</a></td>
-                                                <td className="text-nowrap">{l.time}</td>
-                                                <td className="text-nowrap"><a href="#">CPR U14s</a></td>
-                                                <td className="text-nowrap"><a href="#">{l.ground_id?.name}</a></td>
-                                                <td className="text-nowrap">Complete</td>
-                                                <td className="text-nowrap"><a href="#">Marc Waters</a></td>
-                                                <td className="text-nowrap">3-2</td>
-                                                <td className="text-nowrap">Win</td>
-                                                <td className="text-nowrap"><a className="text-green" href="#">Edit</a></td>
-                                            </tr>
-                                        )
-                                        )}
-                                    </tbody>
-                                </table>
-                            </div>
-                        </form>
-                    </div>
 
                 </div>
 
