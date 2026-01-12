@@ -15,7 +15,8 @@ export default function FriendliesTable(props) {
       }
 
       const table = $("#friendlies-table").DataTable({
-        language: { searchPlaceholder: "Search" }
+        language: { searchPlaceholder: "Search" },
+        lengthChange: false
       });
 
       return () => {

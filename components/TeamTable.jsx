@@ -16,7 +16,8 @@ export default function TeamTable(props) {
       }
 
       const table = $("#example").DataTable({
-        language: { searchPlaceholder: "Search" }
+        language: { searchPlaceholder: "Search" },
+        lengthChange: false
       });
 
       return () => {

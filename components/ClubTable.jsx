@@ -8,35 +8,17 @@ export default function ClubTable(props) {
 
   useEffect(() => {
     if (typeof window !== "undefined" && window.$ && clubs.length > 0) {
-      const $ = window.$;
+            const $ = window.$;
 
-      // Destroy if already exists
       if ($.fn.DataTable.isDataTable("#example")) {
         $("#example").DataTable().destroy();
       }
 
-      // Initialize new DataTable
       const table = $("#example").DataTable({
         language: { searchPlaceholder: "Search" },
-        initComplete: function () {
-          $(".common-datatable .dt-container .row").eq(0).addClass("row-first");
-          $(".common-datatable .dt-container .row").eq(1).addClass("row-second");
-          $(".common-datatable .dt-container .row").eq(2).addClass("row-third");
-
-          $(".dt-layout-start").addClass("dt-entries-per-page").removeClass("me-auto");
-          $(".dt-layout-end").addClass("dt-search-bar").removeClass("ms-auto");
-
-          const $searchInput = $(".dt-search-bar input.form-control")
-            .addClass("dt-search-fld")
-            .after('<input class="btn-search-reset" type="reset" value="Reset">');
-
-          $(document).on("click", ".btn-search-reset", function () {
-            table.search("").draw();
-          });
-        },
+        lengthChange: false
       });
 
-      // Cleanup when component unmounts
       return () => {
         if ($.fn.DataTable.isDataTable("#example")) {
           $("#example").DataTable().destroy();
