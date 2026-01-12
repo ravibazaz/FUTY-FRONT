@@ -10,6 +10,7 @@ import Users from "@/lib/models/Users";
 import Image from "next/image";
 import Link from "next/link";
 import Friendlies from "@/lib/models/Friendlies";
+import FriendliesTable from "@/components/FriendliesTable";
 
 export default async function ViewFansPage({ params }) {
     const id = (await params).id;
@@ -324,84 +325,9 @@ export default async function ViewFansPage({ params }) {
                         </div>
                     </div>
 
-                    <div className="single-bottom-table-cont mt-30">
-                        <h2 className="fs-14 fw-bold mb-20">Schedules Friendlies</h2>
-                        <form>
-
-                            <div className="table-responsive common-datatable">
-                                <table id="example" className="table">
-                                    <thead>
-                                        <tr>
-                                            <th scope="col">Date</th>
-                                            <th scope="col">Time</th>
-                                            <th scope="col">Opposition</th>
-                                            <th scope="col">Ground</th>
-                                            <th scope="col">Status</th>
-                                            <th scope="col">Opp Manager</th>
-                                            <th scope="col">Score</th>
-                                            <th scope="col">Outcome</th>
-                                            <th scope="col">Edit</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {todays_friendlies_this_team.map((l, index) => (
-                                            <tr key={index}>
-                                                <td className="text-nowrap">{formatDate(l.date)}</td>
-                                                <td className="text-nowrap">{l.time}</td>
-                                                <td className="text-nowrap"><a href="#">CPR U14s</a></td>
-                                                <td className="text-nowrap"><a href="#">{l.ground_id?.name}</a></td>
-                                                <td className="text-nowrap">Complete</td>
-                                                <td className="text-nowrap"><a href="#">Marc Waters</a></td>
-                                                <td className="text-nowrap">3-2</td>
-                                                <td className="text-nowrap">Win</td>
-                                                <td className="text-nowrap"><a className="text-green" href="#">Edit</a></td>
-                                            </tr>
-                                        )
-                                        )}
-                                    </tbody>
-                                </table>
-                            </div>
-                        </form>
-                    </div>
-
-                    <div className="single-bottom-table-cont mt-30">
-                        <h2 className="fs-14 fw-bold mb-20">Archive</h2>
-                        <form>
-                            <div className="table-responsive common-datatable">
-                                <table id="example" className="table">
-                                    <thead>
-                                        <tr>
-                                            <th scope="col">Date</th>
-                                            <th scope="col">Time</th>
-                                            <th scope="col">Opposition</th>
-                                            <th scope="col">Ground</th>
-                                            <th scope="col">Status</th>
-                                            <th scope="col">Opp Manager</th>
-                                            <th scope="col">Score</th>
-                                            <th scope="col">Outcome</th>
-                                            <th scope="col">Edit</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {archive_friendlies_this_team.map((l, index) => (
-                                            <tr key={index}>
-                                                <td className="text-nowrap">{formatDate(l.date)}</td>
-                                                <td className="text-nowrap">{l.time}</td>
-                                                <td className="text-nowrap"><a href="#">CPR U14s</a></td>
-                                                <td className="text-nowrap"><a href="#">{l.ground_id?.name}</a></td>
-                                                <td className="text-nowrap">Complete</td>
-                                                <td className="text-nowrap"><a href="#">Marc Waters</a></td>
-                                                <td className="text-nowrap">3-2</td>
-                                                <td className="text-nowrap">Win</td>
-                                                <td className="text-nowrap"><a className="text-green" href="#">Edit</a></td>
-                                            </tr>
-                                        )
-                                        )}
-                                    </tbody>
-                                </table>
-                            </div>
-                        </form>
-                    </div>
+                    <FriendliesTable friendlies={JSON.parse(JSON.stringify(todays_friendlies_this_team))} label="Schedules Friendlies"></FriendliesTable>
+                    <FriendliesTable friendlies={JSON.parse(JSON.stringify(archive_friendlies_this_team))} label="Archive"></FriendliesTable>
+                    
                 </div>
 
             </main>

@@ -30,7 +30,7 @@ export default function FriendliesTable(props) {
     <>
       {friendlies.length > 0 &&
         <div className="single-bottom-table-cont mt-30">
-          <h2 className="fs-14 fw-bold mb-20">Friendlies</h2>
+          <h2 className="fs-14 fw-bold mb-20">{props.label}</h2>
           <form>
 
             <div className="table-responsive common-datatable">

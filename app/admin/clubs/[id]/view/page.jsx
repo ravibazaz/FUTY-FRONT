@@ -252,23 +252,10 @@ const filteredFriendlies = friendlies_this_club.filter(
                             </div>
                         </div>
                     </div>
-
-
-                   
                     <TeamTable teams={JSON.parse(JSON.stringify(teams))}></TeamTable>
-                   
-
-                    
-                    <FriendliesTable friendlies={JSON.parse(JSON.stringify(filteredFriendlies))}></FriendliesTable>
-                    
-
-
-
+                    <FriendliesTable friendlies={JSON.parse(JSON.stringify(filteredFriendlies))} label="Friendlies"></FriendliesTable>
                 </div>
-
             </main>
         </>
-
     )
-
 }
