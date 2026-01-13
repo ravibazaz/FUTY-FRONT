@@ -33,7 +33,7 @@ export default async function ViewFansPage({ params }) {
   if (userdetails.profile_image)
     preview = '/api'+userdetails.profile_image;
 
-  console.log(userdetails);
+ // console.log(userdetails);
   
   return (
 

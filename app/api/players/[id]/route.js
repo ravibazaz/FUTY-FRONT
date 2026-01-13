@@ -14,7 +14,7 @@ export async function GET(req, { params }) {
   }
 
   const id = (await params).id;
-  console.log(id);
+ // console.log(id);
 
   // Otherwise, it means the user is authenticated
   await connectDB();
