@@ -1,11 +1,16 @@
 import ChangeStatus from "@/components/ChangeStatus";
 import GroundFacilitiesCheckbox from "@/components/GroundFacilitiesCheckbox";
-import ShowImagesWithAlertClick from "@/components/ShowImagesWithAlertClick";
+// import ShowImagesWithAlertClick from "@/components/ShowImagesWithAlertClick";
 import { connectDB } from "@/lib/db";
 import Grounds from "@/lib/models/Grounds";
 import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from 'react';
+import dynamic from 'next/dynamic';
+const DynamicComponentShowImagesWithAlertClick = dynamic(() => import('@/components/ShowImagesWithAlertClick'), {
+  loading: () => <p>Loading component...</p>, // The fallback UI
+});
+
 export default async function ViewFansPage({ params }) {
     const id = (await params).id;
     let preview = "/images/profile-picture.jpg";
@@ -112,10 +117,10 @@ export default async function ViewFansPage({ params }) {
                             <div className="right-info-box">
 
                                 <div className="right-info mb-30 pt-30 pb-30">
-                                    <Suspense fallback={<div>Loading...</div>}>
+                                  
                                    
-                                    <ShowImagesWithAlertClick images={JSON.parse(JSON.stringify(userdetails.images))}></ShowImagesWithAlertClick>
-                                     </Suspense>
+                                    <DynamicComponentShowImagesWithAlertClick images={JSON.parse(JSON.stringify(userdetails.images))}></DynamicComponentShowImagesWithAlertClick>
+                                     
                                     {/* <div className="d-flex flex-wrap gap-15">
                                         {userdetails.images.length > 0 ? (
                                             userdetails.images.map((l, index) => (
