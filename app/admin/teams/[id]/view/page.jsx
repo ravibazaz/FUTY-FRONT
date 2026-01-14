@@ -11,6 +11,10 @@ import Image from "next/image";
 import Link from "next/link";
 import Friendlies from "@/lib/models/Friendlies";
 import FriendliesTable from "@/components/FriendliesTable";
+import dynamic from 'next/dynamic';
+const DynamicComponentShowImagesWithAlertClick = dynamic(() => import('@/components/ShowImagesWithAlertClick'), {
+  loading: () => <p>Loading component...</p>, // The fallback UI
+});
 
 export default async function ViewFansPage({ params }) {
     const id = (await params).id;
@@ -307,7 +311,7 @@ export default async function ViewFansPage({ params }) {
                                     </p>
                                 </div>
                                 <div className="right-info mb-30">
-                                    <Link href={`/admin/teams/${team._id}/edit`}>
+                                    {/* <Link href={`/admin/teams/${team._id}/edit`}>
                                         <Image
                                             src={preview}
                                             width={82}
@@ -315,7 +319,9 @@ export default async function ViewFansPage({ params }) {
                                             className={'profile-img mb-10'}
                                             alt="Profile Image"
                                         />
-                                    </Link>
+                                    </Link> */}
+                                    <DynamicComponentShowImagesWithAlertClick images={[team.image]}></DynamicComponentShowImagesWithAlertClick>
+
                                     <p className="mb-0">
                                         <Link className="text-decoration-none fs-14 fw-bold text-primary underline-hover" href={`/admin/teams/${team._id}/edit`}>Team Badge</Link>
                                     </p>

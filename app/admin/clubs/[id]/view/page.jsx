@@ -10,6 +10,10 @@ import Friendlies from "@/lib/models/Friendlies";
 import mongoose from "mongoose";
 import TeamTable from "@/components/TeamTable";
 import { Suspense } from 'react';
+import dynamic from 'next/dynamic';
+const DynamicComponentShowImagesWithAlertClick = dynamic(() => import('@/components/ShowImagesWithAlertClick'), {
+  loading: () => <p>Loading component...</p>, // The fallback UI
+});
 import FriendliesTable from "@/components/FriendliesTable";
 export default async function ViewFansPage({ params }) {
     const id = (await params).id;
@@ -236,7 +240,7 @@ const filteredFriendlies = friendlies_this_club.filter(
                                     </p>
                                 </div>
                                 <div className="right-info mb-30">
-                                    <Link href={`/admin/clubs/${club._id}/edit`}>
+                                    {/* <Link href={`/admin/clubs/${club._id}/edit`}>
                                         <Image
                                             src={preview}
                                             width={82}
@@ -244,7 +248,9 @@ const filteredFriendlies = friendlies_this_club.filter(
                                             className={'profile-img mb-10'}
                                             alt="Club Badge"
                                         />
-                                    </Link>
+                                    </Link> */}
+                                    <DynamicComponentShowImagesWithAlertClick images={[club.image]}></DynamicComponentShowImagesWithAlertClick>
+
                                     <p className="mb-0">
                                         <Link className="text-decoration-none fs-14 fw-bold text-primary underline-hover" href={`/admin/clubs/${club._id}/edit`}>Club Badge</Link>
                                     </p>
