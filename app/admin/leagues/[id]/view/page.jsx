@@ -8,6 +8,10 @@ import Link from "next/link";
 import Clubs from "@/lib/models/Clubs";
 import ClubTable from "@/components/ClubTable";
 import { Suspense } from 'react';
+import dynamic from 'next/dynamic';
+const DynamicComponentShowImagesWithAlertClick = dynamic(() => import('@/components/ShowImagesWithAlertClick'), {
+  loading: () => <p>Loading component...</p>, // The fallback UI
+});
 export default async function ViewFansPage({ params }) {
     const id = (await params).id;
     let preview = "/images/club-badge.jpg";
@@ -132,7 +136,7 @@ export default async function ViewFansPage({ params }) {
                                 </div>
 
                                 <div className="right-info mb-30">
-                                    <Link href={`/admin/leagues/${league._id}/edit`}>
+                                    {/* <Link href={`/admin/leagues/${league._id}/edit`}>
                                         <Image
                                             src={preview}
                                             width={82}
@@ -140,7 +144,9 @@ export default async function ViewFansPage({ params }) {
                                             className={'profile-img mb-10'}
                                             alt="Club Badge"
                                         />
-                                    </Link>
+                                    </Link> */}
+                                      <DynamicComponentShowImagesWithAlertClick images={[league.image]}></DynamicComponentShowImagesWithAlertClick>
+
                                     <p className="mb-0">
                                         <Link className="text-decoration-none fs-14 fw-bold text-primary underline-hover" href={`/admin/leagues/${league._id}/edit`}>League Badge</Link>
                                     </p>
