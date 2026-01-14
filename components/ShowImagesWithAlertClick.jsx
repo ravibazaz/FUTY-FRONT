@@ -27,8 +27,9 @@ export default function ShowImagesWithAlertClick(props) {
                         src={'/api' + l}
                         width={82}
                         height={82}
-                        alt="Profile Image"
-                        title="test2"
+                        sizes="82px"
+                        alt="Club Badge"
+                        unoptimized={l?.startsWith('blob:')}
                         onClick={() => handleDelete(l)}
 
                     />
