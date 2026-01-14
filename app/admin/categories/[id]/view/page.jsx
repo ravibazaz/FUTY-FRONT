@@ -2,7 +2,10 @@ import { connectDB } from "@/lib/db";
 import Categories from "@/lib/models/Categories";
 import Image from "next/image";
 import Link from "next/link";
-
+import dynamic from 'next/dynamic';
+const DynamicComponentShowImagesWithAlertClick = dynamic(() => import('@/components/ShowImagesWithAlertClick'), {
+  loading: () => <p>Loading component...</p>, // The fallback UI
+});
 export default async function ViewFansPage({ params }) {
     const id = (await params).id;
     let preview = "/images/club-badge.jpg";
@@ -74,7 +77,7 @@ export default async function ViewFansPage({ params }) {
                         <div className="single-body-right col-lg-12 col-xl-5">
                             <div className="right-info-box">
                                 <div className="right-info mb-30">
-                                <Link href={`/admin/categories/${category._id}/edit`}>
+                                {/* <Link href={`/admin/categories/${category._id}/edit`}>
                                 <Image
                                     src={preview}
                                     width={82}
@@ -82,7 +85,9 @@ export default async function ViewFansPage({ params }) {
                                     className={'profile-img mb-10'}
                                     alt="Club Badge"
                                 />
-                                </Link>
+                                </Link> */}
+                                <DynamicComponentShowImagesWithAlertClick images={category.image ? [category.image] : []}></DynamicComponentShowImagesWithAlertClick>
+
                                     <p className="mb-0">
                                         <Link className="text-decoration-none fs-14 fw-bold text-primary underline-hover" href={`/admin/categories/${category._id}/edit`}>Category Badge</Link>
                                     </p>
