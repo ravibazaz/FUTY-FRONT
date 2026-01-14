@@ -5,11 +5,12 @@ import Image from "next/image";
 export default function ShowImagesWithAlertClick(props) {
 
     const [selectedImages, setselectedImages] = useState(props.images ? props.images : '');
+    console.log(selectedImages);
 
     const handleDelete = async (link) => {
         console.log(link);
         const result = await Swal.fire({
-            imageUrl: '/api'+link, // Replace with your image URL
+            imageUrl: '/api' + link, // Replace with your image URL
             imageAlt: 'Custom image',
             showConfirmButton: false,
             allowOutsideClick: true,

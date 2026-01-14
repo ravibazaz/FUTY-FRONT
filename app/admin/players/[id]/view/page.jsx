@@ -7,6 +7,11 @@ import Teams from "@/lib/models/Teams";
 import Clubs from "@/lib/models/Clubs";
 import Leagues from "@/lib/models/Leagues";
 
+import dynamic from 'next/dynamic';
+const DynamicComponentShowImagesWithAlertClick = dynamic(() => import('@/components/ShowImagesWithAlertClick'), {
+  loading: () => <p>Loading component...</p>, // The fallback UI
+});
+
 export default async function ViewFansPage({ params }) {
   const id = (await params).id;
   let preview = "/images/profile-picture.jpg";
@@ -213,14 +218,16 @@ export default async function ViewFansPage({ params }) {
                   <p className="mb-0 fs-14 d-flex align-items-center gap-30"><span className="info-span">Travel: 50 miles</span></p>
                 </div>
                 <div className="right-info mb-30">
-                  <a href="#">
+                  {/* <a href="#">
                     <Image
                       src={preview}
                       width={82}
                       height={82}
                       alt="Profile Image"
                     />
-                  </a>
+                  </a> */}
+                  <DynamicComponentShowImagesWithAlertClick images={userdetails.profile_image ? [userdetails.profile_image] : []}></DynamicComponentShowImagesWithAlertClick>
+                  
                   <p className="mb-0">
                     <Link className="text-decoration-none fs-14 fw-bold text-primary underline-hover" href={`/admin/managers/${userdetails._id}/edit`}>Profile Imag</Link>
                    

@@ -3,7 +3,10 @@ import { connectDB } from "@/lib/db";
 import User from "@/lib/models/Users";
 import Image from "next/image";
 import Link from "next/link";
-
+import dynamic from 'next/dynamic';
+const DynamicComponentShowImagesWithAlertClick = dynamic(() => import('@/components/ShowImagesWithAlertClick'), {
+  loading: () => <p>Loading component...</p>, // The fallback UI
+});
 export default async function ViewFansPage({ params }) {
   const id = (await params).id;
   let preview = "/images/profile-picture.jpg";
@@ -93,14 +96,16 @@ export default async function ViewFansPage({ params }) {
                   </p>
                 </div>
                 <div className="right-info mb-30">
-                  <Link href={`/admin/fans/${userdetails._id}/edit`}>
+                  {/* <Link href={`/admin/fans/${userdetails._id}/edit`}>
                     <Image
                       src={preview}
                       width={82}
                       height={82}
                       alt="Profile Image"
                     />
-                  </Link>
+                  </Link> */}
+                  <DynamicComponentShowImagesWithAlertClick images={userdetails.profile_image ? [userdetails.profile_image] : []}></DynamicComponentShowImagesWithAlertClick>
+
                   <p className="mb-0">
                     <Link className="text-decoration-none fs-14 fw-bold text-primary underline-hover" href={`/admin/fans/${userdetails._id}/edit`}>Profile Image</Link>
                   </p>
