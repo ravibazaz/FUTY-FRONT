@@ -87,13 +87,13 @@ export default async function ViewTournamentPage({ params }) {
                                 <div className="left-row row">
                                     <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
                                         <div className="label-text">
-                                            <p className="mb-0">Venue</p>
+                                            <p className="mb-0">Closing Date for Entry</p>
                                         </div>
                                     </div>
                                     <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
                                         <div className="info-text">
                                             <p className="mb-0">
-                                                {tournaments.venue}
+                                               {new Date(tournaments.closing_date).toLocaleDateString()}
                                             </p>
                                         </div>
                                     </div>
@@ -103,18 +103,54 @@ export default async function ViewTournamentPage({ params }) {
                                 <div className="left-row row">
                                     <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
                                         <div className="label-text">
-                                            <p className="mb-0">Total Amount</p>
+                                            <p className="mb-0">Cost Per Team Entry</p>
                                         </div>
                                     </div>
                                     <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
                                         <div className="info-text">
                                             <p className="mb-0">
-                                                {tournaments.total_amount}
+                                                {tournaments.cost_per_team_entry}
                                             </p>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+
+                                <div className="left-info-box">
+                                <div className="left-row row">
+                                    <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
+                                        <div className="label-text">
+                                            <p className="mb-0">No Of Teams Per Category</p>
+                                        </div>
+                                    </div>
+                                    <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
+                                        <div className="info-text">
+                                            <p className="mb-0">
+                                                {tournaments.no_of_teams_per_category}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                                                        <div className="left-info-box">
+                                <div className="left-row row">
+                                    <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
+                                        <div className="label-text">
+                                            <p className="mb-0">No Of Categories</p>
+                                        </div>
+                                    </div>
+                                    <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
+                                        <div className="info-text">
+                                            <p className="mb-0">
+                                                {tournaments.no_of_categories}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
                             <div className="left-info-box">
                                 <div className="left-row row">
                                     <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
