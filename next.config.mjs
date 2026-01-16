@@ -14,6 +14,7 @@ const nextConfig = {
     serverActions: {
       bodySizeLimit: "20mb", // Increase limit here
     },
+    globalNotFound: true,
   },
 };
 
