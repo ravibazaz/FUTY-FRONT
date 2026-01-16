@@ -10,7 +10,7 @@ export default async function ViewTournamentPage({ params }) {
     const id = (await params).id;
     await connectDB();
     const tournaments = await Tournaments.findById(id).populate("team_id", "name").populate("manager_id", "name").populate("league_id", "title").populate("ground", "name").populate("club", "name").lean();
-    console.log(tournaments);
+    //console.log(tournaments);
 
     return (
         <>
