@@ -18,12 +18,16 @@ export async function POST(req) {
     if (!result.success) {
       // Flatten errors to match your desired response structure
       const errors = result.error.flatten().fieldErrors;
+
+      // Get the first error message from the flattened errors
+      const firstErrorMessage = Object.values(errors)
+        .flat()
+        .filter(Boolean)[0] || "Validation failed";
+
       return NextResponse.json(
         {
           success: false,
-          message: Object.fromEntries(
-            Object.entries(errors).map(([key, value]) => [key, value[0]])
-          ),
+          message: firstErrorMessage
         },
         { status: 200 }
       );
@@ -60,13 +64,13 @@ export async function POST(req) {
     }
 
     return NextResponse.json(
-        {
-          success: true,
-          data: existing,
-          message: "Found invitation code",
-        },
-        { status: 200 }
-      );
+      {
+        success: true,
+        data: existing,
+        message: "Found invitation code",
+      },
+      { status: 200 }
+    );
 
   } catch (err) {
     return NextResponse.json(
