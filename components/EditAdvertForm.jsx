@@ -150,7 +150,7 @@ export default function EditAdvertForm({ adverts }) {
               </div>
 
 
-              
+
 
 
               <div className="left-info-box">
@@ -175,8 +175,51 @@ export default function EditAdvertForm({ adverts }) {
                 </div>
               </div>
 
+              <div className="left-info-box">
+                <div className="left-row row">
+                  <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
+                    <div className="label-text">
+                      <p className="mb-0">Start Date</p>
+                    </div>
+                  </div>
+                  <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
+                    <div className="info-text px-0">
+                      <p className="mb-0">
+                        <input className="form-control" name="date" defaultValue={new Date(adverts.startAt).toLocaleDateString('en-CA')}type="date"></input>
 
-             
+                        {clientErrors.date && (
+                          <span className="invalid-feedback" style={{ display: "block" }} >{clientErrors.date}</span>
+                        )}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="left-info-box">
+                <div className="left-row row">
+                  <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
+                    <div className="label-text">
+                      <p className="mb-0">Start Time</p>
+                    </div>
+                  </div>
+                  <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
+                    <div className="info-text px-0">
+                      <p className="mb-0">
+                        <input className="form-control" name="time" defaultValue={new Date(adverts.startAt).toLocaleTimeString('en-GB', {
+                          hour: '2-digit',
+                          minute: '2-digit',
+                          hour12: false,
+                        })} type="time"></input>
+
+                        {clientErrors.time && (
+                          <span className="invalid-feedback" style={{ display: "block" }} >{clientErrors.time}</span>
+                        )}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
 
               <div className="left-info-box">
                 <div className="left-row row">

@@ -121,6 +121,7 @@ export default function StoreTable() {
               <thead>
                 <tr>
                   <th scope="col">Advert Title</th>
+                  <th scope="col">Start At</th>
                   <th scope="col">Action</th>
                 </tr>
               </thead>
@@ -129,15 +130,21 @@ export default function StoreTable() {
                   adverts.map((l, index) => (
                     <tr key={l._id}>
                       <td className="text-nowrap user-active">
-                        <Link prefetch={false} 
+                        <Link prefetch={false}
                           href={`/admin/adverts/${l._id}/view`}
                         >
                           {l.name}
                         </Link>
                       </td>
-
+                      <td className="text-nowrap user-active">
+                        {l.startAt
+                          ? new Date(l.startAt).toLocaleString('en-CA', {
+                            dateStyle: 'medium',
+                            timeStyle: 'short',
+                          }) : '-'}
+                      </td>
                       <td className="text-nowrap">
-                        <Link prefetch={false}  className="text-green"
+                        <Link prefetch={false} className="text-green"
                           href={`/admin/adverts/${l._id}/edit`}
                         >
                           Edit

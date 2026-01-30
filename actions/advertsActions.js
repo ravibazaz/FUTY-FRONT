@@ -30,6 +30,11 @@ export async function createAdverts(prevState, formData) {
 
   const raw = Object.fromEntries(formData.entries());
   const imageFile = formData.get("image");
+  const date = formData.get("date");
+  const time = formData.get("time");
+  // console.log(time);
+  // return ;
+  const startAt = new Date(`${date}T${time}:00`);
   const result = AdvertsSchema(false).safeParse({ ...raw, image: imageFile });
 
   if (!result.success)
@@ -52,6 +57,7 @@ export async function createAdverts(prevState, formData) {
   await Adverts.create({
     ...result.data,
     image: `/uploads/adverts/${uniqueName}`,
+    startAt: startAt
   });
 
   cookieStore.set("toastMessage", "Advert Added");
@@ -61,17 +67,16 @@ export async function createAdverts(prevState, formData) {
 export async function updateAdvert(id, prevState, formData) {
   const raw = Object.fromEntries(formData.entries());
   const result = AdvertsSchema(true).safeParse(raw);
-  log(result);
+  // log(result);
   const cookieStore = await cookies();
   if (!result.success) {
     return { success: false, errors: result.error.flatten().fieldErrors };
   }
-  const { name, content , link } = result.data;
+  const { name, content, link, date, time } = result.data;
   const imageFile = formData.get("image");
-
-  // console.log(imageFiles);
-
-
+  const startAt = new Date(`${date}T${time}:00`);
+  // console.log(date);
+  // return;
   await connectDB();
   // Find the existing advert in the database
   const advert = await Adverts.findById(id);
@@ -117,6 +122,7 @@ export async function updateAdvert(id, prevState, formData) {
       name,
       content,
       link,
+      startAt,
       image: `/uploads/adverts/${imageName}`, // Save relative path to the image
     };
     // Update the advert document with the new image name
@@ -125,7 +131,8 @@ export async function updateAdvert(id, prevState, formData) {
     const updateData = {
       name,
       content,
-      link
+      link,
+      startAt
     };
     // If no new image is uploaded, just update the name and isActive fields
     await Adverts.findByIdAndUpdate(id, updateData);
