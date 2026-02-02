@@ -185,7 +185,7 @@ export default function EditAdvertForm({ adverts }) {
                   <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
                     <div className="info-text px-0">
                       <p className="mb-0">
-                        <input className="form-control" name="date" defaultValue={new Date(adverts.startAt).toLocaleDateString('en-CA')}type="date"></input>
+                        <input className="form-control" name="date" defaultValue={adverts.date}type="date"></input>
 
                         {clientErrors.date && (
                           <span className="invalid-feedback" style={{ display: "block" }} >{clientErrors.date}</span>
@@ -206,11 +206,7 @@ export default function EditAdvertForm({ adverts }) {
                   <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
                     <div className="info-text px-0">
                       <p className="mb-0">
-                        <input className="form-control" name="time" defaultValue={new Date(adverts.startAt).toLocaleTimeString('en-GB', {
-                          hour: '2-digit',
-                          minute: '2-digit',
-                          hour12: false,
-                        })} type="time"></input>
+                        <input className="form-control" name="time" defaultValue={adverts.time} type="time"></input>
 
                         {clientErrors.time && (
                           <span className="invalid-feedback" style={{ display: "block" }} >{clientErrors.time}</span>

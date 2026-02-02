@@ -57,7 +57,9 @@ export async function createAdverts(prevState, formData) {
   await Adverts.create({
     ...result.data,
     image: `/uploads/adverts/${uniqueName}`,
-    startAt: startAt
+    startAt: startAt,
+    date: date,
+    time: time
   });
 
   cookieStore.set("toastMessage", "Advert Added");
@@ -123,6 +125,8 @@ export async function updateAdvert(id, prevState, formData) {
       content,
       link,
       startAt,
+      date: date,
+      time: time,
       image: `/uploads/adverts/${imageName}`, // Save relative path to the image
     };
     // Update the advert document with the new image name
@@ -132,7 +136,9 @@ export async function updateAdvert(id, prevState, formData) {
       name,
       content,
       link,
-      startAt
+      startAt,
+      date: date,
+      time: time
     };
     // If no new image is uploaded, just update the name and isActive fields
     await Adverts.findByIdAndUpdate(id, updateData);

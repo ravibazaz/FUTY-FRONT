@@ -121,7 +121,8 @@ export default function StoreTable() {
               <thead>
                 <tr>
                   <th scope="col">Advert Title</th>
-                  <th scope="col">Start At</th>
+                  <th scope="col">Date</th>
+                  <th scope="col">Time</th>
                   <th scope="col">Action</th>
                 </tr>
               </thead>
@@ -137,11 +138,10 @@ export default function StoreTable() {
                         </Link>
                       </td>
                       <td className="text-nowrap user-active">
-                        {l.startAt
-                          ? new Date(l.startAt).toLocaleString('en-CA', {
-                            dateStyle: 'medium',
-                            timeStyle: 'short',
-                          }) : '-'}
+                        {l.date}
+                      </td>
+                       <td className="text-nowrap user-active">
+                        {l.time}
                       </td>
                       <td className="text-nowrap">
                         <Link prefetch={false} className="text-green"
