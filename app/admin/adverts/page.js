@@ -121,8 +121,10 @@ export default function StoreTable() {
               <thead>
                 <tr>
                   <th scope="col">Advert Title</th>
-                  <th scope="col">Date</th>
-                  <th scope="col">Time</th>
+                  <th scope="col">Start Date</th>
+                  <th scope="col">Start Time</th>
+                  <th scope="col">End Date</th>
+                  <th scope="col">End Time</th>
                   <th scope="col">Action</th>
                 </tr>
               </thead>
@@ -143,6 +145,14 @@ export default function StoreTable() {
                        <td className="text-nowrap user-active">
                         {l.time}
                       </td>
+
+                      <td className="text-nowrap user-active">
+                        {l.end_date}
+                      </td>
+                       <td className="text-nowrap user-active">
+                        {l.end_time}
+                      </td>
+
                       <td className="text-nowrap">
                         <Link prefetch={false} className="text-green"
                           href={`/admin/adverts/${l._id}/edit`}
