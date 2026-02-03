@@ -26,7 +26,7 @@ export async function POST(req) {
         const tournamentprice = await Tournaments.findById(tournament_Id).select("-__v").lean();
 
         
-        const amount = tournamentprice.total_amount * 100;
+        const amount = tournamentprice.cost_per_team_entry * 100;
         // console.log(amount);
         // return false;
         // Create order in DB (pending)
