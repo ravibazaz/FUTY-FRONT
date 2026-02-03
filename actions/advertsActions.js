@@ -29,12 +29,20 @@ export async function createAdverts(prevState, formData) {
   const userId = cookieStore.get("user_id")?.value;
 
   const raw = Object.fromEntries(formData.entries());
+
+
+
   const imageFile = formData.get("image");
   const date = formData.get("date");
   const time = formData.get("time");
-  // console.log(time);
-  // return ;
+  const pages = formData.getAll("pages");
+  const end_date = formData.get("end_date");
+  const end_time = formData.get("end_time");
+  // console.log(raw);
+  // return;
   const startAt = new Date(`${date}T${time}:00`);
+  const endAt = new Date(`${end_date}T${end_time}:00`);
+
   const result = AdvertsSchema(false).safeParse({ ...raw, image: imageFile });
 
   if (!result.success)
@@ -59,7 +67,11 @@ export async function createAdverts(prevState, formData) {
     image: `/uploads/adverts/${uniqueName}`,
     startAt: startAt,
     date: date,
-    time: time
+    time: time,
+    endAt: endAt,
+    end_date: end_date,
+    end_time: end_time,
+    pages:pages
   });
 
   cookieStore.set("toastMessage", "Advert Added");
@@ -74,9 +86,11 @@ export async function updateAdvert(id, prevState, formData) {
   if (!result.success) {
     return { success: false, errors: result.error.flatten().fieldErrors };
   }
-  const { name, content, link, date, time } = result.data;
+  const { name, content, link, date, time, end_date, end_time } = result.data;
   const imageFile = formData.get("image");
+    const pages = formData.getAll("pages");
   const startAt = new Date(`${date}T${time}:00`);
+  const end_dateAt = new Date(`${end_date}T${end_time}:00`);
   // console.log(date);
   // return;
   await connectDB();
@@ -125,8 +139,12 @@ export async function updateAdvert(id, prevState, formData) {
       content,
       link,
       startAt,
-      date: date,
-      time: time,
+      date,
+      time,
+      end_dateAt,
+      end_date,
+      end_time,
+      pages,
       image: `/uploads/adverts/${imageName}`, // Save relative path to the image
     };
     // Update the advert document with the new image name
@@ -137,8 +155,12 @@ export async function updateAdvert(id, prevState, formData) {
       content,
       link,
       startAt,
-      date: date,
-      time: time
+      date,
+      time,
+      end_dateAt,
+      end_date,
+      end_time,
+      pages
     };
     // If no new image is uploaded, just update the name and isActive fields
     await Adverts.findByIdAndUpdate(id, updateData);

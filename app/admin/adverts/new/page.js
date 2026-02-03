@@ -96,7 +96,7 @@ export default function NewGroundPage() {
     const result = AdvertsSchema(false).safeParse(raw);
 
     //console.log(result.error);
-    
+
 
     if (!result.success) {
       setClientErrors(result.error.flatten().fieldErrors);
@@ -166,7 +166,7 @@ export default function NewGroundPage() {
                 </div>
 
 
-                    <div className="left-info-box">
+                <div className="left-info-box">
                   <div className="left-row row">
                     <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
                       <div className="label-text">
@@ -190,7 +190,7 @@ export default function NewGroundPage() {
                 </div>
 
 
-                
+
 
                 <div className="left-info-box">
                   <div className="left-row row">
@@ -218,7 +218,7 @@ export default function NewGroundPage() {
 
 
 
-                
+
                 <div className="left-info-box">
                   <div className="left-row row">
                     <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
@@ -264,6 +264,92 @@ export default function NewGroundPage() {
                     </div>
                   </div>
                 </div>
+
+
+                <div className="left-info-box">
+                  <div className="left-row row">
+                    <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
+                      <div className="label-text">
+                        <p className="mb-0">End Date</p>
+                      </div>
+                    </div>
+                    <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
+                      <div className="info-text px-0">
+                        <p className="mb-0">
+                          <input className="form-control" name="end_date" type="date"></input>
+                          {state.errors?.end_date && (
+                            <span className="invalid-feedback" style={{ display: "block" }}>{state.errors.end_date}</span>
+                          )}
+                          {clientErrors.end_date && (
+                            <span className="invalid-feedback" style={{ display: "block" }} >{clientErrors.end_date}</span>
+                          )}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="left-info-box">
+                  <div className="left-row row">
+                    <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
+                      <div className="label-text">
+                        <p className="mb-0">End Time</p>
+                      </div>
+                    </div>
+                    <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
+                      <div className="info-text px-0">
+                        <p className="mb-0">
+                          <input className="form-control" name="end_time" type="time"></input>
+                          {state.errors?.end_time && (
+                            <span className="invalid-feedback" style={{ display: "block" }}>{state.errors.end_time}</span>
+                          )}
+                          {clientErrors.end_time && (
+                            <span className="invalid-feedback" style={{ display: "block" }} >{clientErrors.end_time}</span>
+                          )}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+
+                <div className="left-info-box">
+                  <div className="left-row row">
+                    <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
+                      <div className="label-text">
+                        <p className="mb-0">Pages</p>
+                      </div>
+                    </div>
+                    <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
+                      <div className="info-text px-0">
+                        <div className="mb-0">
+                          <div className="form-check" key={1}>
+                            <input className="form-check-input" name="pages"
+                              type="checkbox" value={'Manager'} ></input>
+                            <label className="form-check-label">
+                              Manager
+                            </label>
+                          </div>
+                          <div className="form-check" key={2}>
+                            <input className="form-check-input" name="pages"
+                              type="checkbox" value={'Friendly'} ></input>
+                            <label className="form-check-label">
+                              Friendly
+                            </label>
+                          </div>
+                          <div className="form-check" key={3}>
+                            <input className="form-check-input" name="pages"
+                              type="checkbox" value={'Home'} ></input>
+                            <label className="form-check-label">
+                              Home
+                            </label>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
 
 
                 <div className="left-info-box">
