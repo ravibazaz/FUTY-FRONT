@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { protectApiRoute } from "@/lib/middleware";
 import { connectDB } from '@/lib/db';
 import Tournaments from "@/lib/models/Tournaments";
+import Grounds from "@/lib/models/Grounds";
+import TournamentOrderHistories from "@/lib/models/TournamentOrderHistories";
 
 export async function GET(req) {
   const authResult = await protectApiRoute(req);
@@ -13,7 +15,7 @@ export async function GET(req) {
 
   // Otherwise, it means the user is authenticated
   await connectDB();
-
+  const { user } = authResult;
   const { searchParams } = new URL(req.url);
   const q = searchParams.get("q");
   const page = parseInt(searchParams.get("page")) || 1; // current page (default 1)
@@ -28,6 +30,9 @@ export async function GET(req) {
   const total = await Tournaments.countDocuments(query);
 
   const tournaments = await Tournaments.find(query).populate('ground').populate('club').populate({
+    path: 'tournamentorderhistories',
+    match: { created_by_user_Id: user._id }
+  }).populate({
     path: "created_by_user",
     select: "name team_id",
     populate: {
