@@ -3,6 +3,7 @@ import { connectDB } from "@/lib/db";
 import { NextResponse } from "next/server";
 import TournamentOrderHistories from "@/lib/models/TournamentOrderHistories";
 import { protectApiRoute } from "@/lib/middleware";
+import Tournaments from "@/lib/models/Tournaments";
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 export async function POST(req) {
@@ -16,14 +17,23 @@ export async function POST(req) {
     const { user } = authResult;
     try {
 
-        const { amount, currency, metadata } = await req.json();
+        //   "amount": 11000,//Ex: 10 USD. Semd 1000 (10x100), Ex: 20 USD. Semd 2000 (20x100)
+        //   "currency": "usd",
+        const currency = 'gbp';
+        const { tournament_Id } = await req.json();
         await connectDB();
 
+        const tournamentprice = await Tournaments.findById(tournament_Id).select("-__v").lean();
+
+        
+        const amount = tournamentprice.total_amount * 100;
+        // console.log(amount);
+        // return false;
         // Create order in DB (pending)
         const order = await TournamentOrderHistories.create({
-            amount: amount/100 ,
+            amount: amount / 100,
             currency,
-            tournament_Id: metadata.tournament_Id,
+            tournament_Id: tournament_Id,
             created_by_user_Id: user._id,
             status: "pending"
         });
