@@ -13,7 +13,7 @@ export async function GET(req) {
     ...(q && { name: { $regex: q, $options: 'i' } }),
   };
 
-  const adverts = await Adverts.find(query, "name image content link").lean();
+  const adverts = await Adverts.find(query, "name image content link date time end_date end_time pages").lean();
 
   return NextResponse.json({
     success: true,
