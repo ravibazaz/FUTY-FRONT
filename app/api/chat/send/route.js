@@ -6,6 +6,7 @@ import Conversation from "@/lib/models/Conversation";
 import { NextResponse } from "next/server";
 import { protectApiRoute } from "@/lib/middleware";
 import { getChatRoom } from "@/lib/chatHelpers";
+import Users from "@/lib/models/Users";
 
 export async function POST(req) {
 
@@ -26,7 +27,10 @@ export async function POST(req) {
   const senderId = user._id;
   await connectDB();
 
-  //console.log(user._id);
+  const userdetails = await Users.findById(receiverId).select("account_type").lean();
+
+// console.log(userdetails);
+// return;
 
   // Save message
   const msg = await Message.create({
@@ -50,7 +54,8 @@ export async function POST(req) {
       $set: { lastMessageAt: new Date() },
       $inc: { [`unreadCount.${receiverId}`]: 1 },
       $addToSet: {
-        participants: { $each: [senderId, receiverId] }
+        participants: { $each: [senderId, receiverId] },
+        conversation_type: { $each: [user.account_type ,userdetails.account_type] },
       }
     },
     {

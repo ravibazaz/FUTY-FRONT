@@ -19,19 +19,44 @@ export async function GET(req) {
 
   await connectDB();
   const { searchParams } = new URL(req.url);
-  const type = parseInt(searchParams.get("type") || null);
+  const type = searchParams.get("type") || null;
   const page = parseInt(searchParams.get("page") || "1");
   const limit = parseInt(searchParams.get("limit") || "20");
   const skip = (page - 1) * limit;
 
   const userId = user._id;
-  const query = {
-    roomId: {
-      $regex: `(^${userId}_|_${userId}$)`
-    }
-  };
+  let query;
 
+  if (type == 'manager') {
+    query = {
+      roomId: {
+        $regex: `(^${userId}_|_${userId}$)`
+      },
+      conversation_type: {
+        $in: ["Manager"]
+      }
+    };
+
+  }
+  else if (type == 'referee') {
+    query = {
+      roomId: {
+        $regex: `(^${userId}_|_${userId}$)`
+      },
+      conversation_type: {
+        $in: ["Referee"]
+      }
+    };
+  }
+  else {
+    query = {
+      roomId: {
+        $regex: `(^${userId}_|_${userId}$)`
+      }
+    };
+  }
   const total = await Conversation.countDocuments(query);
+
   const messages = await Conversation.find(query)
     .sort({ createdAt: -1 })
     .populate({
