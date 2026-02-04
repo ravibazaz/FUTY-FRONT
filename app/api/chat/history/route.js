@@ -26,7 +26,7 @@ export async function GET(req) {
   const messages = await Message.find({ roomId: room })
     .sort({ createdAt: -1 })
     .populate({
-      path: 'receiverId',
+      path: 'senderId receiverId',
       select: 'name surname nick_name profile_image' // optional: choose fields to return
     })
     .skip(skip)
