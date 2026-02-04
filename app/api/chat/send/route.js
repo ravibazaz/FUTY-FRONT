@@ -4,14 +4,29 @@ import { connectDB } from "@/lib/db";
 import Message from "@/lib/models/Message";
 import Conversation from "@/lib/models/Conversation";
 import { NextResponse } from "next/server";
+import { protectApiRoute } from "@/lib/middleware";
+import { getChatRoom } from "@/lib/chatHelpers";
+
 export async function POST(req) {
+
+  const authResult = await protectApiRoute(req);
+  // Check if the middleware returned a NextResponse object (error)
+  if (authResult instanceof NextResponse) {
+    return authResult;
+  }
+  // Otherwise, it means the user is authenticated
+  const { user } = authResult;
+
   const body = await req.json();
-  const { room, senderId, receiverId, text, attachments = [] } = body;
-  if (!room || !senderId || !receiverId || (!text && attachments.length === 0)) {
+  const { receiverId, text, attachments = [] } = body;
+  if (!receiverId || (!text && attachments.length === 0)) {
     return new Response(JSON.stringify({ success: false, message: "Missing fields" }), { status: 400 });
   }
-
+  const room = getChatRoom(user._id, receiverId)
+  const senderId = user._id;
   await connectDB();
+
+  //console.log(user._id);
 
   // Save message
   const msg = await Message.create({
@@ -23,14 +38,28 @@ export async function POST(req) {
     status: "sent",
   });
 
-    // Update conversation meta
-    await Conversation.findOneAndUpdate(
-      { roomId: room },
-      { $set: { lastMessageAt: new Date() }, $inc: { [`unreadCount.${receiverId}`]: 1 } },
-      { upsert: true }
-    );
+  // Update conversation meta
+  // await Conversation.findOneAndUpdate(
+  //   { roomId: room },
+  //   { $set: { lastMessageAt: new Date() }, $inc: { [`unreadCount.${receiverId}`]: 1 } },
+  //   { upsert: true }
+  // );
+  await Conversation.findOneAndUpdate(
+    { roomId: room },
+    {
+      $set: { lastMessageAt: new Date() },
+      $inc: { [`unreadCount.${receiverId}`]: 1 },
+      $addToSet: {
+        participants: { $each: [senderId, receiverId] }
+      }
+    },
+    {
+      upsert: true,
+      new: true,
+      setDefaultsOnInsert: true
+    }
+  );
 
-    
   // Broadcast on room
   const roomInst = chatManager.getRoom(room);
   roomInst.send("message", {
