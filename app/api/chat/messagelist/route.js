@@ -19,6 +19,7 @@ export async function GET(req) {
 
   await connectDB();
   const { searchParams } = new URL(req.url);
+  const type = parseInt(searchParams.get("type") || null);
   const page = parseInt(searchParams.get("page") || "1");
   const limit = parseInt(searchParams.get("limit") || "20");
   const skip = (page - 1) * limit;
@@ -37,6 +38,10 @@ export async function GET(req) {
       path: 'participants',
       match: { _id: { $ne: userId } }, // exclude logged-in user
       select: 'name surname nick_name profile_image' // optional: choose fields to return
+    })
+    .populate({
+      path: 'lastMessage',
+      select: 'text senderId receiverId createdAt status'
     })
     .skip(skip)
     .limit(limit)
