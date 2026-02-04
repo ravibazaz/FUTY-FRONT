@@ -56,7 +56,6 @@ export async function GET(req) {
     };
   }
   const total = await Conversation.countDocuments(query);
-
   const messages = await Conversation.find(query)
     .sort({ createdAt: -1 })
     .populate({
