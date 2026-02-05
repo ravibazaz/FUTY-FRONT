@@ -29,8 +29,8 @@ export async function POST(req) {
 
   const userdetails = await Users.findById(receiverId).select("account_type").lean();
 
-// console.log(userdetails);
-// return;
+  // console.log(userdetails);
+  // return;
 
   // Save message
   const msg = await Message.create({
@@ -55,7 +55,7 @@ export async function POST(req) {
       $inc: { [`unreadCount.${receiverId}`]: 1 },
       $addToSet: {
         participants: { $each: [senderId, receiverId] },
-        conversation_type: { $each: [user.account_type ,userdetails.account_type] },
+        conversation_type: { $each: [user.account_type, userdetails.account_type] },
       }
     },
     {
@@ -65,21 +65,21 @@ export async function POST(req) {
     }
   );
 
+
+  const messages = await Message.findById(msg._id)
+    .populate({
+      path: 'senderId receiverId',
+      select: 'name surname nick_name profile_image' // optional: choose fields to return
+    })
+    .select("-__v")
+    .lean();
+
+
+  // console.log(messages);
+
   // Broadcast on room
   const roomInst = chatManager.getRoom(room);
-  roomInst.send("message", {
-    type: "message",
-    message: {
-      _id: msg._id,
-      roomId: msg.roomId,
-      senderId: msg.senderId,
-      receiverId: msg.receiverId,
-      text: msg.text,
-      attachments: msg.attachments,
-      status: msg.status,
-      createdAt: msg.createdAt
-    }
-  });
+  roomInst.send(messages);
 
 
   return NextResponse.json(
