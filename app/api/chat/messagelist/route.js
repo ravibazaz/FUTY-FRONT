@@ -25,6 +25,8 @@ export async function GET(req) {
   const skip = (page - 1) * limit;
 
   const userId = user._id;
+  console.log(userId);
+  
   let query;
 
   if (type == 'manager') {
@@ -46,6 +48,14 @@ export async function GET(req) {
       conversation_type: {
         $in: ["Referee"]
       }
+    };
+  }
+  else if (type == 'unread') {
+    query = {
+      roomId: {
+        $regex: `(^${userId}_|_${userId}$)`
+      },
+      [`unreadCount.${userId}`]: { $gt: 0 }
     };
   }
   else {
