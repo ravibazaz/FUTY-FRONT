@@ -42,6 +42,16 @@ export async function POST(req) {
     status: "sent",
   });
 
+
+  const participantNames = [
+    user?.name,
+    user?.surname,
+    user?.nick_name,
+    userdetails?.name,
+    userdetails?.surname,
+    userdetails?.nick_name
+  ].filter(v => v && v.trim() !== "");
+
   // Update conversation meta
   // await Conversation.findOneAndUpdate(
   //   { roomId: room },
@@ -56,6 +66,7 @@ export async function POST(req) {
       $addToSet: {
         participants: { $each: [senderId, receiverId] },
         conversation_type: { $each: [user.account_type, userdetails.account_type] },
+        participant_name: { $each: participantNames },
       }
     },
     {

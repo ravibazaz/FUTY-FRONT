@@ -20,13 +20,14 @@ export async function GET(req) {
   await connectDB();
   const { searchParams } = new URL(req.url);
   const type = searchParams.get("type") || null;
+  const q = searchParams.get("q");
   const page = parseInt(searchParams.get("page") || "1");
   const limit = parseInt(searchParams.get("limit") || "20");
   const skip = (page - 1) * limit;
 
   const userId = user._id;
-  console.log(userId);
-  
+  // console.log(userId);
+
   let query;
 
   if (type == 'manager') {
@@ -36,6 +37,10 @@ export async function GET(req) {
       },
       conversation_type: {
         $in: ["Manager"]
+      },
+      participant_name: {
+        $regex: q,
+        $options: "i"
       }
     };
 
@@ -47,6 +52,10 @@ export async function GET(req) {
       },
       conversation_type: {
         $in: ["Referee"]
+      },
+      participant_name: {
+        $regex: q,
+        $options: "i"
       }
     };
   }
@@ -55,13 +64,21 @@ export async function GET(req) {
       roomId: {
         $regex: `(^${userId}_|_${userId}$)`
       },
-      [`unreadCount.${userId}`]: { $gt: 0 }
+      [`unreadCount.${userId}`]: { $gt: 0 },
+      participant_name: {
+        $regex: q,
+        $options: "i"
+      }
     };
   }
   else {
     query = {
       roomId: {
         $regex: `(^${userId}_|_${userId}$)`
+      },
+      participant_name: {
+        $regex: q,
+        $options: "i"
       }
     };
   }
