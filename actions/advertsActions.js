@@ -90,7 +90,7 @@ export async function updateAdvert(id, prevState, formData) {
   const imageFile = formData.get("image");
     const pages = formData.getAll("pages");
   const startAt = new Date(`${date}T${time}:00`);
-  const end_dateAt = new Date(`${end_date}T${end_time}:00`);
+  const endAt = new Date(`${end_date}T${end_time}:00`);
   // console.log(date);
   // return;
   await connectDB();
@@ -141,7 +141,7 @@ export async function updateAdvert(id, prevState, formData) {
       startAt,
       date,
       time,
-      end_dateAt,
+      endAt,
       end_date,
       end_time,
       pages,
@@ -157,7 +157,7 @@ export async function updateAdvert(id, prevState, formData) {
       startAt,
       date,
       time,
-      end_dateAt,
+      endAt,
       end_date,
       end_time,
       pages
