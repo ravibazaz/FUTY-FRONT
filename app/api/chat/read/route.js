@@ -5,13 +5,23 @@ import Message from "@/lib/models/Message";
 import Conversation from "@/lib/models/Conversation";
 import mongoose from "mongoose";
 import { NextResponse } from "next/server";
+import { protectApiRoute } from "@/lib/middleware";
 export async function POST(req) {
-  const body = await req.json(); // { room, userId, messageIds: [] }
-  const { room, userId } = body;
 
-  if (!room || !userId) {
+  const authResult = await protectApiRoute(req);
+  // Check if the middleware returned a NextResponse object (error)
+  if (authResult instanceof NextResponse) {
+    return authResult;
+  }
+  // Otherwise, it means the user is authenticated
+  const { user } = authResult;
+  const userId = user._id.toString();
+  const body = await req.json(); // { room, userId, messageIds: [] }
+  const { room } = body;
+
+  if (!room) {
     return NextResponse.json(
-      { success: false, message: "Missing room or userId" },
+      { success: false, message: "Missing room" },
       { status: 200 }
     );
   }
