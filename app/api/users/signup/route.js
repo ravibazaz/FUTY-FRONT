@@ -17,6 +17,7 @@ export const UserSchema = z.object({
   telephone: z.string().nonempty("Telephone is required").min(2, "Telephone must be at least 2 character"),
   account_type: z.string().nonempty("Account Type is required").min(2, "Account Type must be at least 2 character"),
   invitation_code: z.string().optional(),
+  fcmtoken: z.string().optional(),
 }).refine((data) => data.password === data.confirm_password, {
   message: "Passwords don't match",
   path: ["confirm_password"],
@@ -44,6 +45,7 @@ export async function POST(req) {
     const telephone = data.telephone;
     const account_type = data.account_type;
     const invitation_code = data.invitation_code;
+    const fcmtoken = data.fcmtoken;
     let palyer_manger_id = null;
     let fan_manger_id = null;
 
@@ -132,6 +134,7 @@ export async function POST(req) {
       surname,
       telephone,
       account_type,
+      fcmtoken
     });
 
 

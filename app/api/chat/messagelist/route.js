@@ -59,6 +59,20 @@ export async function GET(req) {
       }
     };
   }
+  else if (type == 'player') {
+    query = {
+      roomId: {
+        $regex: `(^${userId}_|_${userId}$)`
+      },
+      conversation_type: {
+        $in: ["Player"]
+      },
+      participant_name: {
+        $regex: q,
+        $options: "i"
+      }
+    };
+  }
   else if (type == 'unread') {
     query = {
       roomId: {

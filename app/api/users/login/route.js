@@ -14,6 +14,7 @@ import FanInvitations from "@/lib/models/FanInvitations";
 
 export const UserSchema = z.object({
   email: z.string().nonempty("Email is required").email("Invalid email format"),
+  fcmtoken: z.string().optional(),
   password: z
     .string()
     .nonempty("Password is required")
@@ -136,6 +137,8 @@ export async function POST(req) {
     }
 
     const token = await generateToken({ email: user.email, user_id: user.id });
+    // console.log(result.data.fcmtoken);
+    await User.findByIdAndUpdate(user._id, { fcmtoken: result.data.fcmtoken });
 
     const existing = await PlayerInvitations.findOne({ player_email: user.email })
     const existing_fan = await FanInvitations.findOne({ fan_email: user.email })
@@ -146,6 +149,7 @@ export async function POST(req) {
         : user.account_type === "Fan" && existing_fan
           ? existing_fan.fan_nick_name
           : user.nick_name;
+
 
     return NextResponse.json({
       success: true,
