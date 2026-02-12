@@ -15,7 +15,7 @@ export async function POST(req) {
       },
       data,
     };
-   console.log(admin);
+   //console.log(admin);
     
     const response = await admin.messaging().send(message);
     return NextResponse.json({

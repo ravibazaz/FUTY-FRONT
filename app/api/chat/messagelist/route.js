@@ -98,7 +98,7 @@ export async function GET(req) {
   }
   const total = await Conversation.countDocuments(query);
   const messages = await Conversation.find(query)
-    .sort({ createdAt: -1 })
+    .sort({ lastMessageAt: -1 })
     .populate({
       path: 'participants',
       match: { _id: { $ne: userId } }, // exclude logged-in user
