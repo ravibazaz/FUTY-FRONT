@@ -114,7 +114,7 @@ export async function GET(req) {
 
   return NextResponse.json({
     success: true,
-    data: messages.reverse(), // return oldest-first on the page
+    data: messages, // return oldest-first on the page
     pagination: {
       total, page, limit, totalPages: Math.ceil(total / limit)
     }
