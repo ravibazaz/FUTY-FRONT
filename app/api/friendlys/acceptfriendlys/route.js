@@ -4,7 +4,7 @@ import { protectApiRoute } from "@/lib/middleware";
 import { z } from "zod";
 import Friendlies from "@/lib/models/Friendlies";
 import Users from "@/lib/models/Users";
-
+import admin from "@/lib/firebaseAdmin";
 export async function POST(req) {
   const authResult = await protectApiRoute(req);
   // Check if the middleware returned a NextResponse object (error)
@@ -15,12 +15,12 @@ export async function POST(req) {
   // Otherwise, it means the user is authenticated
   const { user } = authResult;
   await connectDB();
- // console.log(user);
-  
+  // console.log(user);
+
   const data = await req.json();
   const _id = data._id;
   const existing = await Users.findById(user._id);
-    if (!existing) {
+  if (!existing) {
     return NextResponse.json(
       {
         success: false,
@@ -30,8 +30,28 @@ export async function POST(req) {
     );
   }
 
-  await Friendlies.findByIdAndUpdate(_id, {accepted_by_user:user._id,status:'Friendly Accepted'});
+  await Friendlies.findByIdAndUpdate(_id, { accepted_by_user: user._id, status: 'Friendly Accepted' });
+  const check_friendly_fcmtoken = await Friendlies.findById(_id).select("-__v").populate({
+    path: "created_by_user",
+    select: "name fcmtoken",
+  }).lean();
 
+  try {
+    if (check_friendly_fcmtoken && check_friendly_fcmtoken.created_by_user.fcmtoken)
+      await admin.messaging().send({
+        token: check_friendly_fcmtoken.created_by_user.fcmtoken,
+        notification: {
+          title: "Friendly",
+          body: 'Your Friendly Accepted'
+        },
+        data: {
+          By: user.name
+        }
+      });
+
+  } catch (error) {
+    console.log('fcmtoken not working');
+  }
   return NextResponse.json({
     success: true,
     message: "Friendly accepted",
