@@ -7,7 +7,7 @@ import path from "path";
 import { promises as fs } from "fs";
 import TournamentAccepted from "@/lib/models/TournamentAccepted";
 import { log } from "console";
-import admin from "@/lib/firebaseAdmin";
+import { createAndSendNotification } from "@/lib/notify";
 import Tournaments from "@/lib/models/Tournaments";
 export const TournamentAcceptedSchema = z.object({
   email: z.string().nonempty("Email is required").email("Invalid email format"),
@@ -30,8 +30,8 @@ export async function POST(req) {
     // Extract normal text fields
     const rawData = Object.fromEntries(formData.entries());
 
-   // console.log(rawData.tournament_id);
-    
+    // console.log(rawData.tournament_id);
+
     //Validate with Zod
     const result = TournamentAcceptedSchema.safeParse({ ...rawData });
     // If validation fails, return an error response
@@ -62,18 +62,18 @@ export async function POST(req) {
     }).lean();
 
     //console.log(check_tournament_fcmtoken.created_by_user.fcmtoken);
-    
+
     try {
       if (check_tournament_fcmtoken && check_tournament_fcmtoken.created_by_user.fcmtoken)
-        await admin.messaging().send({
-          token: check_tournament_fcmtoken.created_by_user.fcmtoken,
-          notification: {
-            title: "Tournament",
-            body: 'Your Tournament Accepted'
-          },
+        await createAndSendNotification({
+          userId: check_tournament_fcmtoken.created_by_user._id,
+          fcmToken: check_tournament_fcmtoken.created_by_user.fcmtoken, // stored in user table
+          title: "Tournament",
+          body: 'Tournament Accepted',
+          type: "tournament",
           data: {
-            By: user.name
-          }
+            user: user
+          },
         });
 
     } catch (error) {

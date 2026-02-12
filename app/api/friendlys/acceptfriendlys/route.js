@@ -45,13 +45,12 @@ export async function POST(req) {
         body: 'Friendly Accepted',
         type: "friendly",
         data: {
-          from: user.name,
-          fromuserid: user._id,
+          user: user
         },
       });
 
   } catch (error) {
-    console.log('fcmtoken not working');
+    console.log(error);
   }
   return NextResponse.json({
     success: true,
