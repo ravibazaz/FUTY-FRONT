@@ -21,7 +21,7 @@ const id = (await params).id;
   await connectDB();
   const tournaments = await Friendlies.findById(id).populate('team_id').populate('manager_id').populate('ground_id').populate('league_id').select("-__v").populate({
     path: "created_by_user",
-    select: "name team_id",
+    select: "name profile_image team_id",
     populate: {
       path: "team_id",
       model: "Teams",
@@ -39,7 +39,7 @@ const id = (await params).id;
     }
   }).populate({
     path: "accepted_by_user",
-    select: "name team_id",
+    select: "name profile_image team_id",
     populate: {
       path: "team_id",
       model: "Teams",
