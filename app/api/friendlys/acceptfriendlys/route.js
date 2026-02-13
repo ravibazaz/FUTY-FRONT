@@ -4,7 +4,7 @@ import { protectApiRoute } from "@/lib/middleware";
 import { z } from "zod";
 import Friendlies from "@/lib/models/Friendlies";
 import Users from "@/lib/models/Users";
-// import { createAndSendNotification } from "@/lib/notify";
+import { createAndSendNotification } from "@/lib/notify";
 export async function POST(req) {
   const authResult = await protectApiRoute(req);
   // Check if the middleware returned a NextResponse object (error)
@@ -36,22 +36,22 @@ export async function POST(req) {
     select: "name fcmtoken",
   }).lean();
 
-  // try {
-  //   if (check_friendly_fcmtoken && check_friendly_fcmtoken.created_by_user.fcmtoken)
-  //     await createAndSendNotification({
-  //       userId: check_friendly_fcmtoken.created_by_user._id,
-  //       fcmToken: check_friendly_fcmtoken.created_by_user.fcmtoken, // stored in user table
-  //       title: "Friendly",
-  //       body: 'Friendly Accepted',
-  //       type: "friendly",
-  //       data: {
-  //         user: user
-  //       },
-  //     });
+  try {
+    if (check_friendly_fcmtoken && check_friendly_fcmtoken.created_by_user.fcmtoken)
+      await createAndSendNotification({
+        userId: check_friendly_fcmtoken.created_by_user._id,
+        fcmToken: check_friendly_fcmtoken.created_by_user.fcmtoken, // stored in user table
+        title: "Friendly",
+        body: 'Friendly Accepted',
+        type: "friendly",
+        data: {
+          user: user
+        },
+      });
 
-  // } catch (error) {
-  //   console.log(error);
-  // }
+  } catch (error) {
+    console.log(error);
+  }
   return NextResponse.json({
     success: true,
     message: "Friendly accepted",
