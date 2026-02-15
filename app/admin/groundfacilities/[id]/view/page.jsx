@@ -1,7 +1,7 @@
 import { connectDB } from "@/lib/db";
 import GroundFacilities from "@/lib/models/GroundFacilities";
 import Link from "next/link";
-
+export const revalidate = 30; // ✅ ISR enabled
 export default async function ViewFansPage({ params }) {
     const id = (await params).id;
     await connectDB();

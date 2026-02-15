@@ -2,6 +2,7 @@ import EditProfileForm from "@/components/EditProfileForm";
 import { connectDB } from "@/lib/db";
 import Users from "@/lib/models/Users"
 import { cookies } from "next/headers";
+export const revalidate = 30; // ✅ ISR enabled
 export default async function EditProfilePage() {
  
   const cookieStore = await cookies();

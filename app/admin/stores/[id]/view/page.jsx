@@ -5,6 +5,7 @@ import Stores from "@/lib/models/Stores";
 import Image from "next/image";
 import Link from "next/link";
 import dynamic from 'next/dynamic';
+export const revalidate = 30; // ✅ ISR enabled
 const DynamicComponentShowImagesWithAlertClick = dynamic(() => import('@/components/ShowImagesWithAlertClick'), {
   loading: () => <p>Loading component...</p>, // The fallback UI
 });
