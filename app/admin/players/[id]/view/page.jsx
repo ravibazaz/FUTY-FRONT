@@ -229,7 +229,7 @@ export default async function ViewFansPage({ params }) {
                   <DynamicComponentShowImagesWithAlertClick images={userdetails.profile_image ? [userdetails.profile_image] : []}></DynamicComponentShowImagesWithAlertClick>
                   
                   <p className="mb-0">
-                    <Link className="text-decoration-none fs-14 fw-bold text-primary underline-hover" href={`/admin/managers/${userdetails._id}/edit`}>Profile Imag</Link>
+                    <Link className="text-decoration-none fs-14 fw-bold text-primary underline-hover" href={`/admin/managers/${userdetails._id}/edit`}>Profile Image</Link>
                    
                   </p>
                 </div>
