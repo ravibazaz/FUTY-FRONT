@@ -3,7 +3,7 @@ import { chatManager } from "@/lib/chatManager";
 import { NextResponse } from "next/server";
 
 export const config = {
-  runtime: "edge",
+  runtime: "nodejs",
   streaming: true,
 };
 
