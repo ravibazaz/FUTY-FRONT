@@ -41,8 +41,8 @@ export async function POST(req) {
       await createAndSendNotification({
         userId: check_friendly_fcmtoken.created_by_user._id,
         fcmToken: check_friendly_fcmtoken.created_by_user.fcmtoken, // stored in user table
-        title: "Friendly",
-        body: 'Friendly Accepted',
+        title: "Friendly Accepted",
+        body: `Your Friendly, ${check_friendly_fcmtoken.name} has been successfully accepted by ${user.name}`,
         type: "friendly",
         data: {
           user: user

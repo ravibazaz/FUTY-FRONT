@@ -68,8 +68,8 @@ export async function POST(req) {
         await createAndSendNotification({
           userId: check_tournament_fcmtoken.created_by_user._id,
           fcmToken: check_tournament_fcmtoken.created_by_user.fcmtoken, // stored in user table
-          title: "Tournament",
-          body: 'Tournament Accepted',
+          title: "Tournament Accepted",
+          body: `Your Tournament, ${check_tournament_fcmtoken.name} has been successfully accepted by ${user.name}`,
           type: "tournament",
           data: {
             user: user
