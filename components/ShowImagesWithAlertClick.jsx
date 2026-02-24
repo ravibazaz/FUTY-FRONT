@@ -5,7 +5,7 @@ import Image from "next/image";
 export default function ShowImagesWithAlertClick(props) {
 
     const [selectedImages, setselectedImages] = useState(props.images ? props.images : '');
-    console.log(selectedImages);
+   // console.log(selectedImages);
 
     const handleDelete = async (link) => {
         console.log(link);
