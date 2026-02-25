@@ -30,7 +30,7 @@ export async function POST(req) {
     );
   }
 
-  await Friendlies.findByIdAndUpdate(_id, { accepted_by_user: user._id, status: 'Friendly Accepted' });
+  await Friendlies.findByIdAndUpdate(_id, { accepted_by_user: user._id, status: 'Friendly Accepted', accepteddAt: Date() });
   const check_friendly_fcmtoken = await Friendlies.findById(_id).select("-__v").populate({
     path: "created_by_user",
     select: "name fcmtoken",
