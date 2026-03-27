@@ -3,6 +3,8 @@ import { protectApiRoute } from "@/lib/middleware";
 import { connectDB } from '@/lib/db';
 import Tournaments from "@/lib/models/Tournaments";
 import Grounds from "@/lib/models/Grounds";
+import Teams from "@/lib/models/Teams";
+import mongoose from "mongoose";
 import TournamentOrderHistories from "@/lib/models/TournamentOrderHistories";
 
 export async function GET(req) {
@@ -29,7 +31,12 @@ export async function GET(req) {
 
   const total = await Tournaments.countDocuments(query);
 
-  const tournaments = await Tournaments.find(query).populate('ground').populate('club').populate({
+  const tournaments = await Tournaments.find(query).populate('ground').populate({
+    path: "club",
+    populate: {
+      path: "age_groups",
+    },
+  }).populate({
     path: 'tournamentorderhistories',
     match: { created_by_user_Id: user._id }
   }).populate({
@@ -52,8 +59,65 @@ export async function GET(req) {
     }
   }).select("-__v").skip(skip)
     .limit(limit)
-    .sort({ _id: -1 }) // optional sorting
+    .sort({ date: -1 }) // optional sorting
     .lean();
+
+
+  // for (let t of tournaments) {
+  //   if (!t.club?.age_groups) continue;
+
+  //   for (let ag of t.club.age_groups) {
+  //     const clubId = String(t.club._id);
+  //     const ageGroupId = String(ag._id);
+
+  //     const total = await Teams.countDocuments({
+  //       club: {
+  //         $in: [
+  //           clubId,
+  //           new mongoose.Types.ObjectId(clubId),
+  //         ],
+  //       },
+  //       age_groups: {
+  //         $in: [
+  //           ageGroupId,
+  //           new mongoose.Types.ObjectId(ageGroupId),
+  //         ],
+  //       },
+  //     });
+
+  //     console.log("COUNT:", total+' '+clubId+' '+ageGroupId);
+
+  //     ag.totalTeams = total;
+  //   }
+  // };
+
+
+  for (let t of tournaments) {
+  if (!t.club?.age_groups) continue;
+
+  t.club.age_groups = await Promise.all(
+    t.club.age_groups.map(async (ag) => {
+      const clubId = String(t.club._id);
+      const ageGroupId = String(ag._id);
+
+      const total = await Teams.countDocuments({
+        club: {
+          $in: [clubId, new mongoose.Types.ObjectId(clubId)],
+        },
+        age_groups: {
+          $in: [ageGroupId, new mongoose.Types.ObjectId(ageGroupId)],
+        },
+      });
+
+       console.log("COUNT:", total+' '+clubId+' '+ageGroupId);
+       
+      return {
+        ...ag,
+        totalTeams: total, // ✅ new object instead of mutation
+      };
+    })
+  );
+}
 
 
   return NextResponse.json({

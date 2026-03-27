@@ -36,6 +36,9 @@ export async function GET(req) {
   // const friendlies = await Friendlies.find({},'name images date time').select("-__v").lean();
 
   const all_friendlies_created_others = await Friendlies.find({
+    date: {
+      $gte: todayStart,
+    },
     created_by_user: { $ne: user._id },
   }).sort({ date: -1 }).populate('team_id').populate('manager_id').populate('ground_id').populate('league_id').select("-__v").populate({
     path: "created_by_user",
@@ -78,6 +81,9 @@ export async function GET(req) {
 
 
   const all_friendlies_created_me_accepted_by_others = await Friendlies.find({
+    date: {
+      $gte: todayStart,
+    },
     accepted_by_user: { $exists: true, $ne: null },
     created_by_user: user._id
   }).sort({ date: -1 }).populate('team_id').populate('manager_id').populate('ground_id').populate('league_id').select("-__v").populate({
@@ -120,6 +126,9 @@ export async function GET(req) {
 
 
   const all_friendlies_created_me_not_accepted = await Friendlies.find({
+    date: {
+      $gte: todayStart,
+    },
     accepted_by_user: { $exists: false, $eq: null },
     created_by_user: user._id
   }).sort({ date: -1 }).populate('team_id').populate('manager_id').populate('ground_id').populate('league_id').select("-__v").populate({

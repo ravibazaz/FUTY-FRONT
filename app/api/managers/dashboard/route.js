@@ -43,7 +43,16 @@ export async function GET(req) {
   ]);
 
 
+  const my_league = await Leagues.findOne({ _id: user.team_id?.club?.league?._id }, "title image").populate('age_groups').lean();
+
+  const my_league_forrandom_team = await Leagues.findOne({ _id: user.team_id?.club?.league?._id }, "title image age_groups").lean();
+
   const [random_team] = await Teams.aggregate([
+    {
+      $match: {
+        age_groups: { $in: my_league_forrandom_team.age_groups }
+      }
+    },
     // 1️⃣ Pick 1 random team
     { $sample: { size: 1 } },
 
@@ -166,7 +175,9 @@ export async function GET(req) {
 
   const my_team = await Teams.findOne({ _id: user.team_id._id }, "name image").populate('ground').lean();
   const my_club = await Clubs.findOne({ _id: user.team_id?.club?._id }, "name image").lean();
-  const my_league = await Leagues.findOne({ _id: user.team_id?.club?.league?._id }, "title image").lean();
+
+
+  //console.log(my_league.age_groups);
 
 
   const show_next_applicable_friendly_created_by_others_recent_date_limit_one = await Friendlies.findOne({

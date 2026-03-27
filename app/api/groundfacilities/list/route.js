@@ -17,12 +17,10 @@ export async function GET(req) {
   const q = searchParams.get("q");
 
   const query = {
-    ...(q && { name: { $regex: q, $options: 'i' } }),
+    ...(q && { facilities: { $regex: q, $options: 'i' } }),
   };
 
-  const grounds = await GroundFacilities.find(query, 'facilities description').select("-__v").lean();
-
-
+  const grounds = await GroundFacilities.find(query, 'facilities description').sort({ facilities: 1 }).select("-__v").lean();
 
 
   return NextResponse.json({
