@@ -7,6 +7,7 @@ import path from "path";
 import { promises as fs } from "fs";
 import Users from "@/lib/models/Users";
 import bcrypt from "bcryptjs";
+import { getLatLng } from "@/lib/geocode";
 export const UserSchema = z
   .object({
     name: z
@@ -63,6 +64,8 @@ export async function POST(req) {
   const palyer_discipline = data.palyer_discipline;
   const palyer_rating = data.palyer_rating;
 
+
+  const geo = await getLatLng(post_code)
   const result = UserSchema.safeParse(data);
   // If validation fails, return an error response
   if (!result.success) {
@@ -100,6 +103,12 @@ export async function POST(req) {
     playing_style,
     nick_name,
     post_code,
+    lat: geo.lat,
+    long: geo.lng,
+    location: {
+      type: "Point",
+      coordinates: [geo.lng, geo.lat], // IMPORTANT
+    },
     travel_distance,
     referee_lavel,
     referee_fee,

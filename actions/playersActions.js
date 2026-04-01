@@ -10,7 +10,7 @@ import path from "path";
 import { promises as fs } from "fs";
 import bcrypt from "bcryptjs";
 import { log } from "console";
-
+import { getLatLng } from "@/lib/geocode";
 // Check if file exists asynchronously
 const fileExists = async (filePath) => {
   try {
@@ -30,7 +30,7 @@ export async function createPlayers(prevState, formData) {
 
   const imageFile = formData.get("profile_image");
   const password = formData.get("password");
-
+  const geo = await getLatLng(formData.get("post_code"));
 
   const result = PlayersSchema(false).safeParse({ ...raw, image: imageFile });
 
@@ -59,6 +59,12 @@ export async function createPlayers(prevState, formData) {
     account_type: 'Player',
     isVerified: true,
     password: hashedPassword,
+    lat: geo.lat,
+    long: geo.lng,
+    location: {
+      type: "Point",
+      coordinates: [geo.lng, geo.lat], // IMPORTANT
+    },
     profile_image: `/uploads/players/${uniqueName}`, // Save relative path to the image
   });
 
@@ -76,7 +82,7 @@ export async function updatePlayers(id, prevState, formData) {
   const { name, email, telephone, nick_name, post_code, profile_description, palyer_position, palyer_pace, palyer_skill, palyer_power, palyer_defence, palyer_teamwork, palyer_discipline, palyer_rating, palyer_manger_id } = result.data;
   const imageFile = formData.get("profile_image");
   const password = formData.get("password");
-
+  const geo = await getLatLng(formData.get("post_code"));
   //log(result.data);
   await connectDB();
   // Find the existing league in the database
@@ -128,6 +134,12 @@ export async function updatePlayers(id, prevState, formData) {
       telephone,
       nick_name,
       post_code,
+      lat: geo.lat,
+      long: geo.lng,
+      location: {
+        type: "Point",
+        coordinates: [geo.lng, geo.lat], // IMPORTANT
+      },
       profile_description,
       palyer_position,
       palyer_pace,
@@ -153,6 +165,12 @@ export async function updatePlayers(id, prevState, formData) {
       telephone,
       nick_name,
       post_code,
+      lat: geo.lat,
+      long: geo.lng,
+      location: {
+        type: "Point",
+        coordinates: [geo.lng, geo.lat], // IMPORTANT
+      },
       profile_description,
       palyer_position,
       palyer_pace,

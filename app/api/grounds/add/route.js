@@ -6,6 +6,7 @@ import { z } from "zod";
 import { v4 as uuidv4 } from "uuid";
 import path from "path";
 import { promises as fs } from "fs";
+import { getLatLng } from "@/lib/geocode";
 export const GroundSchema = z.object({
   name: z.string().nonempty("Ground Name is required").min(2, "Ground must be at least 2 character"),
   add1: z.string().nonempty("Address 1 is required").min(2, "Address 1 must be at least 2 character"),
@@ -31,18 +32,18 @@ export const GroundSchema = z.object({
     ),
 });
 
+
 export async function POST(req) {
 
 
   const authResult = await protectApiRoute(req);
-
+  const { user } = authResult;
   // Check if the middleware returned a NextResponse object (error)
   if (authResult instanceof NextResponse) {
     return authResult;
   }
 
   try {
-
     const formData = await req.formData();
     // console.log(formData);
 
@@ -51,7 +52,8 @@ export async function POST(req) {
     // Extract all files (normalize to array)
     let images = formData.getAll("images");
 
-    //console.log('Images');
+    const geo = await getLatLng(formData.get("pin"));
+    // console.log(geo);
 
     // console.log(images);
 
@@ -102,6 +104,12 @@ export async function POST(req) {
     const newGround = await Grounds.create({
       ...rawData,
       images: imagePaths,
+      lat: geo.lat,
+      long: geo.lng,
+      location: {
+        type: "Point",
+        coordinates: [geo.lng, geo.lat], // IMPORTANT
+      },
       facilities: facilities
     });
 

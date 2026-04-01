@@ -35,6 +35,111 @@ export async function GET(req) {
 
   // const friendlies = await Friendlies.find({},'name images date time').select("-__v").lean();
 
+  const managerLng = user.location.coordinates[0];
+  const managerLat = user.location.coordinates[1];
+
+
+  const tournaments = await Tournaments.aggregate([
+    // 1️⃣ Join Ground
+    {
+      $lookup: {
+        from: "grounds",
+        localField: "ground",
+        foreignField: "_id",
+        as: "ground"
+      }
+    },
+    { $unwind: "$ground" },
+
+    // 2️⃣ GEO NEAR (must be first stage after unwind)
+    {
+      $geoNear: {
+        near: {
+          type: "Point",
+          coordinates: [managerLng, managerLat], // manager location
+        },
+        distanceField: "distance",
+        key: "ground.location",
+        spherical: true,
+      }
+    },
+
+    // 3️⃣ Apply your filters
+    {
+      $match: query
+    },
+
+    // 4️⃣ Populate club
+    {
+      $lookup: {
+        from: "clubs",
+        localField: "club",
+        foreignField: "_id",
+        as: "club"
+      }
+    },
+    { $unwind: { path: "$club", preserveNullAndEmptyArrays: true } },
+
+    // 5️⃣ Age groups
+    {
+      $lookup: {
+        from: "agegroups",
+        localField: "club.age_groups",
+        foreignField: "_id",
+        as: "club.age_groups"
+      }
+    },
+
+    // 6️⃣ Tournament order histories (filtered)
+    {
+      $lookup: {
+        from: "tournamentorderhistories",
+        let: { tournamentId: "$_id" },
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $and: [
+                  { $eq: ["$tournament_id", "$$tournamentId"] },
+                  { $eq: ["$created_by_user_Id", user._id] }
+                ]
+              }
+            }
+          }
+        ],
+        as: "tournamentorderhistories"
+      }
+    },
+
+    // 7️⃣ Created by user
+    {
+      $lookup: {
+        from: "users",
+        localField: "created_by_user",
+        foreignField: "_id",
+        as: "created_by_user"
+      }
+    },
+    { $unwind: { path: "$created_by_user", preserveNullAndEmptyArrays: true } },
+
+    // 8️⃣ Sort by nearest
+    {
+      $sort: { distance: 1 }
+    },
+
+    // 9️⃣ Pagination
+    { $skip: skip },
+    { $limit: limit },
+
+    // 🔟 Remove unwanted fields
+    {
+      $project: {
+        __v: 0
+      }
+    }
+  ]);
+
+
   const all_friendlies_created_others = await Friendlies.find({
     date: {
       $gte: todayStart,

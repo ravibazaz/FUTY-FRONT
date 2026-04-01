@@ -8,7 +8,7 @@ import { GroundSchema } from "@/lib/validation/grounds";
 import { v4 as uuidv4 } from "uuid";
 import path from "path";
 import { promises as fs } from "fs";
-
+import { getLatLng } from "@/lib/geocode";
 
 // Check if file exists asynchronously
 const fileExists = async (filePath) => {
@@ -28,6 +28,7 @@ export async function createGrounds(prevState, formData) {
   const raw = Object.fromEntries(formData.entries());
   const imageFiles = formData.getAll("images");
   const facilities = formData.getAll("facilities");
+  const geo = await getLatLng(formData.get("pin"));
   const result = GroundSchema(false).safeParse({ ...raw, images: imageFiles });
 
   if (!result.success)
@@ -58,7 +59,13 @@ export async function createGrounds(prevState, formData) {
   await Grounds.create({
     ...result.data,
     facilities: facilities,
+    lat: geo.lat,
+    long: geo.lng,
     images: uploadedFiles,
+    location: {
+      type: "Point",
+      coordinates: [geo.lng, geo.lat], // IMPORTANT
+    },
   });
 
   cookieStore.set("toastMessage", "Ground Added");
@@ -75,7 +82,7 @@ export async function updateGround(id, prevState, formData) {
   const { name, add1, add2, add3, pin, content, lat, long } = result.data;
   const imageFiles = formData.getAll("images");
   const facilities = formData.getAll("facilities");
-
+  const geo = await getLatLng(formData.get("pin"));
   // console.log(imageFiles);
 
 
@@ -137,7 +144,12 @@ export async function updateGround(id, prevState, formData) {
       add3,
       pin,
       content,
-      lat, long,
+      lat: geo.lat,
+      long: geo.lng,
+      location: {
+      type: "Point",
+      coordinates: [geo.lng, geo.lat], // IMPORTANT
+    },
       facilities: facilities,
       images: uploadedFiles,
     };
@@ -152,7 +164,12 @@ export async function updateGround(id, prevState, formData) {
       add3,
       pin,
       content,
-      lat, long,
+      lat: geo.lat,
+      long: geo.lng,
+      location: {
+      type: "Point",
+      coordinates: [geo.lng, geo.lat], // IMPORTANT
+    },
       facilities: facilities,
     };
     // If no new image is uploaded, just update the title and isActive fields

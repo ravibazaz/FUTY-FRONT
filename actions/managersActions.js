@@ -9,7 +9,7 @@ import { v4 as uuidv4 } from "uuid";
 import path from "path";
 import { promises as fs } from "fs";
 import bcrypt from "bcryptjs";
-
+import { getLatLng } from "@/lib/geocode";
 // Check if file exists asynchronously
 const fileExists = async (filePath) => {
   try {
@@ -26,6 +26,8 @@ export async function createManagers(prevState, formData) {
   const userId = cookieStore.get("user_id")?.value;
 
   const raw = Object.fromEntries(formData.entries());
+
+  const geo = await getLatLng(formData.get("post_code"));
 
   const imageFile = formData.get("profile_image");
   const password = formData.get("password");
@@ -69,9 +71,15 @@ export async function createManagers(prevState, formData) {
   await Users.create({
     ...result.data,
     account_type: 'Manager',
-    isVerified:true,
+    isVerified: true,
     playing_style: playing_style,
     password: hashedPassword,
+    lat: geo.lat,
+    long: geo.lng,
+    location: {
+      type: "Point",
+      coordinates: [geo.lng, geo.lat], // IMPORTANT
+    },
     profile_image: `/uploads/managers/${uniqueName}`, // Save relative path to the image
   });
 
@@ -86,10 +94,10 @@ export async function updateManager(id, prevState, formData) {
   if (!result.success) {
     return { success: false, errors: result.error.flatten().fieldErrors };
   }
-  const { name, email, telephone, nick_name, post_code, profile_description,travel_distance,team_id } = result.data;
+  const { name, email, telephone, nick_name, post_code, profile_description, travel_distance, team_id } = result.data;
   const imageFile = formData.get("profile_image");
   const password = formData.get("password");
-
+  const geo = await getLatLng(formData.get("post_code"));
   const win = formData.get("win");
   const style = formData.get("style");
   const trophy = formData.get("trophy");
@@ -159,6 +167,12 @@ export async function updateManager(id, prevState, formData) {
       telephone,
       nick_name,
       post_code,
+      lat: geo.lat,
+      long: geo.lng,
+      location: {
+        type: "Point",
+        coordinates: [geo.lng, geo.lat], // IMPORTANT
+      },
       profile_description,
       travel_distance,
       team_id,
@@ -178,6 +192,12 @@ export async function updateManager(id, prevState, formData) {
       telephone,
       nick_name,
       post_code,
+      lat: geo.lat,
+      long: geo.lng,
+      location: {
+        type: "Point",
+        coordinates: [geo.lng, geo.lat], // IMPORTANT
+      },
       profile_description,
       travel_distance,
       team_id,

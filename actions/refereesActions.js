@@ -9,7 +9,7 @@ import { v4 as uuidv4 } from "uuid";
 import path from "path";
 import { promises as fs } from "fs";
 import bcrypt from "bcryptjs";
-
+import { getLatLng } from "@/lib/geocode";
 // Check if file exists asynchronously
 const fileExists = async (filePath) => {
   try {
@@ -26,7 +26,7 @@ export async function createReferees(prevState, formData) {
   const userId = cookieStore.get("user_id")?.value;
 
   const raw = Object.fromEntries(formData.entries());
-
+  const geo = await getLatLng(formData.get("post_code"));
   const imageFile = formData.get("profile_image");
   const password = formData.get("password");
 
@@ -54,7 +54,13 @@ export async function createReferees(prevState, formData) {
   await Users.create({
     ...result.data,
     account_type: 'Referee',
-    isVerified:true,
+    isVerified: true,
+    lat: geo.lat,
+    long: geo.lng,
+    location: {
+      type: "Point",
+      coordinates: [geo.lng, geo.lat], // IMPORTANT
+    },
     password: hashedPassword,
     profile_image: `/uploads/referees/${uniqueName}`, // Save relative path to the image
   });
@@ -70,10 +76,10 @@ export async function updateRefreee(id, prevState, formData) {
   if (!result.success) {
     return { success: false, errors: result.error.flatten().fieldErrors };
   }
-  const { name, email, telephone, nick_name, post_code, profile_description,travel_distance,referee_lavel,referee_fee } = result.data;
+  const { name, email, telephone, nick_name, post_code, profile_description, travel_distance, referee_lavel, referee_fee } = result.data;
   const imageFile = formData.get("profile_image");
   const password = formData.get("password");
-
+  const geo = await getLatLng(formData.get("post_code"));
   await connectDB();
   // Find the existing league in the database
   const user = await Users.findById(id);
@@ -124,6 +130,12 @@ export async function updateRefreee(id, prevState, formData) {
       telephone,
       nick_name,
       post_code,
+      lat: geo.lat,
+      long: geo.lng,
+      location: {
+        type: "Point",
+        coordinates: [geo.lng, geo.lat], // IMPORTANT
+      },
       profile_description,
       travel_distance,
       referee_lavel,
@@ -143,8 +155,14 @@ export async function updateRefreee(id, prevState, formData) {
       telephone,
       nick_name,
       post_code,
+      lat: geo.lat,
+      long: geo.lng,
+      location: {
+        type: "Point",
+        coordinates: [geo.lng, geo.lat], // IMPORTANT
+      },
       profile_description,
-     referee_lavel,referee_fee
+      referee_lavel, referee_fee
     };
     if (password) {
       updateData.password = await bcrypt.hash(password, 10);
