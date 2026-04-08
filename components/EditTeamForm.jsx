@@ -27,6 +27,11 @@ export default function EditTeamForm({ team }) {
   const [selectedage, setSelectedAge] = useState(team.age_groups ? team.age_groups : '');
   const selectRef = useRef(null);
   const tomSelectRef = useRef(null);
+  const [teamName, setTeamName] = useState(team.name ? team.name : '')
+  const [clubName, setclubName] = useState("")
+  const [selectedAgeGroupId, setSelectedAgeGroupId] = useState("");
+  const [selectedAgeName, setselectedAgeName] = useState("");
+
   useEffect(() => {
     if (!clubId) {
       setAgeGroups([]);
@@ -40,13 +45,37 @@ export default function EditTeamForm({ team }) {
       .then(data => {
         console.log("Age groups received:", data.clubs.age_groups);
         if (data.clubs.age_groups)
+        {
+          setclubName(data.clubs.name)
           setAgeGroups(data.clubs.age_groups);
+}
         else
           setAgeGroups([]);
 
       })
       .catch(err => console.error(err));
   }, [clubId]);
+
+
+  useEffect(() => {
+    if (selectedAgeGroupId && clubName) {
+      fetch(`/api/agegroups/age-groups?agegroupId=${selectedAgeGroupId}`)
+        .then(res => res.json())
+        .then(data => {
+          const ageName = data?.agegroupname?.age_group;
+  
+          if (ageName) {
+              const formattedAge = ageName
+              .replace(/under\s*/i, "U")  // Under → U
+              .replace(/\s+/g, "");       // remove space → U10
+            setselectedAgeName(formattedAge);
+            setTeamName(`${clubName} - ${formattedAge}`);
+          }
+        })
+        .catch(err => console.error(err));
+    }
+  }, [selectedAgeGroupId, clubName]);
+
 
   // Initialize TomSelect every time clubId (and thus ageGroups) changes
   useEffect(() => {
@@ -193,7 +222,7 @@ export default function EditTeamForm({ team }) {
                     <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
                       <div className="info-text px-0">
                         <p className="mb-0">
-                          <input className="form-control" name="name" defaultValue={team.name} type="text"></input>
+                          <input className="form-control" readOnly name="name" value={teamName || ""}  type="text"></input>
                           {clientErrors.name && (
                             <span className="invalid-feedback" style={{ display: "block" }}>
                               {clientErrors.name}
@@ -218,9 +247,11 @@ export default function EditTeamForm({ team }) {
                       <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
                         <div className="info-text px-0">
                           <p className="mb-0">
-                            <select defaultValue={selectedage}
+                            <select 
                               className="form-control"
                               name="age_groups"
+                               value={selectedage}
+                              onChange={(e) => setSelectedAgeGroupId(e.target.value)}
                               ref={selectRef}
                             >
                               <option value="">Choose a Age</option>

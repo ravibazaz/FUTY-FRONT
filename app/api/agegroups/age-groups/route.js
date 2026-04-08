@@ -5,8 +5,8 @@ export async function GET(req) {
   await connectDB();
 
   const { searchParams } = new URL(req.url);
-  const clubid = searchParams.get("clubid");
+  const agegroupId = searchParams.get("agegroupId");
 
-  const clubs = await Clubs.findById(clubid).select("name age_groups").populate("age_groups").lean();
-  return Response.json({ clubs });
+  const agegroupname = await AgeGroups.findById(agegroupId).select("age_group").lean();
+  return Response.json({ agegroupname });
 }

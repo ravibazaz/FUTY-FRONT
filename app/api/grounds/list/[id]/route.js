@@ -21,10 +21,29 @@ export async function GET(req, { params }) {
   const grounds = await Grounds.findById(id).populate('facilities').select("-__v").lean();
 
 
+  // const teams = await Teams.find({ ground: id })
+  //   .populate("club")
+  //   .select("-__v")
+  //   .lean();
+
+
   const teams = await Teams.find({ ground: id })
-    .populate("club")
+    .populate({
+      path: "club",
+      populate: {
+        path: "league",
+        select: "title age_groups",
+        populate: {
+          path: "age_groups",
+          model: "AgeGroups",
+          select: "label age_group" // fields you want from AgeGroups
+        }
+      }
+    })
     .select("-__v")
     .lean();
+
+
 
   // Extract unique clubs
   const uniqueClubs = [
@@ -38,7 +57,7 @@ export async function GET(req, { params }) {
   return NextResponse.json({
     success: true,
     message: "Welcome to the Ground Details!",
-   data: {
+    data: {
       grounds,
       uniqueClubs
     },

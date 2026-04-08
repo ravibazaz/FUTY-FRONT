@@ -6,6 +6,7 @@ import Teams from "@/lib/models/Teams";
 import Clubs from "@/lib/models/Clubs";
 import Leagues from "@/lib/models/Leagues";
 import Grounds from "@/lib/models/Grounds";
+import { getDistance } from "@/lib/geocode";
 export async function GET(req) {
   const authResult = await protectApiRoute(req);
 
@@ -39,111 +40,231 @@ export async function GET(req) {
   const managerLat = user.location.coordinates[1];
 
 
-  const tournaments = await Tournaments.aggregate([
-    // 1️⃣ Join Ground
-    {
-      $lookup: {
-        from: "grounds",
-        localField: "ground",
-        foreignField: "_id",
-        as: "ground"
-      }
-    },
-    { $unwind: "$ground" },
 
-    // 2️⃣ GEO NEAR (must be first stage after unwind)
-    {
-      $geoNear: {
-        near: {
-          type: "Point",
-          coordinates: [managerLng, managerLat], // manager location
-        },
-        distanceField: "distance",
-        key: "ground.location",
-        spherical: true,
-      }
-    },
+  const distance = getDistance(managerLat, managerLng, managerLat, managerLng)
 
-    // 3️⃣ Apply your filters
-    {
-      $match: query
-    },
 
-    // 4️⃣ Populate club
-    {
-      $lookup: {
-        from: "clubs",
-        localField: "club",
-        foreignField: "_id",
-        as: "club"
-      }
-    },
-    { $unwind: { path: "$club", preserveNullAndEmptyArrays: true } },
 
-    // 5️⃣ Age groups
-    {
-      $lookup: {
-        from: "agegroups",
-        localField: "club.age_groups",
-        foreignField: "_id",
-        as: "club.age_groups"
-      }
-    },
 
-    // 6️⃣ Tournament order histories (filtered)
-    {
-      $lookup: {
-        from: "tournamentorderhistories",
-        let: { tournamentId: "$_id" },
-        pipeline: [
-          {
-            $match: {
-              $expr: {
-                $and: [
-                  { $eq: ["$tournament_id", "$$tournamentId"] },
-                  { $eq: ["$created_by_user_Id", user._id] }
-                ]
-              }
-            }
-          }
-        ],
-        as: "tournamentorderhistories"
-      }
-    },
 
-    // 7️⃣ Created by user
-    {
-      $lookup: {
-        from: "users",
-        localField: "created_by_user",
-        foreignField: "_id",
-        as: "created_by_user"
-      }
-    },
-    { $unwind: { path: "$created_by_user", preserveNullAndEmptyArrays: true } },
+  // const all_friendlies_created_others = await Friendlies.aggregate([
 
-    // 8️⃣ Sort by nearest
-    {
-      $sort: { distance: 1 }
-    },
+  //   // 1️⃣ Match first (reduce data early)
+  //   {
+  //     $match: {
+  //       date: { $gte: todayStart },
+  //       created_by_user: { $ne: user._id },
+  //     }
+  //   },
 
-    // 9️⃣ Pagination
-    { $skip: skip },
-    { $limit: limit },
+  //   // 2️⃣ Join Ground
+  //   {
+  //     $lookup: {
+  //       from: "grounds",
+  //       localField: "ground_id",
+  //       foreignField: "_id",
+  //       as: "ground"
+  //     }
+  //   },
+  //   { $unwind: "$ground" },
 
-    // 🔟 Remove unwanted fields
-    {
-      $project: {
-        __v: 0
-      }
-    }
-  ]);
+  //   // 3️⃣ Calculate distance using GeoJSON coords
+  //   {
+  //     $addFields: {
+  //       distance: {
+  //         $let: {
+  //           vars: {
+  //             lat1: managerLat,
+  //             lon1: managerLng,
+  //             lat2: { $arrayElemAt: ["$ground.location.coordinates", 1] },
+  //             lon2: { $arrayElemAt: ["$ground.location.coordinates", 0] }
+  //           },
+  //           in: {
+  //             $multiply: [
+  //               6371,
+  //               {
+  //                 $acos: {
+  //                   $min: [ // safety fix
+  //                     1,
+  //                     {
+  //                       $add: [
+  //                         {
+  //                           $multiply: [
+  //                             { $cos: { $degreesToRadians: "$$lat1" } },
+  //                             { $cos: { $degreesToRadians: "$$lat2" } },
+  //                             {
+  //                               $cos: {
+  //                                 $subtract: [
+  //                                   { $degreesToRadians: "$$lon2" },
+  //                                   { $degreesToRadians: "$$lon1" }
+  //                                 ]
+  //                               }
+  //                             }
+  //                           ]
+  //                         },
+  //                         {
+  //                           $multiply: [
+  //                             { $sin: { $degreesToRadians: "$$lat1" } },
+  //                             { $sin: { $degreesToRadians: "$$lat2" } }
+  //                           ]
+  //                         }
+  //                       ]
+  //                     }
+  //                   ]
+  //                 }
+  //               }
+  //             ]
+  //           }
+  //         }
+  //       }
+  //     }
+  //   },
+
+  //   // 4️⃣ Sort by nearest
+  //   {
+  //     $sort: { distance: 1 }
+  //   },
+
+  //   // 5️⃣ Now do your populates (converted to lookup)
+
+  //   // team_id
+  //   {
+  //     $lookup: {
+  //       from: "teams",
+  //       localField: "team_id",
+  //       foreignField: "_id",
+  //       as: "team_id"
+  //     }
+  //   },
+  //   { $unwind: { path: "$team_id", preserveNullAndEmptyArrays: true } },
+
+  //   // manager_id
+  //   {
+  //     $lookup: {
+  //       from: "users",
+  //       localField: "manager_id",
+  //       foreignField: "_id",
+  //       as: "manager_id"
+  //     }
+  //   },
+  //   { $unwind: { path: "$manager_id", preserveNullAndEmptyArrays: true } },
+
+  //   // league_id
+  //   {
+  //     $lookup: {
+  //       from: "leagues",
+  //       localField: "league_id",
+  //       foreignField: "_id",
+  //       as: "league_id"
+  //     }
+  //   },
+  //   { $unwind: { path: "$league_id", preserveNullAndEmptyArrays: true } },
+
+  //   // created_by_user
+  //   {
+  //     $lookup: {
+  //       from: "users",
+  //       localField: "created_by_user",
+  //       foreignField: "_id",
+  //       as: "created_by_user"
+  //     }
+  //   },
+  //   { $unwind: { path: "$created_by_user", preserveNullAndEmptyArrays: true } },
+
+  //   // created_by_user.team
+  //   {
+  //     $lookup: {
+  //       from: "teams",
+  //       localField: "created_by_user.team_id",
+  //       foreignField: "_id",
+  //       as: "created_by_user.team_id"
+  //     }
+  //   },
+  //   { $unwind: { path: "$created_by_user.team_id", preserveNullAndEmptyArrays: true } },
+
+  //   // club
+  //   {
+  //     $lookup: {
+  //       from: "clubs",
+  //       localField: "created_by_user.team_id.club",
+  //       foreignField: "_id",
+  //       as: "created_by_user.team_id.club"
+  //     }
+  //   },
+  //   { $unwind: { path: "$created_by_user.team_id.club", preserveNullAndEmptyArrays: true } },
+
+  //   // league
+  //   {
+  //     $lookup: {
+  //       from: "leagues",
+  //       localField: "created_by_user.team_id.club.league",
+  //       foreignField: "_id",
+  //       as: "created_by_user.team_id.club.league"
+  //     }
+  //   },
+  //   { $unwind: { path: "$created_by_user.team_id.club.league", preserveNullAndEmptyArrays: true } },
+
+  //   // accepted_by_user
+  //   {
+  //     $lookup: {
+  //       from: "users",
+  //       localField: "accepted_by_user",
+  //       foreignField: "_id",
+  //       as: "accepted_by_user"
+  //     }
+  //   },
+  //   { $unwind: { path: "$accepted_by_user", preserveNullAndEmptyArrays: true } },
+
+  //   // accepted team
+  //   {
+  //     $lookup: {
+  //       from: "teams",
+  //       localField: "accepted_by_user.team_id",
+  //       foreignField: "_id",
+  //       as: "accepted_by_user.team_id"
+  //     }
+  //   },
+  //   { $unwind: { path: "$accepted_by_user.team_id", preserveNullAndEmptyArrays: true } },
+
+  //   // accepted club
+  //   {
+  //     $lookup: {
+  //       from: "clubs",
+  //       localField: "accepted_by_user.team_id.club",
+  //       foreignField: "_id",
+  //       as: "accepted_by_user.team_id.club"
+  //     }
+  //   },
+  //   { $unwind: { path: "$accepted_by_user.team_id.club", preserveNullAndEmptyArrays: true } },
+
+  //   // accepted league
+  //   {
+  //     $lookup: {
+  //       from: "leagues",
+  //       localField: "accepted_by_user.team_id.club.league",
+  //       foreignField: "_id",
+  //       as: "accepted_by_user.team_id.club.league"
+  //     }
+  //   },
+  //   { $unwind: { path: "$accepted_by_user.team_id.club.league", preserveNullAndEmptyArrays: true } },
+
+  //   // 7️⃣ Clean output
+  //   {
+  //     $project: {
+  //       __v: 0
+  //     }
+  //   }
+
+  // ]);
+
+
 
 
   const all_friendlies_created_others = await Friendlies.find({
     date: {
       $gte: todayStart,
     },
+    accepted_by_user: null,
     created_by_user: { $ne: user._id },
   }).sort({ date: -1 }).populate('team_id').populate('manager_id').populate('ground_id').populate('league_id').select("-__v").populate({
     path: "created_by_user",
@@ -230,12 +351,68 @@ export async function GET(req) {
   }).lean();
 
 
+  // Previous code
+  // const all_friendlies_created_me_not_accepted = await Friendlies.find({
+  //   date: {
+  //     $gte: todayStart,
+  //   },
+  //   accepted_by_user: { $exists: false, $eq: null },
+  //   created_by_user: user._id
+  // }).sort({ date: -1 }).populate('team_id').populate('manager_id').populate('ground_id').populate('league_id').select("-__v").populate({
+  //   path: "created_by_user",
+  //   select: "name team_id",
+  //   populate: {
+  //     path: "team_id",
+  //     model: "Teams",
+  //     select: "label name image club", // whatever fields you want
+  //     populate: {
+  //       path: "club",
+  //       model: "Clubs",
+  //       select: "label name image league", // whatever fields you want
+  //       populate: {
+  //         path: "league",
+  //         model: "Leagues",
+  //         select: "label title", // whatever fields you want
+  //       }
+  //     }
+  //   }
+  // }).populate({
+  //   path: "accepted_by_user",
+  //   select: "name team_id",
+  //   populate: {
+  //     path: "team_id",
+  //     model: "Teams",
+  //     select: "label name image club", // whatever fields you want
+  //     populate: {
+  //       path: "club",
+  //       model: "Clubs",
+  //       select: "label name image league", // whatever fields you want
+  //       populate: {
+  //         path: "league",
+  //         model: "Leagues",
+  //         select: "label title", // whatever fields you want
+  //       }
+  //     }
+  //   }
+  // }).lean();
+
+
+// if accepted_by_user is null or no value then this will be removed if todayStart is over if accepted_by_user is not null or has value then this will be there whatever date is
+
+
   const all_friendlies_created_me_not_accepted = await Friendlies.find({
-    date: {
-      $gte: todayStart,
-    },
-    accepted_by_user: { $exists: false, $eq: null },
-    created_by_user: user._id
+    created_by_user: user._id,
+    $or: [
+      // ✅ Future records (keep always)
+      {
+        date: { $gte: todayStart }
+      },
+
+      // ✅ Accepted records (keep always, any date)
+      {
+        accepted_by_user: { $ne: null }
+      }
+    ]
   }).sort({ date: -1 }).populate('team_id').populate('manager_id').populate('ground_id').populate('league_id').select("-__v").populate({
     path: "created_by_user",
     select: "name team_id",
