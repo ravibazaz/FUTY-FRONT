@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { protectApiRoute } from "@/lib/middleware";
 import { connectDB } from '@/lib/db';
 import Teams from "@/lib/models/Teams";
+import Users from "@/lib/models/Users";
 
 export async function GET(req) {
   const authResult = await protectApiRoute(req);
@@ -17,33 +18,51 @@ export async function GET(req) {
   const { searchParams } = new URL(req.url);
   const q = searchParams.get("q");
   const page = parseInt(searchParams.get("page")) || 1; // current page (default 1)
+  const active = parseInt(searchParams.get("active")) || 0; // current page (default 1)
   const limit = parseInt(searchParams.get("limit")) || 1000; // items per page (default 10)
   const skip = (page - 1) * limit;
-
+  let grounds;
   const query = {
     ...(q && { name: { $regex: q, $options: 'i' } }),
   };
 
   const total = await Teams.countDocuments(query);
 
+  if (active) {
+    const usedTeamIds = await Users.distinct("team_id");
+    //console.log(usedTeamIds);
+   
+    grounds = await Teams.find({
+      ...query,
+      _id: { $nin: usedTeamIds }
+    }).populate({
+      path: "club",
+      select: "name league",
+      populate: {
+        path: "league",
+        model: "Leagues",
+        select: "label title"
+      }
+    });
 
-  const grounds = await Teams.find(query).populate({
-    path: "club",
-    select: "name league",
-    populate: {
-      path: "league",
-      model: "Leagues",
-      select: "label title" // whatever fields you want
-    }
-  })
-    .select("-__v").skip(skip)
-    .limit(limit)
-    .sort({ _id: -1 }) // optional sorting
-    .lean();
+  }
+  else {
 
+    grounds = await Teams.find(query).populate({
+      path: "club",
+      select: "name league",
+      populate: {
+        path: "league",
+        model: "Leagues",
+        select: "label title" // whatever fields you want
+      }
+    })
+      .select("-__v").skip(skip)
+      .limit(limit)
+      .sort({ _id: -1 }) // optional sorting
+      .lean();
 
-
-
+  }
   return NextResponse.json({
     success: true,
     message: "Welcome to the Teams List!",

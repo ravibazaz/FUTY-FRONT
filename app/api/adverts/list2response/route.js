@@ -16,32 +16,35 @@ export async function GET(req) {
   //   }
   // };
 
+  const now = new Date();
 
-const adverts = await Adverts.aggregate([
-  {
-    $match: {
-      pages: { $in: ["Manager", "Friendly"] }
+  const adverts = await Adverts.aggregate([
+    {
+      $match: {
+        pages: { $in: ["Manager", "Friendly"] },
+        startAt: { $lte: now },
+        endAt: { $gte: now },
+      }
+    },
+    {
+      $sample: { size: 2 } // pick 2 random docs
+    },
+    {
+      $project: {
+        name: 1,
+        image: 1,
+        link: 1,
+        content: 1,
+        date: 1,
+        time: 1,
+        end_date: 1,
+        end_time: 1,
+        pages: 1
+      }
     }
-  },
-  {
-    $sample: { size: 2 } // pick 2 random docs
-  },
-  {
-    $project: {
-      name: 1,
-      image: 1,
-      link: 1,
-      content: 1,
-      date: 1,
-      time: 1,
-      end_date: 1,
-      end_time: 1,
-      pages: 1
-    }
-  }
-]);
+  ]);
 
-//console.log(adverts); // will be an array of up to 2 docs
+  //console.log(adverts); // will be an array of up to 2 docs
 
 
 
