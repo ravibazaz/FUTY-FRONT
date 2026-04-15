@@ -159,6 +159,17 @@ export default function NewGroundPage() {
       setClientErrors(result.error.flatten().fieldErrors);
       return;
     }
+
+    // 2️⃣ Async unique email check before submitting
+    const res = await fetch(`/api/teams/check-club-age?club=${raw.club}&age_groups=${raw.age_groups}`);
+    const { exists } = await res.json();
+
+    if (exists) {
+      setClientErrors({ age_groups: ["This club and age group combination already exists"] });
+      return;
+    }
+
+
     // 3️⃣ If all good, submit to main API
     setClientErrors({});
 
@@ -243,6 +254,13 @@ export default function NewGroundPage() {
                             >
                               <option value="">Choose a Age</option>
                             </select>
+                            {state.errors?.age_groups && (
+                            <span className="invalid-feedback" style={{ display: "block" }}>{state.errors.age_groups}</span>
+                          )}
+                          {clientErrors.age_groups && (
+                            <span className="invalid-feedback" style={{ display: "block" }} >{clientErrors.age_groups}</span>
+                          )}
+
                           </p>
                         </div>
                       </div>

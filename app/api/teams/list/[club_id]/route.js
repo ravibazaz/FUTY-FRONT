@@ -16,7 +16,10 @@ console.log(club_id);
   
   // Otherwise, it means the user is authenticated
   await connectDB();
-  const managers = await Teams.find({club:club_id},'name image').select("-__v").lean();
+  const managers = await Teams.find({club:club_id},'name image').populate({
+      path: "club",
+      select: "name image"
+    }).select("-__v").lean();
 
   return NextResponse.json({
     success: true,

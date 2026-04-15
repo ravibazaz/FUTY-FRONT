@@ -5,6 +5,7 @@ import Users from '@/lib/models/Users';
 import Teams from "@/lib/models/Teams";
 import Clubs from "@/lib/models/Clubs";
 import Leagues from "@/lib/models/Leagues";
+import AgeGroups from "@/lib/models/AgeGroups";
 export async function GET(req, { params }) {
   const authResult = await protectApiRoute(req);
 
@@ -20,17 +21,26 @@ export async function GET(req, { params }) {
   await connectDB();
   const managers = await Users.findById(id).select("-__v").populate({
     path: "team_id",
-    select: "name club",
-    populate: {
+    select: "name club age_groups",
+
+      populate: [
+    {
       path: "club",
       model: "Clubs",
-      select: "label name league", // whatever fields you want
+      select: "label name image league",
       populate: {
         path: "league",
         model: "Leagues",
-        select: "label title", // whatever fields you want
+        select: "label title"
       }
+    },
+    {
+      path: "age_groups",
+      model: "AgeGroups", // replace with your actual model name
+      select: "label age_group" // whatever fields you want
     }
+  ]
+   
   }).lean();
 
   return NextResponse.json({

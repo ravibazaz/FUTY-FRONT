@@ -29,15 +29,21 @@ export async function GET(req) {
   const total = await Teams.countDocuments(query);
 
   if (active) {
+
     const usedTeamIds = await Users.distinct("team_id");
-    //console.log(usedTeamIds);
-   
+
+    // 2. Get their clubs
+    const usedClubIds = await Teams.distinct("club", {
+      _id: { $in: usedTeamIds }
+    });
+
+
     grounds = await Teams.find({
       ...query,
-      _id: { $nin: usedTeamIds }
+      club: { $nin: usedClubIds } // 🔥 only this is enough
     }).populate({
       path: "club",
-      select: "name league",
+      select: "name image league",
       populate: {
         path: "league",
         model: "Leagues",
@@ -50,7 +56,7 @@ export async function GET(req) {
 
     grounds = await Teams.find(query).populate({
       path: "club",
-      select: "name league",
+      select: "name image league",
       populate: {
         path: "league",
         model: "Leagues",

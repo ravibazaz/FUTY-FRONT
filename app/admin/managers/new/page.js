@@ -274,7 +274,7 @@ export default function NewFanPage() {
                                                     >
                                                         <option value="">Choose a Team</option>
                                                         {teams.map((team) => (
-                                                            <option key={team._id} data-club={team.club.name} data-league={team.club.league.title} value={team._id}>
+                                                            <option key={team._id} data-club={team?.club?.name} data-league={team?.club?.league?.title} value={team._id}>
                                                                 {team.name}
                                                             </option>
                                                         ))}

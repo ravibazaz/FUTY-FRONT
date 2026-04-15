@@ -44,11 +44,10 @@ export default function EditTeamForm({ team }) {
       .then(res => res.json())
       .then(data => {
         console.log("Age groups received:", data.clubs.age_groups);
-        if (data.clubs.age_groups)
-        {
+        if (data.clubs.age_groups) {
           setclubName(data.clubs.name)
           setAgeGroups(data.clubs.age_groups);
-}
+        }
         else
           setAgeGroups([]);
 
@@ -63,9 +62,9 @@ export default function EditTeamForm({ team }) {
         .then(res => res.json())
         .then(data => {
           const ageName = data?.agegroupname?.age_group;
-  
+
           if (ageName) {
-              const formattedAge = ageName
+            const formattedAge = ageName
               .replace(/under\s*/i, "U")  // Under → U
               .replace(/\s+/g, "");       // remove space → U10
             setselectedAgeName(formattedAge);
@@ -177,6 +176,14 @@ export default function EditTeamForm({ team }) {
       setClientErrors(result.error.flatten().fieldErrors);
       return;
     }
+    
+    const res = await fetch(`/api/teams/check-club-age?club=${raw.club}&age_groups=${raw.age_groups}&id=${team._id}`);
+    const { exists } = await res.json();
+    if (exists) {
+      setClientErrors({ age_groups: ["This club and age group combination already exists"] });
+      return;
+    }
+
     setClientErrors({});
     startTransition(() => {
       formAction(formData);
@@ -222,7 +229,7 @@ export default function EditTeamForm({ team }) {
                     <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
                       <div className="info-text px-0">
                         <p className="mb-0">
-                          <input className="form-control" readOnly name="name" value={teamName || ""}  type="text"></input>
+                          <input className="form-control" readOnly name="name" value={teamName || ""} type="text"></input>
                           {clientErrors.name && (
                             <span className="invalid-feedback" style={{ display: "block" }}>
                               {clientErrors.name}
@@ -247,16 +254,18 @@ export default function EditTeamForm({ team }) {
                       <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
                         <div className="info-text px-0">
                           <p className="mb-0">
-                            <select 
+                            <select
                               className="form-control"
                               name="age_groups"
-                               value={selectedage}
                               onChange={(e) => setSelectedAgeGroupId(e.target.value)}
                               ref={selectRef}
                             >
                               <option value="">Choose a Age</option>
 
                             </select>
+                            {clientErrors.age_groups && (
+                              <span className="invalid-feedback" style={{ display: "block" }} >{clientErrors.age_groups}</span>
+                            )}
                           </p>
                         </div>
                       </div>
