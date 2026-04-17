@@ -5,6 +5,7 @@ import Users from '@/lib/models/Users';
 import Teams from "@/lib/models/Teams";
 import Clubs from "@/lib/models/Clubs";
 import Leagues from "@/lib/models/Leagues";
+import AgeGroups from "@/lib/models/AgeGroups";
 export async function GET(req, { params }) {
   const authResult = await protectApiRoute(req);
 
@@ -20,18 +21,29 @@ export async function GET(req, { params }) {
   await connectDB();
   const team = await Teams.findById(id).select("-__v").populate("age_groups", "age_group").populate({
     path: "club",
-    select: "name image league",
-    populate: {
-      path: "league",
-      model: "Leagues",
-      select: "label title image", // whatever fields you want
-    }
+    select: "name image age_groups league",
+    populate: [
+      {
+        path: "age_groups",
+        model: "AgeGroups",
+        select: "label age_group" // whatever fields you want
+      },
+      {
+        path: "league",
+        model: "Leagues",
+        select: "label title image", // whatever fields you want
+      }
+
+
+    ]
   }).populate("ground")
     .populate({
       path: "managers",
       select: "name profile_image",
     }).lean();
 
+
+    
   return NextResponse.json({
     success: true,
     message: "Welcome to the Team Detail Page!",

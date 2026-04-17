@@ -12,7 +12,7 @@ export async function GET(req,{ params }) {
   }
 
 const club_id = (await params).club_id;
-console.log(club_id);
+//console.log(club_id);
   
   // Otherwise, it means the user is authenticated
   await connectDB();
@@ -23,7 +23,7 @@ console.log(club_id);
 
   return NextResponse.json({
     success: true,
-    message: "Welcome to the Manager List!",
+    message: "Welcome to the Team list by club id List!",
     data: managers
 
 
