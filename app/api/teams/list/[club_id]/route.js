@@ -18,7 +18,7 @@ const club_id = (await params).club_id;
   await connectDB();
   const managers = await Teams.find({club:club_id},'name image').populate({
       path: "club",
-      select: "name image"
+      select: "name secretary_name secretary_website phone cwo_name cwo_phone cwo_email email image"
     }).select("-__v").lean();
 
   return NextResponse.json({

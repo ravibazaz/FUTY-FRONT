@@ -10,12 +10,11 @@ const nextConfig = {
       },
     ],
   },
-  // experimental: {
-  //   serverActions: {
-  //     bodySizeLimit: "20mb", // Increase limit here
-  //   },
-  //   globalNotFound: true,
-  // },
+  experimental: {
+    serverActions: {
+      bodySizeLimit: "5mb", // Increase limit here
+    },
+  },
 };
 
 export default nextConfig;

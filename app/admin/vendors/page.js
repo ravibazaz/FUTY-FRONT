@@ -120,7 +120,9 @@ export default function StoreTable() {
             <table id="example" className="table">
               <thead>
                 <tr>
-                  <th scope="col">Vendor Title</th>
+                  <th scope="col">Vendor Name</th>
+                  <th scope="col">Email</th>
+                  <th scope="col">Phone</th>
                   <th scope="col">Action</th>
                 </tr>
               </thead>
@@ -135,7 +137,8 @@ export default function StoreTable() {
                           {l.name}
                         </Link>
                       </td>
-                     
+                      <td className="text-nowrap user-active">{l.email}</td>
+                       <td className="text-nowrap user-active">{l.phone}</td>
 
                       <td className="text-nowrap">
                         <Link prefetch={false} className="text-green"

@@ -12,10 +12,10 @@ function SubmitButton() {
   const { pending } = useFormStatus();
   return (
     <>
-    <input className="btn-common-text mt-30 mb-30" disabled={pending} type="submit" value={pending ? "Adding" : "Submit"}></input>
-    <Link className="btn-common-text mt-30 mb-30 ps-3"  href="/admin/clubs" >Back</Link>
+      <input className="btn-common-text mt-30 mb-30" disabled={pending} type="submit" value={pending ? "Adding" : "Submit"}></input>
+      <Link className="btn-common-text mt-30 mb-30 ps-3" href="/admin/clubs" >Back</Link>
     </>
-    
+
   );
 }
 export default function NewGroundPage() {
@@ -139,6 +139,103 @@ export default function NewGroundPage() {
                     </div>
                   </div>
                 </div>
+
+
+                <div className="left-info-box">
+                  <div className="left-row row">
+                    <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
+                      <div className="label-text">
+                        <p className="mb-0">Club Website</p>
+                      </div>
+                    </div>
+                    <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
+                      <div className="info-text px-0">
+                        <p className="mb-0">
+                          <input className="form-control" name="secretary_website" type="text"></input>
+                          {state.errors?.secretary_website && (
+                            <span className="invalid-feedback" style={{ display: "block" }}>{state.errors.secretary_website}</span>
+                          )}
+                          {clientErrors.secretary_website && (
+                            <span className="invalid-feedback" style={{ display: "block" }} >{clientErrors.secretary_website}</span>
+                          )}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="left-info-box">
+                  <div className="left-row row">
+                    <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
+                      <div className="label-text">
+                        <p className="mb-0">CWO Name</p>
+                      </div>
+                    </div>
+                    <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
+                      <div className="info-text px-0">
+                        <p className="mb-0">
+                          <input className="form-control" name="cwo_name" type="text"></input>
+                          {state.errors?.cwo_name && (
+                            <span className="invalid-feedback" style={{ display: "block" }}>{state.errors.cwo_name}</span>
+                          )}
+                          {clientErrors.cwo_name && (
+                            <span className="invalid-feedback" style={{ display: "block" }} >{clientErrors.cwo_name}</span>
+                          )}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+
+                <div className="left-info-box">
+                  <div className="left-row row">
+                    <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
+                      <div className="label-text">
+                        <p className="mb-0">CWO Email</p>
+                      </div>
+                    </div>
+                    <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
+                      <div className="info-text px-0">
+                        <p className="mb-0">
+                          <input className="form-control" name="cwo_email" type="text"></input>
+                          {state.errors?.cwo_email && (
+                            <span className="invalid-feedback" style={{ display: "block" }}>{state.errors.cwo_email}</span>
+                          )}
+                          {clientErrors.cwo_email && (
+                            <span className="invalid-feedback" style={{ display: "block" }} >{clientErrors.cwo_email}</span>
+                          )}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+
+
+                <div className="left-info-box">
+                  <div className="left-row row">
+                    <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
+                      <div className="label-text">
+                        <p className="mb-0">CWO Phone</p>
+                      </div>
+                    </div>
+                    <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
+                      <div className="info-text px-0">
+                        <p className="mb-0">
+                          <input className="form-control" name="cwo_phone" type="text"></input>
+                          {state.errors?.cwo_phone && (
+                            <span className="invalid-feedback" style={{ display: "block" }}>{state.errors.cwo_phone}</span>
+                          )}
+                          {clientErrors.cwo_phone && (
+                            <span className="invalid-feedback" style={{ display: "block" }} >{clientErrors.cwo_phone}</span>
+                          )}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
 
                 <div className="left-info-box">
                   <div className="left-row row">

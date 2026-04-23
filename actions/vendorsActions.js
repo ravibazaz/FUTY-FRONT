@@ -86,7 +86,7 @@ export async function updateVendor(id, prevState, formData) {
   if (!result.success) {
     return { success: false, errors: result.error.flatten().fieldErrors };
   }
-  const { name, content, link, date, time, end_date, end_time } = result.data;
+  const { name, content, link,phone,email ,date, time, end_date, end_time } = result.data;
   const imageFile = formData.get("image");
     const pages = formData.getAll("pages");
   const startAt = new Date(`${date}T${time}:00`);
@@ -138,6 +138,8 @@ export async function updateVendor(id, prevState, formData) {
       name,
       content,
       link,
+      email,
+      phone,
       startAt,
       date,
       time,
@@ -154,6 +156,8 @@ export async function updateVendor(id, prevState, formData) {
       name,
       content,
       link,
+       email,
+      phone,
       startAt,
       date,
       time,

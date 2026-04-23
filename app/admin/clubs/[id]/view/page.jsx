@@ -12,7 +12,7 @@ import TeamTable from "@/components/TeamTable";
 import { Suspense } from 'react';
 import dynamic from 'next/dynamic';
 const DynamicComponentShowImagesWithAlertClick = dynamic(() => import('@/components/ShowImagesWithAlertClick'), {
-  loading: () => <p>Loading component...</p>, // The fallback UI
+    loading: () => <p>Loading component...</p>, // The fallback UI
 });
 import FriendliesTable from "@/components/FriendliesTable";
 export default async function ViewFansPage({ params }) {
@@ -58,33 +58,33 @@ export default async function ViewFansPage({ params }) {
 
 
     const friendlies_this_club = await Friendlies.find()
-  .sort({ date: -1 })
-  .populate({
-    path: "team_id",
-    match: { club: club._id }, // 👈 filter by club
-    select: "label name image club",
-    populate: {
-      path: "club",
-      select: "label name image league",
-      populate: {
-        path: "league",
-        select: "label title",
-      },
-    },
-  })
-  .populate("manager_id")
-  .populate("ground_id")
-  .populate("league_id")
-  .select("-__v")
-  .lean();
+        .sort({ date: -1 })
+        .populate({
+            path: "team_id",
+            match: { club: club._id }, // 👈 filter by club
+            select: "label name image club",
+            populate: {
+                path: "club",
+                select: "label name image league",
+                populate: {
+                    path: "league",
+                    select: "label title",
+                },
+            },
+        })
+        .populate("manager_id")
+        .populate("ground_id")
+        .populate("league_id")
+        .select("-__v")
+        .lean();
 
-// remove non-matching teams
-const filteredFriendlies = friendlies_this_club.filter(
-  f => f.team_id !== null
-);
+    // remove non-matching teams
+    const filteredFriendlies = friendlies_this_club.filter(
+        f => f.team_id !== null
+    );
 
 
-       //console.log(friendlies_this_club);
+    //console.log(friendlies_this_club);
 
 
     return (
@@ -127,6 +127,25 @@ const filteredFriendlies = friendlies_this_club.filter(
                                     </div>
                                 </div>
                             </div>
+
+                            <div className="left-info-box">
+                                <div className="left-row row">
+                                    <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
+                                        <div className="label-text">
+                                            <p className="mb-0">CWO Name</p>
+                                        </div>
+                                    </div>
+                                    <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
+                                        <div className="info-text">
+                                            <p className="mb-0">
+                                                <a className="text-primary text-decoration-none" href="#">{club.cwo_name}</a>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
                             <div className="left-info-box">
                                 <div className="left-row row">
                                     <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
@@ -228,6 +247,14 @@ const filteredFriendlies = friendlies_this_club.filter(
                         <div className="single-body-right col-lg-12 col-xl-5">
                             <div className="right-info-box">
                                 <h2 className="info-box-title fs-14 fw-bold mb-30">Contact Details</h2>
+
+                                <div className="right-info mb-30">
+                                    <p className="mb-0 fs-14 d-flex align-items-center gap-30">
+                                        <span className="info-span">Club Website <a className="text-decoration-none text-body underline-hover" href={'mailto:' + club.secretary_website}>{club.secretary_website}</a></span>
+                                    </p>
+                                </div>
+
+
                                 <div className="right-info mb-30">
                                     <p className="mb-0 fs-14 d-flex align-items-center gap-30">
                                         <span className="info-span">Secretary E-mail: <a className="text-decoration-none text-body underline-hover" href={'mailto:' + club.email}>{club.email}</a></span>
@@ -236,6 +263,19 @@ const filteredFriendlies = friendlies_this_club.filter(
                                 <div className="right-info mb-30">
                                     <p className="mb-0 fs-14 d-flex align-items-center gap-30">
                                         <span className="info-span">Secretary Tel: <a className="text-decoration-none text-body underline-hover" href={'tel:' + club.phone}>{club.phone}</a></span>
+                                        <span className="user-active">Verified</span>
+                                    </p>
+                                </div>
+                                <div className="right-info mb-30">
+                                    <p className="mb-0 fs-14 d-flex align-items-center gap-30">
+                                        <span className="info-span">CWO Email: <a className="text-decoration-none text-body underline-hover" href={'mailto:' + club.cwo_email}>{club.cwo_email}</a></span>
+                                       
+                                    </p>
+                                </div>
+
+                                <div className="right-info mb-30">
+                                    <p className="mb-0 fs-14 d-flex align-items-center gap-30">
+                                        <span className="info-span">CWO Phone: <a className="text-decoration-none text-body underline-hover" href={'tel:' + club.cwo_phone}>{club.cwo_phone}</a></span>
                                         <span className="user-active">Verified</span>
                                     </p>
                                 </div>

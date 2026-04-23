@@ -2,14 +2,12 @@ import { NextResponse } from "next/server";
 import { protectApiRoute } from "@/lib/middleware";
 import { connectDB } from '@/lib/db';
 import Users from '@/lib/models/Users';
-import Adverts from "@/lib/models/Adverts";
 import Teams from "@/lib/models/Teams";
 import Clubs from "@/lib/models/Clubs";
 import Leagues from "@/lib/models/Leagues";
-import Friendlies from "@/lib/models/Friendlies";
-import Grounds from "@/lib/models/Grounds";
 import AgeGroups from "@/lib/models/AgeGroups";
-
+import Adverts from "@/lib/models/Adverts";
+import Friendlies from "@/lib/models/Friendlies";
 export async function GET(req) {
   const authResult = await protectApiRoute(req);
 
@@ -20,256 +18,21 @@ export async function GET(req) {
 
   const { user } = authResult;
 
-  // Otherwise, it means the user is authenticated
-  await connectDB();
-
   const todayStart = new Date();
   todayStart.setHours(0, 0, 0, 0);
 
-  const now = new Date();
 
-  // Monday start
-  const startOfWeek = new Date(now);
-  startOfWeek.setDate(now.getDate() - ((now.getDay() + 6) % 7));
-  startOfWeek.setHours(0, 0, 0, 0);
-
-  // Sunday end
-  const endOfWeek = new Date(startOfWeek);
-  endOfWeek.setDate(startOfWeek.getDate() + 6);
-  endOfWeek.setHours(23, 59, 59, 999);
-
-  //const managers = await Users.find({ account_type: "Manager" }, "profile_image name surname").lean();
+  // Otherwise, it means the user is authenticated
+  await connectDB();
 
   const [random_advert] = await Adverts.aggregate([
     { $sample: { size: 1 } }, // pick 1 random doc
     { $project: { name: 1, image: 1, link: 1, content: 1 } } // select fields
   ]);
 
-
-  const my_league = await Leagues.findOne({ _id: user.team_id?.club?.league?._id }, "title image").populate('age_groups').lean();
-
-  const my_league_forrandom_team = await Leagues.findOne({ _id: user.team_id?.club?.league?._id }, "title image age_groups").lean();
-
-  const [random_team] = await Teams.aggregate([
-    {
-      $match: {
-        age_groups: { $in: my_league_forrandom_team.age_groups }
-      }
-    },
-    // 1️⃣ Pick 1 random team
-    { $sample: { size: 1 } },
-
-    // 2️⃣ Lookup Ground
-    {
-      $lookup: {
-        from: "grounds",            // collection name (plural, lowercase)
-        localField: "ground",
-        foreignField: "_id",
-        as: "ground"
-      }
-    },
-    { $unwind: { path: "$ground", preserveNullAndEmptyArrays: true } },
-
-    // 3️⃣ Lookup Club
-    {
-      $lookup: {
-        from: "clubs",
-        localField: "club",
-        foreignField: "_id",
-        as: "club"
-      }
-    },
-    { $unwind: { path: "$club", preserveNullAndEmptyArrays: true } },
-
-    // 4️⃣ Select required fields only
-    {
-      $project: {
-        name: 1,
-        image: 1,
-        link: 1,
-        content: 1,
-
-        "ground._id": 1,
-        "ground.name": 1,
-        "ground.images": 1,
-
-        "club._id": 1,
-        "club.name": 1,
-        "club.image": 1
-      }
-    }
-  ]);
-
-
-
-  const [random_friendly] = await Friendlies.aggregate([
-    // 1️⃣ Pick 1 random team
-    { $sample: { size: 1 } },
-
-    // 2️⃣ Lookup Ground
-    {
-      $lookup: {
-        from: "grounds",            // collection name (plural, lowercase)
-        localField: "ground_id",
-        foreignField: "_id",
-        as: "ground_id"
-      }
-    },
-    { $unwind: { path: "$ground_id", preserveNullAndEmptyArrays: true } },
-
-    // 3️⃣ Lookup manger
-    {
-      $lookup: {
-        from: "users",
-        localField: "manager_id",
-        foreignField: "_id",
-        as: "manager_id"
-      }
-    },
-    { $unwind: { path: "$manager_id", preserveNullAndEmptyArrays: true } },
-
-
-    // 3️⃣ Lookup league_id
-    {
-      $lookup: {
-        from: "leagues",
-        localField: "league_id",
-        foreignField: "_id",
-        as: "league_id"
-      }
-    },
-    { $unwind: { path: "$league_id", preserveNullAndEmptyArrays: true } },
-
-
-    // 3️⃣ Lookup league_id
-    {
-      $lookup: {
-        from: "teams",
-        localField: "team_id",
-        foreignField: "_id",
-        as: "team_id"
-      }
-    },
-    { $unwind: { path: "$team_id", preserveNullAndEmptyArrays: true } },
-
-
-    // // 4️⃣ Select required fields only
-    // {
-    //   $project: {
-    //     name: 1,
-    //     date: 1,
-    //     time: 1,
-    //     "ground_id._id": 1,
-    //     "ground_id.name": 1,
-    //     "ground_id.images": 1,
-
-    //     "manager_id._id": 1,
-    //     "manager_id.name": 1,
-    //     "league_id._id": 1,
-    //     "league_id.title": 1,
-    //     "team_id._id": 1,
-    //     "team_id.name": 1
-
-    //   }
-    // }
-  ]);
-
-
-
-  const my_team = await Teams.findOne({ _id: user.team_id._id }, "name image").populate('ground').lean();
-  const my_club = await Clubs.findOne({ _id: user.team_id?.club?._id }, "name image").lean();
-
-
-  //console.log(my_league.age_groups);
-
-
-  const show_next_applicable_friendly_created_by_others_recent_date_limit_one = await Friendlies.findOne({
-    created_by_user: { $ne: user._id },
-    accepted_by_user: { $exists: false, $eq: null },
-  }).sort({ date: -1 }).populate('team_id').populate('manager_id').populate('ground_id').populate('league_id').select("-__v").populate({
-    path: "created_by_user",
-    select: "name team_id",
-    populate: {
-      path: "team_id",
-      model: "Teams",
-      select: "label name image club", // whatever fields you want
-      populate: {
-        path: "club",
-        model: "Clubs",
-        select: "label name image league", // whatever fields you want
-        populate: {
-          path: "league",
-          model: "Leagues",
-          select: "label title", // whatever fields you want
-        }
-      }
-    }
-  }).populate({
-    path: "accepted_by_user",
-    select: "name team_id",
-    populate: {
-      path: "team_id",
-      model: "Teams",
-      select: "label name image club", // whatever fields you want
-      populate: {
-        path: "club",
-        model: "Clubs",
-        select: "label name image league", // whatever fields you want
-        populate: {
-          path: "league",
-          model: "Leagues",
-          select: "label title", // whatever fields you want
-        }
-      }
-    }
-  }).lean();
-
-
-  const the_managers_next_upcomng_schedule_friendly_recent_date_limit_one = await Friendlies.findOne({
-    date: {
-      $gte: todayStart
-    },
-    created_by_user: user._id,
-  }).sort({ date: -1 }).populate('team_id').populate('manager_id').populate('ground_id').populate('league_id').select("-__v").populate({
-    path: "created_by_user",
-    select: "name team_id",
-    populate: {
-      path: "team_id",
-      model: "Teams",
-      select: "label name image club", // whatever fields you want
-      populate: {
-        path: "club",
-        model: "Clubs",
-        select: "label name image league", // whatever fields you want
-        populate: {
-          path: "league",
-          model: "Leagues",
-          select: "label title", // whatever fields you want
-        }
-      }
-    }
-  }).populate({
-    path: "accepted_by_user",
-    select: "name team_id",
-    populate: {
-      path: "team_id",
-      model: "Teams",
-      select: "label name image club", // whatever fields you want
-      populate: {
-        path: "club",
-        model: "Clubs",
-        select: "label name image league", // whatever fields you want
-        populate: {
-          path: "league",
-          model: "Leagues",
-          select: "label title", // whatever fields you want
-        }
-      }
-    }
-  }).lean();
-
   let league_friendly_by_priority1 = '';
   let league_friendly_by_priority2 = '';
+  const fan_manger_id = user?.fan_manger_id;
   const userLeagueId = user?.team_id?.club?.league?._id;
 
   const randomLeague = await Leagues.aggregate([
@@ -284,7 +47,7 @@ export async function GET(req) {
       $gte: todayStart
     },
     league_id: userLeagueId,
-    created_by_user: user._id,
+    created_by_user: fan_manger_id,
   }).sort({ date: -1 }).populate('team_id').populate('manager_id').populate('ground_id').populate('league_id').select("-__v").populate({
     path: "created_by_user",
     select: "name team_id",
@@ -334,7 +97,7 @@ export async function GET(req) {
         $gte: todayStart
       },
       league_id: userLeagueId,
-      created_by_user: { $ne: user._id },
+      created_by_user: { $ne: fan_manger_id },
     }).sort({ date: -1 }).populate('team_id').populate('manager_id').populate('ground_id').populate('league_id').select("-__v").populate({
       path: "created_by_user",
       select: "name team_id",
@@ -464,7 +227,7 @@ export async function GET(req) {
     },
     _id: { $ne: league_friendly_by_priority1._id },
     league_id: userLeagueId,
-    created_by_user: user._id,
+    created_by_user: fan_manger_id,
   }).sort({ date: -1 }).populate('team_id').populate('manager_id').populate('ground_id').populate('league_id').select("-__v").populate({
     path: "created_by_user",
     select: "name team_id",
@@ -515,7 +278,7 @@ export async function GET(req) {
       },
       league_id: userLeagueId,
       _id: { $ne: league_friendly_by_priority1._id },
-      created_by_user: { $ne: user._id },
+      created_by_user: { $ne: fan_manger_id },
     }).sort({ date: -1 }).populate('team_id').populate('manager_id').populate('ground_id').populate('league_id').select("-__v").populate({
       path: "created_by_user",
       select: "name team_id",
@@ -566,7 +329,7 @@ export async function GET(req) {
       date: { $gte: todayStart },
 
       // optional: exclude user league
-      ...(userLeagueId && { league_id: { $ne: userLeagueId },_id: { $ne: league_friendly_by_priority1._id } })
+      ...(userLeagueId && { league_id: { $ne: userLeagueId }, _id: { $ne: league_friendly_by_priority1._id } })
     };
 
     // 2️⃣ Get only leagues that actually have friendlies
@@ -642,46 +405,137 @@ export async function GET(req) {
 
 
 
-  // const filtered = the_managers_league.filter(f => {
-  //   const leagueId = f.created_by_user?.team_id?.club?.league?._id;
-  //   return leagueId && String(leagueId) === String(userLeagueId);
-  // });
+  // console.log(fan_manger_id);
 
-  // const league_friendly_by_priority = filtered[0] || null;
+  const show_next_applicable_friendly_created_by_others_recent_date_limit_one = await Friendlies.findOne({
+    created_by_user: { $ne: fan_manger_id },
+    accepted_by_user: { $exists: false, $eq: null },
+  }).sort({ date: -1 }).populate('team_id').populate('manager_id').populate('ground_id').populate('league_id').select("-__v").populate({
+    path: "created_by_user",
+    select: "name team_id",
+    populate: {
+      path: "team_id",
+      model: "Teams",
+      select: "label name image club", // whatever fields you want
+      populate: {
+        path: "club",
+        model: "Clubs",
+        select: "label name image league", // whatever fields you want
+        populate: {
+          path: "league",
+          model: "Leagues",
+          select: "label title", // whatever fields you want
+        }
+      }
+    }
+  }).populate({
+    path: "accepted_by_user",
+    select: "name team_id",
+    populate: {
+      path: "team_id",
+      model: "Teams",
+      select: "label name image club", // whatever fields you want
+      populate: {
+        path: "club",
+        model: "Clubs",
+        select: "label name image league", // whatever fields you want
+        populate: {
+          path: "league",
+          model: "Leagues",
+          select: "label title", // whatever fields you want
+        }
+      }
+    }
+  }).lean();
 
-  const friendlies_posted_in_this_week = await Friendlies.countDocuments({
+
+
+  const the_managers_next_upcomng_schedule_friendly_recent_date_limit_one = await Friendlies.findOne({
     date: {
-      $gte: startOfWeek,
-      $lte: endOfWeek,
+      $gte: todayStart
     },
-  });
+    created_by_user: fan_manger_id,
+  }).sort({ date: -1 }).populate('team_id').populate('manager_id').populate('ground_id').populate('league_id').select("-__v").populate({
+    path: "created_by_user",
+    select: "name team_id",
+    populate: {
+      path: "team_id",
+      model: "Teams",
+      select: "label name image club", // whatever fields you want
+      populate: {
+        path: "club",
+        model: "Clubs",
+        select: "label name image league", // whatever fields you want
+        populate: {
+          path: "league",
+          model: "Leagues",
+          select: "label title", // whatever fields you want
+        }
+      }
+    }
+  }).populate({
+    path: "accepted_by_user",
+    select: "name team_id",
+    populate: {
+      path: "team_id",
+      model: "Teams",
+      select: "label name image club", // whatever fields you want
+      populate: {
+        path: "club",
+        model: "Clubs",
+        select: "label name image league", // whatever fields you want
+        populate: {
+          path: "league",
+          model: "Leagues",
+          select: "label title", // whatever fields you want
+        }
+      }
+    }
+  }).lean();
 
-  const friendlies_accepted_in_this_week = await Friendlies.countDocuments({
-    accepted_by_user: { $exists: true, $ne: null },
-    date: {
-      $gte: startOfWeek,
-      $lte: endOfWeek,
-    },
-  });
+
+  const players = await Users.findOne({ _id: user._id }, "profile_image name surname").populate({
+    path: "fan_manger_id",
+    select: "name team_id",
+    populate: {
+      path: "team_id",
+      model: "Teams",
+      select: "label name image club age_groups ground",
+      populate: [
+        {
+          path: "club",
+          model: "Clubs",
+          select: "label name image league",
+          populate: {
+            path: "league",
+            model: "Leagues",
+            select: "label title image"
+          }
+        },
+        {
+          path: "age_groups",
+          model: "AgeGroups", // replace with your actual model name
+          select: "label age_group" // whatever fields you want
+        },
+        {
+          path: "ground",
+          model: "Grounds", // replace with your actual model name
+          select: "label name images" // whatever fields you want
+        }
+      ]
+    }
+  }).lean();
 
   return NextResponse.json({
     success: true,
-    message: "Welcome to the Manager Dashboard!",
+    message: "Welcome to the Fan Dashboard!",
     data: {
+      fan_profile: players,
       random_advert: random_advert,
-      my_team: my_team,
-      my_club: my_club,
-      my_league: my_league,
-      random_team: random_team,
       show_next_applicable_friendly_created_by_others_recent_date_limit_one: show_next_applicable_friendly_created_by_others_recent_date_limit_one,
       the_managers_next_upcomng_schedule_friendly_recent_date_limit_one: the_managers_next_upcomng_schedule_friendly_recent_date_limit_one,
       league_friendly_by_priority1: league_friendly_by_priority1,
       league_friendly_by_priority2: league_friendly_by_priority2,
-      random_friendly: random_friendly,
-      activity: {
-        friendlies_posted_in_this_week: friendlies_posted_in_this_week,
-        friendlies_accepted_in_this_week: friendlies_accepted_in_this_week
-      }
-    },
+    }
   });
 }

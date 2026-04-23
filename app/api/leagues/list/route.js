@@ -25,7 +25,7 @@ export async function GET(req) {
 
 
   const total = await Leagues.countDocuments(query);
-  const leagues = await Leagues.find(query, "title image").populate('age_groups', 'age_group').skip(skip)
+  const leagues = await Leagues.find(query).populate('age_groups', 'age_group').skip(skip)
     .limit(limit)
     .sort({ _id: -1 }) // optional sorting
     .lean();;

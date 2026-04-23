@@ -9,6 +9,7 @@ import path from "path";
 import { promises as fs } from "fs";
 import PlayerInvitations from "@/lib/models/PlayerInvitations";
 import FanInvitations from "@/lib/models/FanInvitations";
+import ManagerInvitations from "@/lib/models/ManagerInvitations";
 export const UserSchema = z.object({
   email: z.string().nonempty("Email is required").email("Invalid email format"),
   password: z.string().nonempty("Password is required").min(7, "Password must be at least 7 character"),
@@ -48,6 +49,7 @@ export async function POST(req) {
     const fcmtoken = data.fcmtoken;
     let palyer_manger_id = null;
     let fan_manger_id = null;
+    let team_id = null;
 
 
     //console.log(data.invitation_code);
@@ -102,6 +104,24 @@ export async function POST(req) {
       }
       fan_manger_id = existing.manager_id;
     }
+
+    if (account_type == "Manager" && invitation_code != '') {
+      const existing = await ManagerInvitations.findOne({ manager_email: result.data.email, manager_invitation_code: result.data.invitation_code });
+      //console.log(existing);
+
+      if (!existing) {
+        return NextResponse.json(
+          {
+            success: false,
+            message: "Wrong invitation code or email. Please check again.",
+          },
+          { status: 200 }
+        );
+      }
+      team_id = existing.team_id;
+    }
+
+
     const existing = await User.findOne({ email: result.data.email });
     if (existing) {
       return NextResponse.json(
@@ -130,6 +150,7 @@ export async function POST(req) {
       password: hashedPassword,
       palyer_manger_id: palyer_manger_id,
       fan_manger_id: fan_manger_id,
+      team_id: team_id,
       name,
       surname,
       telephone,

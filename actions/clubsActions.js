@@ -64,7 +64,7 @@ export async function updateClub(id, prevState, formData) {
   if (!result.success) {
     return { success: false, errors: result.error.flatten().fieldErrors };
   }
-  const { name, secretary_name, phone, email,league } = result.data;
+  const { name, secretary_name,secretary_website, phone,cwo_name,cwo_email,cwo_phone, email,league } = result.data;
   const imageFile = formData.get("image");
   const age_groups = formData.getAll("age_groups");
 
@@ -115,6 +115,8 @@ export async function updateClub(id, prevState, formData) {
     const updateData = {
       name,
       secretary_name,
+      secretary_website,
+      cwo_name,cwo_email,cwo_phone,
       phone,
       email,
       league,
@@ -127,6 +129,8 @@ export async function updateClub(id, prevState, formData) {
     const updateData = {
       name,
       secretary_name,
+      secretary_website,
+      cwo_name,cwo_email,cwo_phone,
       phone,
       league,
       age_groups: age_groups,

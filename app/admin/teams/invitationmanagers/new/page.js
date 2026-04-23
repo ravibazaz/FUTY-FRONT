@@ -259,7 +259,7 @@ export default function NewFanPage() {
                                     <div className="left-row row">
                                         <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
                                             <div className="label-text mb-0">
-                                                <p className="mb-0">Nickname</p>
+                                                <p className="mb-0">Nickname (Optional)</p>
                                             </div>
                                         </div>
                                         <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
@@ -276,7 +276,7 @@ export default function NewFanPage() {
                                     <div className="left-row row">
                                         <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
                                             <div className="label-text mb-0">
-                                                <p className="mb-0">Address</p>
+                                                <p className="mb-0">Address (Optional)</p>
                                             </div>
                                         </div>
                                         <div className="left-info-col col-md-7 col-lg-8 col-xl-8">

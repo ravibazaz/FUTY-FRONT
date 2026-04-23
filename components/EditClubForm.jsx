@@ -11,10 +11,10 @@ function SubmitButton() {
   const { pending } = useFormStatus();
   return (
     <>
-    <input className="btn-common-text mt-30 mb-30" disabled={pending} type="submit" value={pending ? "Editing" : "Save"}></input>
-    <Link className="btn-common-text mt-30 mb-30 ps-3"  href="/admin/clubs" >Back</Link>
+      <input className="btn-common-text mt-30 mb-30" disabled={pending} type="submit" value={pending ? "Editing" : "Save"}></input>
+      <Link className="btn-common-text mt-30 mb-30 ps-3" href="/admin/clubs" >Back</Link>
     </>
-    
+
   );
 }
 
@@ -151,6 +151,100 @@ export default function EditClubForm({ club }) {
                 <div className="left-row row">
                   <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
                     <div className="label-text">
+                      <p className="mb-0">Club Website</p>
+                    </div>
+                  </div>
+                  <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
+                    <div className="info-text px-0">
+                      <p className="mb-0">
+                        <input className="form-control" name="secretary_website" defaultValue={club.secretary_website} type="text" ></input>
+                        {clientErrors.secretary_website && (
+                          <span className="invalid-feedback" style={{ display: "block" }}>
+                            {clientErrors.secretary_website}
+                          </span>
+                        )}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+
+              <div className="left-info-box">
+                <div className="left-row row">
+                  <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
+                    <div className="label-text">
+                      <p className="mb-0">CWO Name</p>
+                    </div>
+                  </div>
+                  <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
+                    <div className="info-text px-0">
+                      <p className="mb-0">
+                        <input className="form-control" name="cwo_name" defaultValue={club.cwo_name} type="text" ></input>
+                        {clientErrors.cwo_name && (
+                          <span className="invalid-feedback" style={{ display: "block" }}>
+                            {clientErrors.cwo_name}
+                          </span>
+                        )}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+
+              <div className="left-info-box">
+                <div className="left-row row">
+                  <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
+                    <div className="label-text">
+                      <p className="mb-0">CWO Email</p>
+                    </div>
+                  </div>
+                  <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
+                    <div className="info-text px-0">
+                      <p className="mb-0">
+                        <input className="form-control" name="cwo_email" defaultValue={club.cwo_email} type="text" ></input>
+                        {clientErrors.cwo_email && (
+                          <span className="invalid-feedback" style={{ display: "block" }}>
+                            {clientErrors.cwo_email}
+                          </span>
+                        )}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+              <div className="left-info-box">
+                <div className="left-row row">
+                  <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
+                    <div className="label-text">
+                      <p className="mb-0">CWO Phone</p>
+                    </div>
+                  </div>
+                  <div className="left-info-col col-md-7 col-lg-8 col-xl-8">
+                    <div className="info-text px-0">
+                      <p className="mb-0">
+                        <input className="form-control" name="cwo_phone" defaultValue={club.cwo_phone} type="text" ></input>
+                        {clientErrors.cwo_phone && (
+                          <span className="invalid-feedback" style={{ display: "block" }}>
+                            {clientErrors.cwo_phone}
+                          </span>
+                        )}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+              <div className="left-info-box">
+                <div className="left-row row">
+                  <div className="left-label-col col-md-5 col-lg-4 col-xl-4">
+                    <div className="label-text">
                       <p className="mb-0">Secretary Name</p>
                     </div>
                   </div>
@@ -262,7 +356,7 @@ export default function EditClubForm({ club }) {
                           {ageGroups.map((agegroup) => (
                             <div className="form-check" key={agegroup._id}>
                               <input className="form-check-input" name="age_groups"
-defaultChecked={selectedage.includes(agegroup._id)}
+                                defaultChecked={selectedage.includes(agegroup._id)}
                                 type="checkbox" value={agegroup._id} ></input>
                               <label className="form-check-label">
                                 {agegroup.age_group}

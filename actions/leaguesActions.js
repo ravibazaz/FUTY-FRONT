@@ -69,7 +69,7 @@ export async function updateLeague(id, prevState, formData) {
   if (!result.success) {
     return { success: false, errors: result.error.flatten().fieldErrors };
   }
-  const { title, content, c_name, s_name, email, telephone } = result.data;
+  const { title, content, c_name, s_name, email, p_name, website, telephone } = result.data;
   const imageFile = formData.get("image");
   const age_groups = formData.getAll("age_groups");
 
@@ -122,6 +122,7 @@ export async function updateLeague(id, prevState, formData) {
       content,
       c_name,
       s_name,
+      p_name, website,
       email,
       telephone,
       age_groups: age_groups,
@@ -135,6 +136,7 @@ export async function updateLeague(id, prevState, formData) {
       content,
       c_name,
       s_name,
+      p_name, website,
       email,
       telephone,
       age_groups: age_groups
