@@ -33,9 +33,44 @@ export async function GET(req) {
   let league_friendly_by_priority1 = '';
   let league_friendly_by_priority2 = '';
   const fan_manger_id = user?.fan_manger_id;
-  const userLeagueId = user?.team_id?.club?.league?._id;
 
-  const randomLeague = await Leagues.aggregate([
+
+  const players = await Users.findOne({ _id: user._id }, "profile_image name surname").populate({
+    path: "fan_manger_id",
+    select: "name team_id",
+    populate: {
+      path: "team_id",
+      model: "Teams",
+      select: "label name image club age_groups ground",
+      populate: [
+        {
+          path: "club",
+          model: "Clubs",
+          select: "label name image league",
+          populate: {
+            path: "league",
+            model: "Leagues",
+            select: "label title image"
+          }
+        },
+        {
+          path: "age_groups",
+          model: "AgeGroups", // replace with your actual model name
+          select: "label age_group" // whatever fields you want
+        },
+        {
+          path: "ground",
+          model: "Grounds", // replace with your actual model name
+          select: "label name images" // whatever fields you want
+        }
+      ]
+    }
+  }).lean();
+
+
+  const userLeagueId = players?.fan_manger_id?.team_id?.club?.league?._id;
+  //console.log(userLeagueId);
+    const randomLeague = await Leagues.aggregate([
     { $match: { _id: { $ne: userLeagueId } } },
     { $sample: { size: 1 } },
     { $project: { _id: 1 } }
@@ -494,37 +529,7 @@ export async function GET(req) {
   }).lean();
 
 
-  const players = await Users.findOne({ _id: user._id }, "profile_image name surname").populate({
-    path: "fan_manger_id",
-    select: "name team_id",
-    populate: {
-      path: "team_id",
-      model: "Teams",
-      select: "label name image club age_groups ground",
-      populate: [
-        {
-          path: "club",
-          model: "Clubs",
-          select: "label name image league",
-          populate: {
-            path: "league",
-            model: "Leagues",
-            select: "label title image"
-          }
-        },
-        {
-          path: "age_groups",
-          model: "AgeGroups", // replace with your actual model name
-          select: "label age_group" // whatever fields you want
-        },
-        {
-          path: "ground",
-          model: "Grounds", // replace with your actual model name
-          select: "label name images" // whatever fields you want
-        }
-      ]
-    }
-  }).lean();
+
 
   return NextResponse.json({
     success: true,
