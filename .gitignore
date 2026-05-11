@@ -40,7 +40,7 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 futy-d1fc9-firebase-adminsdk-fbsvc-f64b92cf17.json
-/doc
+# /doc
 /uploads
 /public/uploads
 /live
