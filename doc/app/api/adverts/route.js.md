@@ -2,9 +2,9 @@
 
 ## Purpose
 
-Returns active adverts for the FUTY application.
+Returns active adverts for public or admin consumption.
 
-## File
+## File Location
 
 `app/api/adverts/route.js`
 
@@ -18,28 +18,28 @@ No
 
 ## Behavior
 
-- Connects to MongoDB using `connectDB()`.
-- Queries `Adverts` collection for `isActive: true`.
-- Returns JSON with the matching adverts.
+- Connects to the database using `connectDB()` whenever present.
+- Reads advert data from the `Adverts` collection.
 
-## Request
+## Query Parameters
 
-- No request body.
+- None
+
+## Request Body
+
+- None
 
 ## Response Example
 
 ```json
 {
-  "adverts": [ /* active adverts */ ]
+  "adverts": [ ... ]
 }
 ```
 
-## Implementation Notes
+## Imports
 
 - `import { connectDB } from '@/lib/db';`
 - `import Adverts from '@/lib/models/Adverts';`
 
 ## Notes
-
-- This is the public adverts endpoint for active adverts.
-- It is used by the admin adverts listing and public advert consumption.

@@ -1,0 +1,58 @@
+# POST /api/chat/send
+
+## Purpose
+
+Returns API data for the endpoint.
+
+## File Location
+
+`app/api/chat/send/route.js`
+
+## HTTP Method
+
+POST
+
+## Authentication Required
+
+Yes
+
+## Behavior
+
+- Connects to the database using `connectDB()` whenever present.
+- Protects the route with `protectApiRoute(req)` and returns authentication errors.
+- Reads JSON request body with `await req.json()`.
+- Returns structured JSON response to the client.
+- Looks up a specific document by its ID.
+
+## Query Parameters
+
+- None
+
+## Request Body
+
+- Request JSON body
+
+## Response Example
+
+```json
+{
+  "success": true,
+  "message": "...",
+  "data": ...
+}
+```
+
+## Imports
+
+- `import { chatManager } from "@/lib/chatManager";`
+- `import { connectDB } from "@/lib/db";`
+- `import Message from "@/lib/models/Message";`
+- `import Conversation from "@/lib/models/Conversation";`
+- `import { NextResponse } from "next/server";`
+- `import { protectApiRoute } from "@/lib/middleware";`
+- `import { getChatRoom } from "@/lib/chatHelpers";`
+- `import Users from "@/lib/models/Users";`
+
+## Notes
+
+- This endpoint is protected and requires valid authentication.

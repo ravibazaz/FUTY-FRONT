@@ -2,9 +2,9 @@
 
 ## Purpose
 
-Returns a single store record by ID after authentication.
+Returns API data for the endpoint.
 
-## File
+## File Location
 
 `app/api/adverts/[id]/route.js`
 
@@ -18,35 +18,36 @@ Yes
 
 ## Behavior
 
-- Protects the route with `protectApiRoute(req)`.
-- Reads the path parameter `id`.
-- Connects to MongoDB using `connectDB()`.
-- Queries `Stores.findById(id)` excluding `__v`.
-- Returns store details in the response data.
+- Connects to the database using `connectDB()` whenever present.
+- Protects the route with `protectApiRoute(req)` and returns authentication errors.
+- Returns structured JSON response to the client.
+- Looks up a specific document by its ID.
 
-## Request
+## Query Parameters
 
-- No request body.
+- None
+
+## Request Body
+
+- None
 
 ## Response Example
 
 ```json
 {
   "success": true,
-  "message": "Welcome to the Product Details!",
-  "data": { /* store data */ }
+  "message": "...",
+  "data": ...
 }
 ```
 
-## Implementation Notes
+## Imports
 
 - `import { NextResponse } from "next/server";`
 - `import { protectApiRoute } from "@/lib/middleware";`
 - `import { connectDB } from '@/lib/db';`
 - `import Stores from "@/lib/models/Stores";`
-- Uses `Stores` collection, not `Adverts`, for the requested ID.
 
 ## Notes
 
-- Protected route requiring valid auth token/cookie.
-- Useful for authenticated store detail and category filters.
+- This endpoint is protected and requires valid authentication.

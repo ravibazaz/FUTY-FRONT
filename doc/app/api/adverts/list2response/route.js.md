@@ -2,9 +2,9 @@
 
 ## Purpose
 
-Returns a random selection of currently active adverts for Manager and Friendly pages.
+Returns a random selection of adverts for Manager or Friendly pages.
 
-## File
+## File Location
 
 `app/api/adverts/list2response/route.js`
 
@@ -18,35 +18,34 @@ No
 
 ## Behavior
 
-- Connects to MongoDB using `connectDB()`.
-- Uses aggregation to match adverts where `pages` includes `Manager` or `Friendly`.
-- Filters adverts by current date between `startAt` and `endAt`.
-- Samples 2 random adverts.
-- Projects a limited set of fields.
-- Returns success message and data array.
+- Connects to the database using `connectDB()` whenever present.
+- Parses query parameters from the request URL.
+- Returns structured JSON response to the client.
+- Uses MongoDB aggregation for advanced filtering.
 
-## Request
+## Query Parameters
 
-- No request body.
-- Optional query parameters:
-  - `q`
+- `q`
+- `page`
+
+## Request Body
+
+- None
 
 ## Response Example
 
 ```json
 {
   "success": true,
-  "message": "Welcome to the Advertisement  List!",
-  "data": [ /* random manager/friendly adverts */ ]
+  "message": "...",
+  "data": ...
 }
 ```
 
-## Implementation Notes
+## Imports
 
 - `import { NextResponse } from "next/server";`
 - `import { connectDB } from '@/lib/db';`
 - `import Adverts from "@/lib/models/Adverts";`
 
 ## Notes
-
-- Designed to provide a small random selection of active Manager/Friendly adverts.
