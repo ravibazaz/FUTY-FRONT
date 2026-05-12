@@ -1,13 +1,30 @@
-# Admin Documentation for app/admin/loading.js
+# Admin Loading Component: 
 
-## File Path
-app/admin/loading.js
+## Purpose & Responsibility
 
-## Purpose
-Provides the loading UI for admin route segments.
+Loading UI for route segments
 
-## Key Behavior
-- Displays a loading indicator while admin route data is resolving.
+---
 
-## Notes
-- Top-level admin route file for the loading.js section.
+## Overview
+
+| Aspect | Details |
+|--------|---------|
+| **File Location** | `app/admin/loading.js` |
+| **Component Type** | Client Component |
+| **Route Type** | Loading Component |
+| **Framework** | Next.js App Router |
+| **Styling** | Bootstrap CSS classes |
+
+## Key Features & Capabilities
+
+- Shows loading indicator during route transitions
+- Improves perceived performance
+
+## Implementation Details
+
+## Notes & Context
+
+- Renders while child routes load data
+- Provides loading feedback to users
+- Can be enhanced with skeleton screens

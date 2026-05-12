@@ -1,14 +1,57 @@
-# Admin Documentation for app/admin/referees/[id]/edit/page.jsx
+# Admin Edit Page: Referees Id Edit
 
-## File Path
-app/admin/referees/[id]/edit/page.jsx
+## Purpose & Responsibility
 
-## Purpose
-Renders the admin page for editing an existing resource.
+Edit existing referees records
 
-## Key Behavior
-- Loads an existing record for editing.
-- Sends updated values to the backend.
+**Key Responsibility:** Provide server-side processing, database operations, and API integration.
 
-## Notes
-- Editing page for a referees resource.
+---
+
+## Overview
+
+| Aspect | Details |
+|--------|---------|
+| **File Location** | `app/admin/referees/[id]/edit/page.jsx` |
+| **Component Type** | Server Component |
+| **Route Type** | Edit Page |
+| **Framework** | Next.js App Router |
+| **Server-side** | Yes |
+| **Styling** | Bootstrap CSS classes |
+
+## Key Features & Capabilities
+
+- Server-side processing with Next.js server capabilities
+- Database operations via Mongoose ORM
+- Authentication and authorization via HTTP cookies
+- Form handling with client and server validation
+- Error feedback and success notifications
+
+## Dependencies
+
+| Dependency | Purpose |
+|---|---|
+| Mongoose | Database ORM and models |
+| React Hooks | State and side-effect management |
+
+## Code Structure & Imports
+
+```javascript
+import { connectDB } from "@/lib/db";
+import User from "@/lib/models/Users";
+import EditrRefereesForm from "@/components/EditrRefereesForm"; // move your current component to a separate file
+```
+
+## Implementation Details
+
+**Server-side Processing:**
+- Database connection via `connectDB()`
+- Authentication using cookies
+- Data validation and sanitization
+- Server-side redirects on success
+
+## Notes & Context
+
+- Allows editing of existing referees records
+- Pre-populates form with current data
+- Submits updates via server action
