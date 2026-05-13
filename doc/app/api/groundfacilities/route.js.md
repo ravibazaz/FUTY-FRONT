@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Returns API data for the endpoint.
+Retrieve all ground facility definitions from the database.
 
 ## File Location
 
@@ -18,7 +18,9 @@ No
 
 ## Behavior
 
-- Connects to the database using `connectDB()` whenever present.
+- Connects to MongoDB using `connectDB()`.
+- Queries the `GroundFacilities` collection for all documents.
+- Returns a JSON payload containing the raw `groundfacilities` array.
 
 ## Query Parameters
 
@@ -32,11 +34,23 @@ No
 
 ```json
 {
-  "success": true,
-  "message": "...",
-  "data": ...
+  "groundfacilities": [
+    {
+      "_id": "...",
+      "facilities": "Grass Pitch",
+      "description": "Full-size grass playing field",
+      "createdAt": "...",
+      "updatedAt": "..."
+    }
+  ]
 }
 ```
+
+## Implementation Notes
+
+- This endpoint is public and does not enforce authentication.
+- It returns unpaginated results for the entire collection.
+- Consumers should consider client-side pagination if the collection grows large.
 
 ## Imports
 
@@ -44,3 +58,5 @@ No
 - `import GroundFacilities from '@/lib/models/GroundFacilities';`
 
 ## Notes
+
+- The response structure differs from application routes that return `success`/`message` keys.

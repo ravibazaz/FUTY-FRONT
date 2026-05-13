@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Returns API data for the endpoint.
+Create a new ground record with geolocation and uploaded images.
 
 ## File Location
 
@@ -18,28 +18,75 @@ Yes
 
 ## Behavior
 
-- Connects to the database using `connectDB()` whenever present.
-- Protects the route with `protectApiRoute(req)` and returns authentication errors.
-- Reads form data from the request.
-- Returns structured JSON response to the client.
-
-## Query Parameters
-
-- None
+- Validates the authenticated user via `protectApiRoute(req)`.
+- Parses multipart `FormData` from the request.
+- Converts form entries into a plain object and collects `images` entries.
+- Resolves a postal code to latitude/longitude using `getLatLng(pin)`.
+- Validates required fields using the `GroundSchema` Zod schema.
+- Saves image data as files under `uploads/grounds` and stores their paths.
+- Creates a new `Grounds` document with location coordinates and facility details.
+- Returns the newly created ground document in the response.
 
 ## Request Body
 
-- FormData body
+- Multipart `FormData`
+- Required fields:
+  - `name`
+  - `add1`
+  - `content`
+  - `county`
+  - `pin`
+  - `lat`
+  - `long`
+  - `isHomeGround`
+- Optional fields:
+  - `images`: one or more Base64-encoded image values
+  - `facilities`: repeated field entries representing ground features
 
 ## Response Example
+
+Success:
 
 ```json
 {
   "success": true,
-  "message": "...",
-  "data": ...
+  "data": {
+    "_id": "...",
+    "name": "Central Sports Ground",
+    "add1": "123 Field Way",
+    "content": "Full-size pitch with floodlights",
+    "county": "Cityshire",
+    "pin": "AB12 3CD",
+    "lat": "51.500",
+    "long": "-0.123",
+    "images": ["/uploads/grounds/1700000000_ab12cd.jpg"],
+    "location": {
+      "type": "Point",
+      "coordinates": [ -0.123, 51.500 ]
+    }
+  },
+  "message": "Successfully added ground!"
 }
 ```
+
+Validation error:
+
+```json
+{
+  "success": false,
+  "message": {
+    "name": "Ground Name is required",
+    "pin": "Post Code is required"
+  }
+}
+```
+
+## Implementation Notes
+
+- The route stores images as files on disk and saves their generated URLs.
+- `lat` and `long` values are overwritten by `getLatLng(pin)` results.
+- The schema enforces Base64-encoded image strings.
+- The response uses HTTP 200 for both success and validation failures.
 
 ## Imports
 
@@ -55,4 +102,5 @@ Yes
 
 ## Notes
 
-- This endpoint is protected and requires valid authentication.
+- This endpoint is protected and requires authentication.
+- It writes uploaded images to `uploads/grounds`.

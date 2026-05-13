@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Returns API data for the endpoint.
+Return a protected list of ground facilities, optionally filtered by search.
 
 ## File Location
 
@@ -18,14 +18,15 @@ Yes
 
 ## Behavior
 
-- Connects to the database using `connectDB()` whenever present.
-- Protects the route with `protectApiRoute(req)` and returns authentication errors.
-- Parses query parameters from the request URL.
-- Returns structured JSON response to the client.
+- Validates the current user using `protectApiRoute(req)`.
+- Connects to MongoDB with `connectDB()`.
+- Reads the optional `q` query parameter and applies a case-insensitive partial match on the `facilities` field.
+- Returns facility documents with only the `facilities` and `description` fields.
+- Sorts results alphabetically by `facilities`.
 
 ## Query Parameters
 
-- `q`
+- `q` (optional): substring search term for the `facilities` field.
 
 ## Request Body
 
@@ -36,9 +37,14 @@ Yes
 ```json
 {
   "success": true,
-  "message": "...",
-  "data": [ ... ],
-  "pagination": { ... }
+  "message": "Welcome to the Facilities List!",
+  "data": [
+    {
+      "_id": "...",
+      "facilities": "Grass Pitch",
+      "description": "Full-size grass playing field"
+    }
+  ]
 }
 ```
 
@@ -51,5 +57,5 @@ Yes
 
 ## Notes
 
-- This endpoint is protected and requires valid authentication.
-- Supports pagination and optional search filters.
+- This route requires authentication.
+- It returns a filtered list of facility documents and does not support pagination.
