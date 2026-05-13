@@ -1,8 +1,9 @@
+
 # POST /api/stores/createorder
 
 ## Purpose
 
-Returns API data for the endpoint.
+Creates an order history record for an authenticated user and preserves the store product image.
 
 ## File Location
 
@@ -14,44 +15,42 @@ POST
 
 ## Authentication Required
 
-Yes
+Yes - protected by `protectApiRoute(req)`.
 
 ## Behavior
 
-- Connects to the database using `connectDB()` whenever present.
-- Protects the route with `protectApiRoute(req)` and returns authentication errors.
-- Reads JSON request body with `await req.json()`.
-- Returns structured JSON response to the client.
-- Looks up a specific document by its ID.
-
-## Query Parameters
-
-- None
+- Authenticates the request.
+- Reads JSON body containing `product_id` and order fields.
+- Loads the referenced product from `Stores`.
+- Copies the product image file to a new timestamped filename.
+- Creates an `OrderHistories` document with product metadata and purchaser details.
 
 ## Request Body
 
-- Request JSON body
+```json
+{
+  "product_id": "string",
+  "quantity": 1,
+  "shipping_address": "string"
+}
+```
 
-## Response Example
+## Response
 
 ```json
 {
   "success": true,
-  "message": "...",
-  "data": ...
+  "message": "Order created successfully!"
 }
 ```
 
-## Imports
+## Implementation Details
 
-- `import { NextResponse } from "next/server";`
-- `import { connectDB } from "@/lib/db";`
-- `import { protectApiRoute } from "@/lib/middleware";`
-- `import OrderHistories from "@/lib/models/OrderHistories";`
-- `import path from "path";`
-- `import { promises as fs } from "fs";`
-- `import Stores from "@/lib/models/Stores";`
+- Uses `Stores.findById(product_id)` to validate the product.
+- Copies the existing product image using `fs.copyFile()`.
+- Links the order to the authenticated user using `purchased_by`.
 
 ## Notes
 
-- This endpoint is protected and requires valid authentication.
+- Protected endpoint.
+- No additional validation beyond product existence is performed.

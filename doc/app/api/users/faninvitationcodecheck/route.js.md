@@ -1,8 +1,9 @@
+
 # POST /api/users/faninvitationcodecheck
 
 ## Purpose
 
-Returns API data for the endpoint.
+Validates a fan invitation code and returns the associated manager details.
 
 ## File Location
 
@@ -18,33 +19,28 @@ No
 
 ## Behavior
 
-- Connects to the database using `connectDB()` whenever present.
-- Reads JSON request body with `await req.json()`.
-- Returns structured JSON response to the client.
-
-## Query Parameters
-
-- None
+- Validates `fan_invitation_code`.
+- Looks up the invitation record.
+- Populates the inviting manager and the manager's team/club/league.
 
 ## Request Body
 
-- Request JSON body
+```json
+{
+  "fan_invitation_code": "string"
+}
+```
 
-## Response Example
+## Response
 
 ```json
 {
   "success": true,
-  "message": "...",
-  "data": ...
+  "data": { /* invitation and manager details */ },
+  "message": "Found invitation code"
 }
 ```
 
-## Imports
-
-- `import { connectDB } from "@/lib/db";`
-- `import { NextResponse } from "next/server";`
-- `import { z } from "zod";`
-- `import FanInvitations from "@/lib/models/FanInvitations";`
-
 ## Notes
+
+- Returns `success: false` when the code is invalid.

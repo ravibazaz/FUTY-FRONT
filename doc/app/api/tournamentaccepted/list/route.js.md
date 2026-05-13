@@ -1,8 +1,9 @@
+
 # GET /api/tournamentaccepted/list
 
 ## Purpose
 
-Returns API data for the endpoint.
+Returns all tournament acceptance records with tournament and accepter details.
 
 ## File Location
 
@@ -14,41 +15,25 @@ GET
 
 ## Authentication Required
 
-Yes
+Yes - protected by `protectApiRoute(req)`.
 
 ## Behavior
 
-- Connects to the database using `connectDB()` whenever present.
-- Protects the route with `protectApiRoute(req)` and returns authentication errors.
-- Returns structured JSON response to the client.
+- Authenticates the request.
+- Loads all `TournamentAccepted` documents.
+- Populates `tournament_id` and `accepted_by_user.name`.
+- Excludes `__v` metadata.
 
-## Query Parameters
-
-- None
-
-## Request Body
-
-- None
-
-## Response Example
+## Response
 
 ```json
 {
   "success": true,
-  "message": "...",
-  "data": [ ... ],
-  "pagination": { ... }
+  "message": "Welcome to the Tournament Accepted List!",
+  "data": [/* list of acceptance records */]
 }
 ```
 
-## Imports
-
-- `import { NextResponse } from "next/server";`
-- `import { protectApiRoute } from "@/lib/middleware";`
-- `import { connectDB } from '@/lib/db';`
-- `import TournamentAccepted from "@/lib/models/TournamentAccepted";`
-
 ## Notes
 
-- This endpoint is protected and requires valid authentication.
-- Supports pagination and optional search filters.
+- Similar to `/api/tournamentaccepted`, but requires authentication.

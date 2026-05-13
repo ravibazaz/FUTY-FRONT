@@ -1,8 +1,9 @@
+
 # GET /api/teams/list/[club_id]/[ageGroupId]
 
 ## Purpose
 
-Returns API data for the endpoint.
+Returns teams filtered by club or league and age group.
 
 ## File Location
 
@@ -14,44 +15,40 @@ GET
 
 ## Authentication Required
 
-Yes
+Yes - protected by `protectApiRoute(req)`.
 
 ## Behavior
 
-- Connects to the database using `connectDB()` whenever present.
-- Protects the route with `protectApiRoute(req)` and returns authentication errors.
-- Parses query parameters from the request URL.
-- Returns structured JSON response to the client.
-- Reads age group data from the `AgeGroups` collection.
-- Uses MongoDB aggregation for advanced filtering.
+- Authenticates the request.
+- Reads `club_id` and `ageGroupId` from path parameters.
+- If `type=club`, returns teams in the club for the given age group.
+- If `type=league`, returns teams in the league for the age group using aggregation.
+- Supports optional search via `q`.
+
+## Path Parameters
+
+- `club_id`
+- `ageGroupId`
 
 ## Query Parameters
 
-- `q`
+- `type` (required): `club` or `league`
+- `q` (optional)
 
 ## Request Body
 
-- None
+None
 
-## Response Example
+## Response
 
 ```json
 {
   "success": true,
-  "message": "...",
-  "data": ...
+  "message": "Welcome to the Team list by club id and age group id!",
+  "data": [ /* team objects */ ]
 }
 ```
 
-## Imports
-
-- `import { NextResponse } from "next/server";`
-- `import { protectApiRoute } from "@/lib/middleware";`
-- `import { connectDB } from '@/lib/db';`
-- `import Teams from "@/lib/models/Teams";`
-- `import AgeGroups from "@/lib/models/AgeGroups";`
-- `import mongoose from 'mongoose';`
-
 ## Notes
 
-- This endpoint is protected and requires valid authentication.
+- Protected endpoint.

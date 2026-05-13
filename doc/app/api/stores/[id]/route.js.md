@@ -1,8 +1,9 @@
+
 # GET /api/stores/[id]
 
 ## Purpose
 
-Returns API data for the endpoint.
+Returns a single store product by its ID.
 
 ## File Location
 
@@ -14,40 +15,38 @@ GET
 
 ## Authentication Required
 
-Yes
+Yes - protected by `protectApiRoute(req)`.
 
 ## Behavior
 
-- Connects to the database using `connectDB()` whenever present.
-- Protects the route with `protectApiRoute(req)` and returns authentication errors.
-- Returns structured JSON response to the client.
-- Looks up a specific document by its ID.
+- Authenticates the request.
+- Reads the product ID from the path parameter.
+- Returns the product document without the `__v` field.
 
-## Query Parameters
+## Path Parameters
 
-- None
+- `id`: store product ID
 
 ## Request Body
 
-- None
+None
 
-## Response Example
+## Response
 
 ```json
 {
   "success": true,
-  "message": "...",
-  "data": ...
+  "message": "Welcome to the Product Details!",
+  "data": {
+    "_id": "string",
+    "title": "string",
+    "price": 123,
+    "image": "string",
+    "category": "string"
+  }
 }
 ```
 
-## Imports
-
-- `import { NextResponse } from "next/server";`
-- `import { protectApiRoute } from "@/lib/middleware";`
-- `import { connectDB } from '@/lib/db';`
-- `import Stores from "@/lib/models/Stores";`
-
 ## Notes
 
-- This endpoint is protected and requires valid authentication.
+- Protected endpoint.

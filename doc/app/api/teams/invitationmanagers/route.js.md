@@ -1,8 +1,9 @@
+
 # GET /api/teams/invitationmanagers
 
 ## Purpose
 
-Returns API data for the endpoint.
+Returns all manager invitation records.
 
 ## File Location
 
@@ -18,29 +19,28 @@ No
 
 ## Behavior
 
-- Connects to the database using `connectDB()` whenever present.
-
-## Query Parameters
-
-- None
+- Connects to MongoDB.
+- Returns all documents from the `ManagerInvitations` collection.
 
 ## Request Body
 
-- None
+None
 
-## Response Example
+## Response
 
 ```json
 {
-  "success": true,
-  "message": "...",
-  "data": ...
+  "managers": [
+    {
+      "_id": "string",
+      "manager_email": "string",
+      "manager_name": "string",
+      "team_id": "string"
+    }
+  ]
 }
 ```
 
-## Imports
-
-- `import { connectDB } from '@/lib/db';`
-- `import ManagerInvitations from '@/lib/models/ManagerInvitations';`
-
 ## Notes
+
+- Public endpoint.

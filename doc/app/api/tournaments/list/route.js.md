@@ -1,8 +1,9 @@
+
 # GET /api/tournaments/list
 
 ## Purpose
 
-Returns API data for the endpoint.
+Retrieves tournaments with search, pagination, optional radius filtering, distance calculation, and user-specific population.
 
 ## File Location
 
@@ -14,48 +15,46 @@ GET
 
 ## Authentication Required
 
-Yes
+Yes - protected by `protectApiRoute(req)`.
 
 ## Behavior
 
-- Connects to the database using `connectDB()` whenever present.
-- Protects the route with `protectApiRoute(req)` and returns authentication errors.
-- Parses query parameters from the request URL.
-- Returns structured JSON response to the client.
+- Authenticates the request.
+- Supports query filters:
+  - `q` for name search
+  - `page` for pagination
+  - `limit` for page size
+  - `radius` in kilometers to filter by distance from the authenticated user's team ground
+- Populates related `ground`, `club.age_groups`, `created_by_user.team_id.club.league`, and matching `tournamentorderhistories` for the user.
+- Calculates distance from the manager's team ground to each tournament ground.
+- Sorts by distance then date and paginates the results.
 
 ## Query Parameters
 
-- `q`
-- `page`
-- `limit`
+- `q` (optional)
+- `page` (optional, default `1`)
+- `limit` (optional, default `10`)
+- `radius` (optional, kilometers)
 
-## Request Body
-
-- None
-
-## Response Example
+## Response
 
 ```json
 {
   "success": true,
-  "message": "...",
-  "data": [ ... ],
-  "pagination": { ... }
+  "message": "Welcome to the Tournament List!",
+  "data": [/* paginated tournament objects */],
+  "pagination": {
+    "total": 42,
+    "page": 1,
+    "limit": 10,
+    "totalPages": 5,
+    "hasNextPage": true,
+    "hasPrevPage": false
+  }
 }
 ```
 
-## Imports
-
-- `import { NextResponse } from "next/server";`
-- `import { protectApiRoute } from "@/lib/middleware";`
-- `import { connectDB } from '@/lib/db';`
-- `import Tournaments from "@/lib/models/Tournaments";`
-- `import Grounds from "@/lib/models/Grounds";`
-- `import Teams from "@/lib/models/Teams";`
-- `import mongoose from "mongoose";`
-- `import TournamentOrderHistories from "@/lib/models/TournamentOrderHistories";`
-
 ## Notes
 
-- This endpoint is protected and requires valid authentication.
-- Supports pagination and optional search filters.
+- Distance is computed only when both the user and ground coordinates are available.
+- The route uses server-side pagination after sorting.

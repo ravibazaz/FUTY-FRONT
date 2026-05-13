@@ -1,8 +1,9 @@
+
 # POST /api/push/send
 
 ## Purpose
 
-Returns API data for the endpoint.
+Sends a Firebase push notification to a single device token using the server-side Firebase Admin SDK.
 
 ## File Location
 
@@ -18,31 +19,51 @@ No
 
 ## Behavior
 
-- Connects to the database using `connectDB()` whenever present.
-- Reads JSON request body with `await req.json()`.
-- Returns structured JSON response to the client.
-
-## Query Parameters
-
-- None
+- Reads JSON body from the request.
+- Builds an FCM message payload with `token`, `notification.title`, `notification.body`, and optional `data`.
+- Sends the message using `admin.messaging().send(message)`.
+- Returns success with the sent message ID, or an error message if the send fails.
 
 ## Request Body
 
-- Request JSON body
+```json
+{
+  "token": "string",
+  "title": "Notification Title",
+  "body": "Notification body text",
+  "data": {
+    "key": "value"
+  }
+}
+```
 
-## Response Example
+## Response
+
+### Success Response (200)
 
 ```json
 {
   "success": true,
-  "message": "...",
-  "data": ...
+  "messageId": "string"
 }
 ```
 
-## Imports
+### Failure Response (200)
 
-- `import admin from "@/lib/firebaseAdmin";`
-- `import { NextResponse } from "next/server";`
+```json
+{
+  "success": false,
+  "error": "string"
+}
+```
 
-## Notes
+## Implementation Details
+
+- Uses `admin` from `@/lib/firebaseAdmin` and `NextResponse` from `next/server`.
+- The endpoint runs under the `nodejs` runtime.
+- No authentication or validation is enforced by this handler.
+
+## Security Notes
+
+- This endpoint is public, so the client must ensure message payloads are trusted.
+- Invalid tokens or Firebase failures return a `success: false` response with error details.

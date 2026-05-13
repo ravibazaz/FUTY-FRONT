@@ -1,8 +1,9 @@
+
 # POST /api/users/signup
 
 ## Purpose
 
-Returns API data for the endpoint.
+Registers a new user and sends a login code by email.
 
 ## File Location
 
@@ -18,41 +19,39 @@ No
 
 ## Behavior
 
-- Connects to the database using `connectDB()` whenever present.
-- Reads JSON request body with `await req.json()`.
-- Returns structured JSON response to the client.
-- Looks up a specific document by its ID.
-
-## Query Parameters
-
-- None
+- Validates the request body with Zod.
+- Supports invitation codes for Player, Fan, and Manager account types.
+- Ensures the email does not already exist.
+- Creates a new user with a hashed password.
+- Sends a login code using the Brevo email API.
+- Stores the login code on the user record.
 
 ## Request Body
 
-- Request JSON body
+```json
+{
+  "email": "user@example.com",
+  "password": "password123",
+  "confirm_password": "password123",
+  "name": "John",
+  "telephone": "1234567890",
+  "account_type": "Player",
+  "invitation_code": "OPTIONAL",
+  "fcmtoken": "OPTIONAL"
+}
+```
 
-## Response Example
+## Response
 
 ```json
 {
   "success": true,
-  "message": "...",
-  "data": ...
+  "data": { "Login Code": 12345, "isVerified": false },
+  "message": "User created successfully. Please check login code in email."
 }
 ```
 
-## Imports
-
-- `import { connectDB } from "@/lib/db";`
-- `import User from "@/lib/models/Users";`
-- `import bcrypt from "bcryptjs";`
-- `import { NextResponse } from "next/server";`
-- `import { z } from "zod";`
-- `import { v4 as uuidv4 } from "uuid";`
-- `import path from "path";`
-- `import { promises as fs } from "fs";`
-- `import PlayerInvitations from "@/lib/models/PlayerInvitations";`
-- `import FanInvitations from "@/lib/models/FanInvitations";`
-- `import ManagerInvitations from "@/lib/models/ManagerInvitations";`
-
 ## Notes
+
+- The endpoint returns validation errors in a `success: false` response.
+- Invitation code checks vary by account type.

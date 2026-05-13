@@ -1,8 +1,9 @@
+
 # POST /api/users/managerinvitationcodecheck
 
 ## Purpose
 
-Returns API data for the endpoint.
+Validates a manager invitation code and returns the team, club, league, and age group details.
 
 ## File Location
 
@@ -18,37 +19,28 @@ No
 
 ## Behavior
 
-- Connects to the database using `connectDB()` whenever present.
-- Reads JSON request body with `await req.json()`.
-- Returns structured JSON response to the client.
-
-## Query Parameters
-
-- None
+- Validates `manager_invitation_code`.
+- Looks up the invitation record.
+- Returns manager details along with the referenced team and populated club/league/age group metadata.
 
 ## Request Body
 
-- Request JSON body
+```json
+{
+  "manager_invitation_code": "string"
+}
+```
 
-## Response Example
+## Response
 
 ```json
 {
   "success": true,
-  "message": "...",
-  "data": ...
+  "data": { /* manager invitation record */ },
+  "message": "Found invitation code"
 }
 ```
 
-## Imports
-
-- `import { connectDB } from "@/lib/db";`
-- `import { NextResponse } from "next/server";`
-- `import { z } from "zod";`
-- `import ManagerInvitations from "@/lib/models/ManagerInvitations";`
-- `import Teams from "@/lib/models/Teams";`
-- `import Clubs from "@/lib/models/Clubs";`
-- `import Leagues from "@/lib/models/Leagues";`
-- `import AgeGroups from "@/lib/models/AgeGroups";`
-
 ## Notes
+
+- Returns an error when the code is invalid.

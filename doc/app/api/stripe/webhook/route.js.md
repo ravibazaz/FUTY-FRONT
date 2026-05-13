@@ -1,8 +1,9 @@
+
 # POST /api/stripe/webhook
 
 ## Purpose
 
-Returns API data for the endpoint.
+Handles Stripe webhook events and updates tournament order history payment status.
 
 ## File Location
 
@@ -18,31 +19,21 @@ No
 
 ## Behavior
 
-- Connects to the database using `connectDB()` whenever present.
-- Looks up a specific document by its ID.
+- Reads the raw request body and Stripe signature header.
+- Verifies the event using `stripe.webhooks.constructEvent()`.
+- Updates `TournamentOrderHistories` status based on event type:
+  - `payment_intent.succeeded` → `paid`
+  - `payment_intent.payment_failed` → `failed`
+  - `payment_intent.canceled` → `canceled`
+  - `payment_intent.processing` → `processing`
+- Responds with HTTP 200 for valid events or 400 for invalid signatures.
 
-## Query Parameters
+## Security Notes
 
-- None
+- Uses Stripe webhook secret from `process.env.STRIPE_WEBHOOK_SECRET`.
+- Disables body parsing to preserve the raw request body.
 
-## Request Body
+## Response
 
-- None
-
-## Response Example
-
-```json
-{
-  "success": true,
-  "message": "...",
-  "data": ...
-}
-```
-
-## Imports
-
-- `import Stripe from "stripe";`
-- `import { connectDB } from "@/lib/db";`
-- `import TournamentOrderHistories from "@/lib/models/TournamentOrderHistories";`
-
-## Notes
+- **200 OK** for processed webhook events
+- **400 Bad Request** for signature verification failures

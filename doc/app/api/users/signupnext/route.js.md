@@ -1,8 +1,9 @@
+
 # POST /api/users/signupnext
 
 ## Purpose
 
-Returns API data for the endpoint.
+Updates the authenticated user profile and optionally uploads a base64 profile image.
 
 ## File Location
 
@@ -14,47 +15,44 @@ POST
 
 ## Authentication Required
 
-Yes
+Yes - protected by `protectApiRoute(req)`.
 
 ## Behavior
 
-- Connects to the database using `connectDB()` whenever present.
-- Protects the route with `protectApiRoute(req)` and returns authentication errors.
-- Reads JSON request body with `await req.json()`.
-- Returns structured JSON response to the client.
-- Looks up a specific document by its ID.
-
-## Query Parameters
-
-- None
+- Authenticates the user.
+- Validates `name`, `telephone`, and optional `profile_image`.
+- Converts `post_code` to latitude/longitude via `getLatLng()`.
+- Saves a base64 profile image to the appropriate uploads folder.
+- Updates the user document with profile, location, and performance fields.
 
 ## Request Body
 
-- Request JSON body
+```json
+{
+  "name": "John",
+  "surname": "Doe",
+  "telephone": "1234567",
+  "profile_image": "data:image/png;base64,...",
+  "profile_description": "...",
+  "playing_style": "...",
+  "team_id": "string",
+  "nick_name": "...",
+  "post_code": "...",
+  "referee_lavel": "...",
+  "travel_distance": "..."
+}
+```
 
-## Response Example
+## Response
 
 ```json
 {
   "success": true,
-  "message": "...",
-  "data": ...
+  "message": "Profile updated successfully!"
 }
 ```
 
-## Imports
-
-- `import { NextResponse } from "next/server";`
-- `import { connectDB } from "@/lib/db";`
-- `import { protectApiRoute } from "@/lib/middleware";`
-- `import { z } from "zod";`
-- `import { v4 as uuidv4 } from "uuid";`
-- `import path from "path";`
-- `import { promises as fs } from "fs";`
-- `import Users from "@/lib/models/Users";`
-- `import bcrypt from "bcryptjs";`
-- `import { getLatLng } from "@/lib/geocode";`
-
 ## Notes
 
-- This endpoint is protected and requires valid authentication.
+- The user's previous profile image is deleted if replaced.
+- The endpoint updates location coordinates and GeoJSON data.

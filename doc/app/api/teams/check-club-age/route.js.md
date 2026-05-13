@@ -1,8 +1,9 @@
+
 # GET /api/teams/check-club-age
 
 ## Purpose
 
-Returns API data for the endpoint.
+Checks whether a team exists for a club and age group, optionally excluding one team ID.
 
 ## File Location
 
@@ -18,33 +19,26 @@ No
 
 ## Behavior
 
-- Connects to the database using `connectDB()` whenever present.
-- Parses query parameters from the request URL.
-- Returns structured JSON response to the client.
+- Reads `club`, `age_groups`, and optional `id` from query parameters.
+- Returns `{ exists: true }` if a matching team exists.
+- If `id` is provided, excludes that team from the match.
 
 ## Query Parameters
 
-- `q`
+- `club` (required)
+- `age_groups` (required)
+- `id` (optional)
 
 ## Request Body
 
-- None
+None
 
-## Response Example
+## Response
 
 ```json
-{
-  "success": true,
-  "message": "...",
-  "data": ...
-}
+{ "exists": true }
 ```
 
-## Imports
-
-- `import { NextResponse } from "next/server";`
-- `import User from "@/lib/models/Users";`
-- `import { connectDB } from "@/lib/db";`
-- `import Teams from "@/lib/models/Teams";`
-
 ## Notes
+
+- Public validation endpoint.

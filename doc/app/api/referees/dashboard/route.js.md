@@ -1,8 +1,9 @@
+
 # GET /api/referees/dashboard
 
 ## Purpose
 
-Returns API data for the endpoint.
+Retrieves dashboard data for the authenticated referee, including profile details, a random advertisement, and an upcoming friendly match suggestion.
 
 ## File Location
 
@@ -14,46 +15,45 @@ GET
 
 ## Authentication Required
 
-Yes
+Yes - protected by `protectApiRoute(req)`.
 
 ## Behavior
 
-- Connects to the database using `connectDB()` whenever present.
-- Protects the route with `protectApiRoute(req)` and returns authentication errors.
-- Returns structured JSON response to the client.
-- Uses MongoDB aggregation for advanced filtering.
+- Authenticates the request using `protectApiRoute(req)`.
+- Connects to MongoDB.
+- Selects one random advert with a projection of `name`, `image`, `link`, and `content`.
+- Queries friendlies scheduled from today onward and returns one random match with populated relations.
+- Loads the authenticated referee profile and returns a dashboard payload.
 
 ## Query Parameters
 
-- None
+None
 
 ## Request Body
 
-- None
+None
 
-## Response Example
+## Response
 
 ```json
 {
   "success": true,
-  "message": "...",
-  "data": ...
+  "message": "Welcome to the Referee Dashboard!",
+  "data": {
+    "referee_profile": { /* referee fields */ },
+    "random_advert": { /* advert fields */ },
+    "league_friendly_by_priority1": { /* friendly match fields */ }
+  }
 }
 ```
 
-## Imports
+## Implementation Details
 
-- `import { NextResponse } from "next/server";`
-- `import { protectApiRoute } from "@/lib/middleware";`
-- `import { connectDB } from '@/lib/db';`
-- `import Users from '@/lib/models/Users';`
-- `import Teams from "@/lib/models/Teams";`
-- `import Clubs from "@/lib/models/Clubs";`
-- `import Leagues from "@/lib/models/Leagues";`
-- `import AgeGroups from "@/lib/models/AgeGroups";`
-- `import Adverts from "@/lib/models/Adverts";`
-- `import Friendlies from "@/lib/models/Friendlies";`
+- Uses aggregation with `$sample` to pick a random advert.
+- Finds one upcoming `Friendlies` document and populates `team_id`, `manager_id`, `ground_id`, `league_id`, `created_by_user`, and `accepted_by_user`.
+- The referee profile is loaded from `Users.findOne({ _id: user._id })` with selected referee fields.
 
-## Notes
+## Security Notes
 
-- This endpoint is protected and requires valid authentication.
+- Protected endpoint that returns user-specific data.
+- No pagination or filter parameters are supported.

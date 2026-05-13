@@ -1,8 +1,9 @@
+
 # GET /api/referees
 
 ## Purpose
 
-Returns API data for the endpoint.
+Returns a list of all users whose account type is set to `Referee`.
 
 ## File Location
 
@@ -18,29 +19,39 @@ No
 
 ## Behavior
 
-- Connects to the database using `connectDB()` whenever present.
+- Connects to MongoDB via `connectDB()`.
+- Queries the `Users` collection for documents where `account_type` equals `Referee`.
+- Returns the full list of referee users.
 
 ## Query Parameters
 
-- None
+None
 
 ## Request Body
 
-- None
+None
 
-## Response Example
+## Response
 
 ```json
 {
-  "success": true,
-  "message": "...",
-  "data": ...
+  "referees": [
+    {
+      "_id": "string",
+      "name": "string",
+      "surname": "string",
+      "account_type": "Referee",
+      "profile_image": "string"
+    }
+  ]
 }
 ```
 
-## Imports
+## Implementation Details
 
-- `import { connectDB } from '@/lib/db';`
-- `import Users from '@/lib/models/Users';`
+- Uses `Users.find({ account_type: "Referee" })`.
+- Returns raw referee documents without population.
 
 ## Notes
+
+- Public endpoint returning referee user records.

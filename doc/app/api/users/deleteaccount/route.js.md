@@ -1,8 +1,9 @@
+
 # GET /api/users/deleteaccount
 
 ## Purpose
 
-Returns API data for the endpoint.
+Soft-deactivates the authenticated user's account.
 
 ## File Location
 
@@ -14,39 +15,23 @@ GET
 
 ## Authentication Required
 
-Yes
+Yes - protected by `protectApiRoute(req)`.
 
 ## Behavior
 
-- Connects to the database using `connectDB()` whenever present.
-- Protects the route with `protectApiRoute(req)` and returns authentication errors.
-- Returns structured JSON response to the client.
-- Looks up a specific document by its ID.
+- Authenticates the user.
+- Sets `isActive` to false for the authenticated user.
+- Returns a deletion confirmation.
 
-## Query Parameters
-
-- None
-
-## Request Body
-
-- None
-
-## Response Example
+## Response
 
 ```json
 {
-  "success": true,
-  "message": "...",
-  "data": ...
+  "success": false,
+  "message": "Your account is deleted"
 }
 ```
 
-## Imports
-
-- `import { NextResponse } from "next/server";`
-- `import { protectApiRoute } from "@/lib/middleware";`
-- `import Users from "@/lib/models/Users";`
-
 ## Notes
 
-- This endpoint is protected and requires valid authentication.
+- The response uses `success: false` even though the operation succeeds.

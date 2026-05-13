@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Returns API data for the endpoint.
+Updates the authenticated user's password after validating password fields.
 
 ## File Location
 
@@ -14,43 +14,69 @@ POST
 
 ## Authentication Required
 
-Yes
+Yes - protected by `protectApiRoute(req)`.
 
 ## Behavior
 
-- Connects to the database using `connectDB()` whenever present.
-- Protects the route with `protectApiRoute(req)` and returns authentication errors.
-- Reads JSON request body with `await req.json()`.
-- Returns structured JSON response to the client.
-- Looks up a specific document by its ID.
-
-## Query Parameters
-
-- None
+- Verifies the authenticated user using `protectApiRoute(req)`.
+- Reads the JSON request body.
+- Validates password fields using the `UserSchema` Zod schema.
+- Ensures both `password` and `confirm_password` are at least 7 characters when provided and that they match.
+- Hashes the new password with `bcrypt` and updates the authenticated user's document.
+- Returns success or validation error details.
 
 ## Request Body
 
-- Request JSON body
+```json
+{
+  "password": "newPassword123",
+  "confirm_password": "newPassword123"
+}
+```
 
-## Response Example
+## Response
+
+### Success Response (200)
 
 ```json
 {
   "success": true,
-  "message": "...",
-  "data": ...
+  "message": "Profile updated successfully!"
 }
 ```
 
-## Imports
+### Validation Failure Example (200)
 
-- `import { NextResponse } from "next/server";`
-- `import { connectDB } from "@/lib/db";`
-- `import { protectApiRoute } from "@/lib/middleware";`
-- `import { z } from "zod";`
-- `import Users from "@/lib/models/Users";`
-- `import bcrypt from "bcryptjs";`
+```json
+{
+  "success": false,
+  "message": {
+    "confirm_password": "Passwords don't match"
+  }
+}
+```
 
-## Notes
+### Error Responses
 
-- This endpoint is protected and requires valid authentication.
+- **401 Unauthorized**: Missing or invalid authentication.
+- **200 OK with validation errors**: Invalid or mismatched password fields.
+- **500 Internal Server Error**: Database or hashing failure.
+
+## Implementation Details
+
+- Accepts optional `password` and `confirm_password` fields but requires matching values when provided.
+- Uses `bcrypt.hash()` with salt rounds 10 to hash the new password.
+- Updates the user document by `_id`.
+- Returns the same status code 200 for both successful updates and validation failures.
+
+## Security Notes
+
+- Protected endpoint storing hashed passwords only.
+- Does not support old password verification; it updates the password directly for authenticated users.
+- No rate limiting or brute-force protection is implemented in this route.
+
+## Usage Notes
+
+- Use when authenticated users need to change their password.
+- Ensure the client sends both `password` and `confirm_password` fields.
+- The endpoint will not update the password if validation fails.

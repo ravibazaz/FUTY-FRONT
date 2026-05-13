@@ -1,8 +1,9 @@
+
 # POST /api/users/forgetpassword
 
 ## Purpose
 
-Returns API data for the endpoint.
+Sends a one-time password (OTP) to the user's email and updates the stored password to the OTP.
 
 ## File Location
 
@@ -18,36 +19,30 @@ No
 
 ## Behavior
 
-- Connects to the database using `connectDB()` whenever present.
-- Reads JSON request body with `await req.json()`.
-- Returns structured JSON response to the client.
-- Looks up a specific document by its ID.
-
-## Query Parameters
-
-- None
+- Validates the provided email.
+- Finds the user by email.
+- Generates a numeric OTP.
+- Sends the OTP via the Brevo email API.
+- Updates the user's password to the OTP value.
 
 ## Request Body
 
-- Request JSON body
+```json
+{
+  "email": "user@example.com"
+}
+```
 
-## Response Example
+## Response
 
 ```json
 {
   "success": true,
-  "message": "...",
-  "data": ...
+  "data": { "OTP": 12345, "Email": "user@example.com" },
+  "message": "We have sent a One Time Password(OTP) to your mail. Do not share this password to anyone"
 }
 ```
 
-## Imports
-
-- `import { connectDB } from "@/lib/db";`
-- `import User from "@/lib/models/Users";`
-- `import bcrypt from "bcryptjs";`
-- `import { NextResponse } from "next/server";`
-- `import crypto from "crypto";`
-- `import { z } from "zod";`
-
 ## Notes
+
+- The endpoint resets the user password to the OTP.

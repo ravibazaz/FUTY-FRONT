@@ -1,8 +1,9 @@
+
 # GET /api/teams/[id]
 
 ## Purpose
 
-Returns API data for the endpoint.
+Returns details for a single team, including club, league, ground, age groups, and manager references.
 
 ## File Location
 
@@ -14,44 +15,40 @@ GET
 
 ## Authentication Required
 
-Yes
+Yes - protected by `protectApiRoute(req)`.
 
 ## Behavior
 
-- Connects to the database using `connectDB()` whenever present.
-- Protects the route with `protectApiRoute(req)` and returns authentication errors.
-- Returns structured JSON response to the client.
-- Looks up a specific document by its ID.
+- Authenticates the request.
+- Reads `id` from the URL path.
+- Loads the team and deeply populates related documents.
+- Returns the detailed team object.
 
-## Query Parameters
+## Path Parameters
 
-- None
+- `id`: team document ID
 
 ## Request Body
 
-- None
+None
 
-## Response Example
+## Response
 
 ```json
 {
   "success": true,
-  "message": "...",
-  "data": ...
+  "message": "Welcome to the Team Detail Page!",
+  "data": {
+    "_id": "string",
+    "name": "string",
+    "age_groups": [ { "_id": "string", "age_group": "string" } ],
+    "club": { "_id": "string", "name": "string", "league": { "_id": "string", "label": "string", "title": "string" } },
+    "ground": { "_id": "string", "name": "string" },
+    "managers": [ { "_id": "string", "name": "string", "profile_image": "string" } ]
+  }
 }
 ```
 
-## Imports
-
-- `import { NextResponse } from "next/server";`
-- `import { protectApiRoute } from "@/lib/middleware";`
-- `import { connectDB } from '@/lib/db';`
-- `import Users from '@/lib/models/Users';`
-- `import Teams from "@/lib/models/Teams";`
-- `import Clubs from "@/lib/models/Clubs";`
-- `import Leagues from "@/lib/models/Leagues";`
-- `import AgeGroups from "@/lib/models/AgeGroups";`
-
 ## Notes
 
-- This endpoint is protected and requires valid authentication.
+- Protected endpoint.

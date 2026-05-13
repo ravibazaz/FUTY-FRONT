@@ -1,8 +1,9 @@
+
 # GET /api/teams
 
 ## Purpose
 
-Returns API data for the endpoint.
+Returns all teams with populated ground and nested club/league information.
 
 ## File Location
 
@@ -18,32 +19,38 @@ No
 
 ## Behavior
 
-- Connects to the database using `connectDB()` whenever present.
-
-## Query Parameters
-
-- None
+- Connects to the database.
+- Finds all `Teams` documents.
+- Populates `ground` and `club` with nested `league` data.
+- Returns the list of teams.
 
 ## Request Body
 
-- None
+None
 
-## Response Example
+## Response
 
 ```json
 {
-  "success": true,
-  "message": "...",
-  "data": ...
+  "teams": [
+    {
+      "_id": "string",
+      "name": "string",
+      "ground": { "_id": "string", "name": "string" },
+      "club": {
+        "_id": "string",
+        "name": "string",
+        "league": {
+          "_id": "string",
+          "label": "string",
+          "title": "string"
+        }
+      }
+    }
+  ]
 }
 ```
 
-## Imports
-
-- `import { connectDB } from '@/lib/db';`
-- `import Leagues from '@/lib/models/Leagues';`
-- `import Teams from '@/lib/models/Teams';`
-- `import Clubs from '@/lib/models/Clubs';`
-- `import Grounds from '@/lib/models/Grounds';`
-
 ## Notes
+
+- Public endpoint using `.lean()` for performance.

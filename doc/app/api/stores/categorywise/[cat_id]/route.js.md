@@ -1,8 +1,9 @@
+
 # GET /api/stores/categorywise/[cat_id]
 
 ## Purpose
 
-Returns API data for the endpoint.
+Returns store products for a specific category, with optional title search.
 
 ## File Location
 
@@ -14,40 +15,45 @@ GET
 
 ## Authentication Required
 
-Yes
+Yes - protected by `protectApiRoute(req)`.
 
 ## Behavior
 
-- Connects to the database using `connectDB()` whenever present.
-- Protects the route with `protectApiRoute(req)` and returns authentication errors.
-- Parses query parameters from the request URL.
-- Returns structured JSON response to the client.
+- Authenticates the request.
+- Reads `cat_id` from the URL path.
+- Optionally filters products by title using `q`.
+- Returns products matching the category.
+
+## Path Parameters
+
+- `cat_id`: category ID
 
 ## Query Parameters
 
-- `q`
+- `q` (optional): search term for product title
 
 ## Request Body
 
-- None
+None
 
-## Response Example
+## Response
 
 ```json
 {
   "success": true,
-  "message": "...",
-  "data": ...
+  "message": "Welcome to the Product Details!",
+  "data": [
+    {
+      "_id": "string",
+      "title": "string",
+      "image": "string",
+      "price": 123,
+      "category": "string"
+    }
+  ]
 }
 ```
 
-## Imports
-
-- `import { NextResponse } from "next/server";`
-- `import { protectApiRoute } from "@/lib/middleware";`
-- `import { connectDB } from '@/lib/db';`
-- `import Stores from "@/lib/models/Stores";`
-
 ## Notes
 
-- This endpoint is protected and requires valid authentication.
+- Protected endpoint.

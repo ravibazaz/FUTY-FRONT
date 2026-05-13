@@ -1,8 +1,9 @@
+
 # GET /api/referees/[id]
 
 ## Purpose
 
-Returns API data for the endpoint.
+Returns detailed information for a single referee by ID.
 
 ## File Location
 
@@ -14,43 +15,52 @@ GET
 
 ## Authentication Required
 
-Yes
+Yes - protected by `protectApiRoute(req)`.
 
 ## Behavior
 
-- Connects to the database using `connectDB()` whenever present.
-- Protects the route with `protectApiRoute(req)` and returns authentication errors.
-- Returns structured JSON response to the client.
-- Looks up a specific document by its ID.
+- Authenticates the request.
+- Extracts the referee ID from the path parameter.
+- Retrieves the referee document by ID and populates the associated team, club, and league.
+- Returns the detailed referee record.
 
-## Query Parameters
+## Path Parameters
 
-- None
+- `id`: Referee user document ID
 
 ## Request Body
 
-- None
+None
 
-## Response Example
+## Response
 
 ```json
 {
   "success": true,
-  "message": "...",
-  "data": ...
+  "message": "Welcome to the Referee Details!",
+  "data": {
+    "_id": "string",
+    "name": "string",
+    "surname": "string",
+    "referee_lavel": "string",
+    "referee_fee": "number",
+    "team_id": {
+      "_id": "string",
+      "name": "string",
+      "club": {
+        "_id": "string",
+        "name": "string",
+        "league": {
+          "_id": "string",
+          "label": "string"
+        }
+      }
+    }
+  }
 }
 ```
 
-## Imports
+## Security Notes
 
-- `import { NextResponse } from "next/server";`
-- `import { protectApiRoute } from "@/lib/middleware";`
-- `import { connectDB } from '@/lib/db';`
-- `import Users from '@/lib/models/Users';`
-- `import Teams from "@/lib/models/Teams";`
-- `import Clubs from "@/lib/models/Clubs";`
-- `import Leagues from "@/lib/models/Leagues";`
-
-## Notes
-
-- This endpoint is protected and requires valid authentication.
+- Protected endpoint.
+- Returns a single referee record with populated relations.

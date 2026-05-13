@@ -1,8 +1,9 @@
+
 # POST /api/tournamentaccepted/add
 
 ## Purpose
 
-Returns API data for the endpoint.
+Creates a tournament acceptance record and sends a push notification to the tournament creator.
 
 ## File Location
 
@@ -14,48 +15,45 @@ POST
 
 ## Authentication Required
 
-Yes
+Yes - protected by `protectApiRoute(req)`.
 
 ## Behavior
 
-- Connects to the database using `connectDB()` whenever present.
-- Protects the route with `protectApiRoute(req)` and returns authentication errors.
-- Reads form data from the request.
-- Returns structured JSON response to the client.
-- Looks up a specific document by its ID.
+- Authenticates the user.
+- Accepts multipart/form-data payload.
+- Validates required fields with Zod:
+  - `email`
+  - `contact`
+  - `notes`
+  - `accepted_by`
+- Creates a new `TournamentAccepted` document.
+- Looks up the tournament by `tournament_id` and sends an FCM notification to its creator.
 
-## Query Parameters
+## Form Fields
 
-- None
+- `email` (string)
+- `contact` (string)
+- `notes` (string)
+- `accepted_by` (string)
+- `tournament_id` (string)
 
-## Request Body
+## Response
 
-- FormData body
-
-## Response Example
+### Success
 
 ```json
 {
   "success": true,
-  "message": "...",
-  "data": ...
+  "message": "Successfully accepted tournament!"
 }
 ```
 
-## Imports
+### Failure
 
-- `import { NextResponse } from "next/server";`
-- `import { protectApiRoute } from "@/lib/middleware";`
-- `import { connectDB } from '@/lib/db';`
-- `import { z } from "zod";`
-- `import { v4 as uuidv4 } from "uuid";`
-- `import path from "path";`
-- `import { promises as fs } from "fs";`
-- `import TournamentAccepted from "@/lib/models/TournamentAccepted";`
-- `import { log } from "console";`
-- `import { createAndSendNotification } from "@/lib/notify";`
-- `import Tournaments from "@/lib/models/Tournaments";`
+- Validation errors return `success: false` and field-specific messages.
+- Other failures return `success: false` with the error message.
 
 ## Notes
 
-- This endpoint is protected and requires valid authentication.
+- Uses `createAndSendNotification` to notify the tournament creator.
+- The endpoint accepts form-data, not JSON.

@@ -1,8 +1,9 @@
-# POST /api/tournaments/add
+
+# GET /api/tournaments/add
 
 ## Purpose
 
-Returns API data for the endpoint.
+Returns all tournaments.
 
 ## File Location
 
@@ -10,48 +11,17 @@ Returns API data for the endpoint.
 
 ## HTTP Method
 
-POST
+GET
 
 ## Authentication Required
 
-Yes
+No
 
 ## Behavior
 
-- Connects to the database using `connectDB()` whenever present.
-- Protects the route with `protectApiRoute(req)` and returns authentication errors.
-- Reads form data from the request.
-- Returns structured JSON response to the client.
-
-## Query Parameters
-
-- None
-
-## Request Body
-
-- FormData body
-
-## Response Example
-
-```json
-{
-  "success": true,
-  "message": "...",
-  "data": ...
-}
-```
-
-## Imports
-
-- `import { NextResponse } from "next/server";`
-- `import { protectApiRoute } from "@/lib/middleware";`
-- `import { connectDB } from '@/lib/db';`
-- `import Tournaments from "@/lib/models/Tournaments";`
-- `import { z } from "zod";`
-- `import { v4 as uuidv4 } from "uuid";`
-- `import path from "path";`
-- `import { promises as fs } from "fs";`
+- Connects to MongoDB.
+- Returns all `Tournaments` documents.
 
 ## Notes
 
-- This endpoint is protected and requires valid authentication.
+- This path duplicates the root tournaments list behavior.

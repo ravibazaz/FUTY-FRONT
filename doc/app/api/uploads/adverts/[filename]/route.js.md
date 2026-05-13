@@ -1,8 +1,9 @@
+
 # GET /api/uploads/adverts/[filename]
 
 ## Purpose
 
-Returns API data for the endpoint.
+Serves uploaded files from the `adverts` file upload directory.
 
 ## File Location
 
@@ -18,32 +19,20 @@ No
 
 ## Behavior
 
-- Connects to the database using `connectDB()` whenever present.
-- Returns structured JSON response to the client.
+- Reads the `filename` path parameter.
+- Serves the file from `uploads/adverts/{filename}` on disk.
+- Returns `Content-Type` based on the file extension.
+- Returns `404` if the file is not found.
 
-## Query Parameters
+## Path Parameters
 
-- None
+- `filename`: the name of the uploaded file to fetch
 
-## Request Body
+## Response
 
-- None
-
-## Response Example
-
-```json
-{
-  "adverts": [ ... ]
-}
-```
-
-## Imports
-
-- `import { NextResponse } from 'next/server';`
-- `import fs from 'fs';`
-- `import path from 'path';`
-- `import mime from 'mime-types';`
+- Binary file content with the correct MIME type.
+- `404` JSON response when the file does not exist.
 
 ## Notes
 
-- Serves uploaded files based on filename parameters.
+- Intended as a public media/file-serving endpoint.

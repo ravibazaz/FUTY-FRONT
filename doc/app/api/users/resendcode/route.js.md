@@ -1,8 +1,9 @@
+
 # POST /api/users/resendcode
 
 ## Purpose
 
-Returns API data for the endpoint.
+Resends a login code to the user email and deactivates the account until verification.
 
 ## File Location
 
@@ -18,35 +19,28 @@ No
 
 ## Behavior
 
-- Connects to the database using `connectDB()` whenever present.
-- Reads JSON request body with `await req.json()`.
-- Returns structured JSON response to the client.
-- Looks up a specific document by its ID.
-
-## Query Parameters
-
-- None
+- Validates the provided email.
+- Finds the user and generates a numeric login code.
+- Sends the code via the Brevo email API.
+- Updates the user record with the code and sets `isVerified` and `isActive` to false.
 
 ## Request Body
 
-- Request JSON body
-
-## Response Example
-
 ```json
 {
-  "success": true,
-  "message": "...",
-  "data": ...
+  "email": "user@example.com"
 }
 ```
 
-## Imports
-
-- `import { connectDB } from "@/lib/db";`
-- `import User from "@/lib/models/Users";`
-- `import bcrypt from "bcryptjs";`
-- `import { NextResponse } from "next/server";`
-- `import { z } from "zod";`
+## Response
+n
+```json
+{
+  "success": true,
+  "message": "Sent login code successfully"
+}
+```
 
 ## Notes
+
+- The endpoint is used for re-sending verification/login codes.

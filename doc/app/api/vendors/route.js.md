@@ -1,8 +1,9 @@
+
 # GET /api/vendors
 
 ## Purpose
 
-Returns API data for the endpoint.
+Returns all active vendors.
 
 ## File Location
 
@@ -18,27 +19,24 @@ No
 
 ## Behavior
 
-- Connects to the database using `connectDB()` whenever present.
+- Connects to MongoDB.
+- Queries `Vendors` where `isActive` is true.
+- Returns the matching vendor list.
 
-## Query Parameters
-
-- None
-
-## Request Body
-
-- None
-
-## Response Example
+## Response
 
 ```json
 {
-  "adverts": [ ... ]
+  "adverts": [
+    {
+      "_id": "string",
+      "name": "string",
+      "isActive": true
+    }
+  ]
 }
 ```
 
-## Imports
-
-- `import { connectDB } from '@/lib/db';`
-- `import Vendors from '@/lib/models/Vendors';`
-
 ## Notes
+
+- Public vendor list endpoint.

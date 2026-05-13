@@ -1,8 +1,9 @@
+
 # GET /api/tournamentaccepted
 
 ## Purpose
 
-Returns API data for the endpoint.
+Returns all accepted tournament records with related tournament and accepting user details.
 
 ## File Location
 
@@ -18,29 +19,27 @@ No
 
 ## Behavior
 
-- Connects to the database using `connectDB()` whenever present.
+- Connects to MongoDB.
+- Loads all `TournamentAccepted` documents.
+- Populates `tournament_id` and `accepted_by_user.name`.
+- Excludes Mongoose `__v` metadata.
 
-## Query Parameters
-
-- None
-
-## Request Body
-
-- None
-
-## Response Example
+## Response
 
 ```json
 {
   "success": true,
-  "message": "...",
-  "data": ...
+  "message": "Welcome to the Tournament Accepted List!",
+  "data": [
+    {
+      "_id": "string",
+      "tournament_id": { "_id": "string", "name": "string" },
+      "accepted_by_user": { "_id": "string", "name": "string" }
+    }
+  ]
 }
 ```
 
-## Imports
-
-- `import { connectDB } from '@/lib/db';`
-- `import Tournaments from '@/lib/models/Tournaments';`
-
 ## Notes
+
+- Returns all accepted tournaments without pagination.

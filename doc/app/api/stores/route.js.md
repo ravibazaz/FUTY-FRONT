@@ -1,8 +1,9 @@
+
 # GET /api/stores
 
 ## Purpose
 
-Returns API data for the endpoint.
+Retrieves all active store products.
 
 ## File Location
 
@@ -18,29 +19,38 @@ No
 
 ## Behavior
 
-- Connects to the database using `connectDB()` whenever present.
+- Connects to the database.
+- Queries `Stores` for documents where `isActive` is true.
+- Returns the matching store products.
 
 ## Query Parameters
 
-- None
+None
 
 ## Request Body
 
-- None
+None
 
-## Response Example
+## Response
 
 ```json
 {
-  "success": true,
-  "message": "...",
-  "data": ...
+  "stores": [
+    {
+      "_id": "string",
+      "title": "string",
+      "price": 123,
+      "image": "string",
+      "category": "string"
+    }
+  ]
 }
 ```
 
-## Imports
+## Implementation Details
 
-- `import { connectDB } from '@/lib/db';`
-- `import Stores from '@/lib/models/Stores';`
+- Uses `Stores.find({ isActive: true })`.
 
 ## Notes
+
+- Public endpoint providing active store items.

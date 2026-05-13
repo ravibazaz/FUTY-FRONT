@@ -1,8 +1,9 @@
+
 # GET /api/stores/list
 
 ## Purpose
 
-Returns API data for the endpoint.
+Returns a searchable list of store products for authenticated users.
 
 ## File Location
 
@@ -14,42 +15,39 @@ GET
 
 ## Authentication Required
 
-Yes
+Yes - protected by `protectApiRoute(req)`.
 
 ## Behavior
 
-- Connects to the database using `connectDB()` whenever present.
-- Protects the route with `protectApiRoute(req)` and returns authentication errors.
-- Parses query parameters from the request URL.
-- Returns structured JSON response to the client.
+- Authenticates the request.
+- Parses `q` from query parameters.
+- Returns store products whose title matches the search term.
 
 ## Query Parameters
 
-- `q`
+- `q` (optional): title search term
 
 ## Request Body
 
-- None
+None
 
-## Response Example
+## Response
 
 ```json
 {
   "success": true,
-  "message": "...",
-  "data": [ ... ],
-  "pagination": { ... }
+  "message": "Welcome to the Store List!",
+  "data": [
+    {
+      "_id": "string",
+      "title": "string",
+      "image": "string",
+      "price": 123
+    }
+  ]
 }
 ```
 
-## Imports
-
-- `import { NextResponse } from "next/server";`
-- `import { protectApiRoute } from "@/lib/middleware";`
-- `import { connectDB } from '@/lib/db';`
-- `import Stores from "@/lib/models/Stores";`
-
 ## Notes
 
-- This endpoint is protected and requires valid authentication.
-- Supports pagination and optional search filters.
+- Protected endpoint.

@@ -1,8 +1,9 @@
+
 # GET /api/teams/add
 
 ## Purpose
 
-Returns API data for the endpoint.
+Returns available teams that are not assigned to any user.
 
 ## File Location
 
@@ -18,34 +19,37 @@ No
 
 ## Behavior
 
-- Connects to the database using `connectDB()` whenever present.
-- Parses query parameters from the request URL.
+- Finds all team IDs already referenced by `Users.team_id`.
+- Returns teams whose `_id` is not included in the used team list.
+- Populates `ground` and club/league information.
 
 ## Query Parameters
 
-- `q`
+- `selectedTeam` (optional): current team selection; logged but not used for filtering.
 
 ## Request Body
 
-- None
+None
 
-## Response Example
+## Response
 
 ```json
 {
-  "success": true,
-  "message": "...",
-  "data": ...
+  "teams": [
+    {
+      "_id": "string",
+      "name": "string",
+      "ground": { "_id": "string", "name": "string" },
+      "club": {
+        "_id": "string",
+        "name": "string",
+        "league": { "_id": "string", "label": "string", "title": "string" }
+      }
+    }
+  ]
 }
 ```
 
-## Imports
-
-- `import { connectDB } from '@/lib/db';`
-- `import Leagues from '@/lib/models/Leagues';`
-- `import Teams from '@/lib/models/Teams';`
-- `import Clubs from '@/lib/models/Clubs';`
-- `import Grounds from '@/lib/models/Grounds';`
-- `import Users from '@/lib/models/Users';`
-
 ## Notes
+
+- Public endpoint.

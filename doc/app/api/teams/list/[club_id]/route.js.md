@@ -1,8 +1,9 @@
+
 # GET /api/teams/list/[club_id]
 
 ## Purpose
 
-Returns API data for the endpoint.
+Returns teams for a specific club.
 
 ## File Location
 
@@ -14,39 +15,32 @@ GET
 
 ## Authentication Required
 
-Yes
+Yes - protected by `protectApiRoute(req)`.
 
 ## Behavior
 
-- Connects to the database using `connectDB()` whenever present.
-- Protects the route with `protectApiRoute(req)` and returns authentication errors.
-- Returns structured JSON response to the client.
+- Authenticates the request.
+- Reads `club_id` from the URL path.
+- Returns teams that belong to the club, with club metadata.
 
-## Query Parameters
+## Path Parameters
 
-- None
+- `club_id`: club identifier
 
 ## Request Body
 
-- None
+None
 
-## Response Example
+## Response
 
 ```json
 {
   "success": true,
-  "message": "...",
-  "data": ...
+  "message": "Welcome to the Team list by club id List!",
+  "data": [ /* team objects */ ]
 }
 ```
 
-## Imports
-
-- `import { NextResponse } from "next/server";`
-- `import { protectApiRoute } from "@/lib/middleware";`
-- `import { connectDB } from '@/lib/db';`
-- `import Teams from "@/lib/models/Teams";`
-
 ## Notes
 
-- This endpoint is protected and requires valid authentication.
+- Protected endpoint.

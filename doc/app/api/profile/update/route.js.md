@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Returns API data for the endpoint.
+Updates the authenticated user's profile information and optionally stores a new profile image.
 
 ## File Location
 
@@ -14,46 +14,82 @@ POST
 
 ## Authentication Required
 
-Yes
+Yes - protected by `protectApiRoute(req)`.
 
 ## Behavior
 
-- Connects to the database using `connectDB()` whenever present.
-- Protects the route with `protectApiRoute(req)` and returns authentication errors.
-- Reads JSON request body with `await req.json()`.
-- Returns structured JSON response to the client.
-- Looks up a specific document by its ID.
-
-## Query Parameters
-
-- None
+- Verifies the authenticated user using `protectApiRoute(req)`.
+- Reads the JSON request body.
+- Validates input fields using the `UserSchema` Zod schema.
+- Checks for an existing user with the same email address and refuses duplicates.
+- Updates profile fields: `name`, `email`, `telephone`, `surname`, and `nick_name`.
+- If `profile_image` is provided as Base64, saves it to disk under an uploads directory based on account type.
+- Deletes the previous profile image file if one exists.
+- Saves the updated user document.
 
 ## Request Body
 
-- Request JSON body
+```json
+{
+  "email": "user@example.com",
+  "name": "John",
+  "surname": "Doe",
+  "telephone": "+1234567890",
+  "nick_name": "JD",
+  "profile_image": "data:image/png;base64,iVBORw0..."
+}
+```
 
-## Response Example
+## Response
+
+### Success Response (200)
 
 ```json
 {
   "success": true,
-  "message": "...",
-  "data": ...
+  "message": "Profile updated successfully!"
 }
 ```
 
-## Imports
+### Validation Failure Example (200)
 
-- `import { NextResponse } from "next/server";`
-- `import { connectDB } from "@/lib/db";`
-- `import { protectApiRoute } from "@/lib/middleware";`
-- `import { z } from "zod";`
-- `import { v4 as uuidv4 } from "uuid";`
-- `import path from "path";`
-- `import { promises as fs } from "fs";`
-- `import Users from "@/lib/models/Users";`
-- `import bcrypt from "bcryptjs";`
+```json
+{
+  "success": false,
+  "message": {
+    "email": "Invalid email format",
+    "name": "Name is required"
+  }
+}
+```
 
-## Notes
+### Error Responses
 
-- This endpoint is protected and requires valid authentication.
+- **401 Unauthorized**: Missing or invalid authentication.
+- **200 OK with validation errors**: Invalid request data.
+- **409 Conflict / 200 with duplicate error**: Email already exists on another account.
+- **500 Internal Server Error**: File system or database failure.
+
+## Implementation Details
+
+- Uses Zod validation for `email`, `name`, `telephone`, and optional `profile_image`.
+- If `profile_image` is a valid Base64 image string, extracts MIME type, creates an uploads path, and writes the file to disk.
+- Saves the file under one of:
+  - `uploads/managers`
+  - `uploads/fans`
+  - `uploads/referees`
+- Deletes the old profile image file when a new one is uploaded.
+- Does not update password here, even though bcrypt is imported and commented out.
+- Uses `findByIdAndUpdate()` for the authenticated user's record.
+
+## Security Notes
+
+- Protected endpoint allowing profile changes for the current authenticated account only.
+- Accepts Base64 image uploads; validate file size and content on the client or in future backend hardening.
+- Email uniqueness check excludes the current user.
+
+## Usage Notes
+
+- Use this endpoint from profile update forms.
+- The client must provide all required fields and can optionally submit a Base64 `profile_image`.
+- This route updates profile metadata, not the password.

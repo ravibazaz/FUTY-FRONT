@@ -1,8 +1,9 @@
+
 # POST /api/users/loginbycode
 
 ## Purpose
 
-Returns API data for the endpoint.
+Logs in a user using a one-time login code and returns a JWT.
 
 ## File Location
 
@@ -18,41 +19,30 @@ No
 
 ## Behavior
 
-- Connects to the database using `connectDB()` whenever present.
-- Reads JSON request body with `await req.json()`.
-- Returns structured JSON response to the client.
-- Looks up a specific document by its ID.
-
-## Query Parameters
-
-- None
+- Validates `login_code`.
+- Finds the matching user by login code.
+- Marks the user as verified and active.
+- Returns a JWT token and populated user profile.
 
 ## Request Body
 
-- Request JSON body
+```json
+{
+  "login_code": "12345"
+}
+```
 
-## Response Example
+## Response
 
 ```json
 {
   "success": true,
-  "message": "...",
-  "data": ...
+  "message": "Login successfully",
+  "data": { /* user object */ },
+  "token": "jwt-token"
 }
 ```
 
-## Imports
-
-- `import { connectDB } from "@/lib/db";`
-- `import User from "@/lib/models/Users";`
-- `import bcrypt from "bcryptjs";`
-- `import { NextResponse } from "next/server";`
-- `import { z } from "zod";`
-- `import { generateToken } from '@/lib/jwt';`
-- `import Teams from "@/lib/models/Teams";`
-- `import Clubs from "@/lib/models/Clubs";`
-- `import Leagues from "@/lib/models/Leagues";`
-- `import PlayerInvitations from "@/lib/models/PlayerInvitations";`
-- `import FanInvitations from "@/lib/models/FanInvitations";`
-
 ## Notes
+
+- Marks the account active when login by code succeeds.

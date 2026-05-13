@@ -1,8 +1,9 @@
+
 # GET /api/tournaments
 
 ## Purpose
 
-Returns API data for the endpoint.
+Returns all tournaments.
 
 ## File Location
 
@@ -18,29 +19,24 @@ No
 
 ## Behavior
 
-- Connects to the database using `connectDB()` whenever present.
+- Connects to MongoDB.
+- Returns all documents from the `Tournaments` collection.
 
-## Query Parameters
-
-- None
-
-## Request Body
-
-- None
-
-## Response Example
+## Response
 
 ```json
 {
-  "success": true,
-  "message": "...",
-  "data": ...
+  "tournaments": [
+    {
+      "_id": "string",
+      "name": "string",
+      "date": "string",
+      "closing_date": "string"
+    }
+  ]
 }
 ```
 
-## Imports
-
-- `import { connectDB } from '@/lib/db';`
-- `import Tournaments from '@/lib/models/Tournaments';`
-
 ## Notes
+
+- Public endpoint.

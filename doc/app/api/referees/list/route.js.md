@@ -1,8 +1,9 @@
+
 # GET /api/referees/list
 
 ## Purpose
 
-Returns API data for the endpoint.
+Retrieves a paginated list of referees with optional name search and team/club/league population.
 
 ## File Location
 
@@ -14,47 +15,63 @@ GET
 
 ## Authentication Required
 
-Yes
+Yes - protected by `protectApiRoute(req)`.
 
 ## Behavior
 
-- Connects to the database using `connectDB()` whenever present.
-- Protects the route with `protectApiRoute(req)` and returns authentication errors.
-- Parses query parameters from the request URL.
-- Returns structured JSON response to the client.
+- Authenticates the request.
+- Parses `q`, `page`, and `limit` from query parameters.
+- Queries `Users` for referees and optionally filters by name using case-insensitive regex.
+- Populates each referee's `team_id` and nested `club` and `league` relations.
+- Returns paginated results and metadata.
 
 ## Query Parameters
 
-- `q`
-- `page`
-- `limit`
+- `q` (optional): text search on referee `name`
+- `page` (optional): page number, default `1`
+- `limit` (optional): items per page, default `10`
 
 ## Request Body
 
-- None
+None
 
-## Response Example
+## Response
 
 ```json
 {
   "success": true,
-  "message": "...",
-  "data": [ ... ],
-  "pagination": { ... }
+  "message": "Welcome to the Referees List!",
+  "data": [
+    {
+      "_id": "string",
+      "profile_image": "string",
+      "name": "string",
+      "surname": "string",
+      "referee_lavel": "string",
+      "referee_fee": "number",
+      "team_id": {
+        "_id": "string",
+        "name": "string",
+        "club": {
+          "_id": "string",
+          "name": "string",
+          "league": {
+            "_id": "string",
+            "label": "string"
+          }
+        }
+      }
+    }
+  ],
+  "pagination": { "total": 20, "page": 1, "limit": 10, "totalPages": 2, "hasNextPage": true, "hasPrevPage": false }
 }
 ```
 
-## Imports
+## Implementation Details
 
-- `import { NextResponse } from "next/server";`
-- `import { protectApiRoute } from "@/lib/middleware";`
-- `import { connectDB } from '@/lib/db';`
-- `import Users from '@/lib/models/Users';`
-- `import Teams from "@/lib/models/Teams";`
-- `import Clubs from "@/lib/models/Clubs";`
-- `import Leagues from "@/lib/models/Leagues";`
+- Uses `.lean()` for performance.
+- Sorts results by `_id` descending.
 
-## Notes
+## Security Notes
 
-- This endpoint is protected and requires valid authentication.
-- Supports pagination and optional search filters.
+- Protected route returning detailed referee data.

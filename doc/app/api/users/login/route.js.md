@@ -1,8 +1,9 @@
+
 # POST /api/users/login
 
 ## Purpose
 
-Returns API data for the endpoint.
+Authenticates an existing user with email and password and returns a JWT.
 
 ## File Location
 
@@ -18,42 +19,33 @@ No
 
 ## Behavior
 
-- Connects to the database using `connectDB()` whenever present.
-- Reads JSON request body with `await req.json()`.
-- Returns structured JSON response to the client.
-- Looks up a specific document by its ID.
-
-## Query Parameters
-
-- None
+- Validates `email` and `password`.
+- Rejects users that are not verified or inactive.
+- Loads the user and bcrypt-verifies the password.
+- Updates the user FCM token if provided.
+- Returns a JWT token and populated user profile.
 
 ## Request Body
 
-- Request JSON body
+```json
+{
+  "email": "user@example.com",
+  "password": "password123",
+  "fcmtoken": "OPTIONAL"
+}
+```
 
-## Response Example
+## Response
 
 ```json
 {
   "success": true,
-  "message": "...",
-  "data": ...
+  "message": "Login successfully",
+  "data": { /* user object */ },
+  "token": "jwt-token"
 }
 ```
 
-## Imports
-
-- `import { connectDB } from "@/lib/db";`
-- `import User from "@/lib/models/Users";`
-- `import Teams from "@/lib/models/Teams";`
-- `import Clubs from "@/lib/models/Clubs";`
-- `import Leagues from "@/lib/models/Leagues";`
-- `import bcrypt from "bcryptjs";`
-- `import { NextResponse } from "next/server";`
-- `import { z } from "zod";`
-- `import { generateToken } from '@/lib/jwt';`
-- `import AgeGroups from "@/lib/models/AgeGroups";`
-- `import PlayerInvitations from "@/lib/models/PlayerInvitations";`
-- `import FanInvitations from "@/lib/models/FanInvitations";`
-
 ## Notes
+
+- User data includes related team, club, and league data for fan/player managers.
