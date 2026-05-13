@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Returns API data for the endpoint.
+Mark a single notification as read.
 
 ## File Location
 
@@ -18,29 +18,30 @@ Yes
 
 ## Behavior
 
-- Connects to the database using `connectDB()` whenever present.
-- Protects the route with `protectApiRoute(req)` and returns authentication errors.
-- Reads JSON request body with `await req.json()`.
-- Returns structured JSON response to the client.
-- Looks up a specific document by its ID.
-
-## Query Parameters
-
-- None
+- Validates the request with `protectApiRoute(req)`.
+- Reads JSON payload from the request body.
+- Updates the specified `Notification` document by `_id`.
+- Sets `isRead` to `true` and sets `readAt` to the current timestamp.
+- Returns a success message.
 
 ## Request Body
 
-- Request JSON body
+- JSON object containing:
+  - `id` (required): ID of the notification to mark read.
 
 ## Response Example
 
 ```json
 {
   "success": true,
-  "message": "...",
-  "data": ...
+  "message": "Successfully read"
 }
 ```
+
+## Implementation Notes
+
+- The route does not validate whether the notification belongs to the authenticated user.
+- It uses `findByIdAndUpdate` to apply the status change.
 
 ## Imports
 
@@ -51,4 +52,5 @@ Yes
 
 ## Notes
 
-- This endpoint is protected and requires valid authentication.
+- This endpoint is protected and requires authentication.
+- It is intended for marking individual notifications read.

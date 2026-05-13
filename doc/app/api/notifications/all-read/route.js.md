@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Returns API data for the endpoint.
+Mark all unread notifications for the authenticated user as read.
 
 ## File Location
 
@@ -18,9 +18,11 @@ Yes
 
 ## Behavior
 
-- Connects to the database using `connectDB()` whenever present.
-- Protects the route with `protectApiRoute(req)` and returns authentication errors.
-- Returns structured JSON response to the client.
+- Validates the user with `protectApiRoute(req)`.
+- Connects to MongoDB using `connectDB()`.
+- Updates all notifications for the current user where `isRead` is `false`.
+- Sets `isRead` to `true` and records `readAt` with the current timestamp.
+- Returns a success message.
 
 ## Query Parameters
 
@@ -35,10 +37,14 @@ Yes
 ```json
 {
   "success": true,
-  "message": "...",
-  "data": ...
+  "message": "Successfully read all"
 }
 ```
+
+## Implementation Notes
+
+- This endpoint performs a bulk update across the authenticated user's unread notifications.
+- It does not return the updated notification objects.
 
 ## Imports
 
@@ -49,4 +55,4 @@ Yes
 
 ## Notes
 
-- This endpoint is protected and requires valid authentication.
+- The route is intended for marking all notifications read with a single request.

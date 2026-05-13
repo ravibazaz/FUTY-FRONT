@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Returns API data for the endpoint.
+Return the authenticated user's unread notification count.
 
 ## File Location
 
@@ -18,9 +18,10 @@ Yes
 
 ## Behavior
 
-- Connects to the database using `connectDB()` whenever present.
-- Protects the route with `protectApiRoute(req)` and returns authentication errors.
-- Returns structured JSON response to the client.
+- Validates the request using `protectApiRoute(req)`.
+- Connects to MongoDB with `connectDB()`.
+- Counts unread notifications where `userId` is the current user and `isRead` is `false`.
+- Returns the count inside the response message object.
 
 ## Query Parameters
 
@@ -35,10 +36,16 @@ Yes
 ```json
 {
   "success": true,
-  "message": "...",
-  "data": ...
+  "message": {
+    "count": 7
+  }
 }
 ```
+
+## Implementation Notes
+
+- The route returns unread notification count under `message.count`.
+- It does not return the notification objects themselves.
 
 ## Imports
 
@@ -49,4 +56,4 @@ Yes
 
 ## Notes
 
-- This endpoint is protected and requires valid authentication.
+- This endpoint is protected and intended for client badge/count display.

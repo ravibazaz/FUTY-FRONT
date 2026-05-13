@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Returns API data for the endpoint.
+Return the authenticated users notification feed with optional search and pagination.
 
 ## File Location
 
@@ -18,16 +18,18 @@ Yes
 
 ## Behavior
 
-- Connects to the database using `connectDB()` whenever present.
-- Protects the route with `protectApiRoute(req)` and returns authentication errors.
-- Parses query parameters from the request URL.
-- Returns structured JSON response to the client.
+- Validates the request using `protectApiRoute(req)`.
+- Connects to MongoDB using `connectDB()`.
+- Reads optional query parameters `q`, `page`, and `limit`.
+- Filters notifications by the current `userId` and a case-insensitive `title` search.
+- Sorts notifications by `createdAt` descending.
+- Returns paginated results with metadata.
 
 ## Query Parameters
 
-- `q`
-- `page`
-- `limit`
+- `q` (optional): search string to filter notification titles.
+- `page` (optional): page number, defaults to `1`.
+- `limit` (optional): number of notifications per page, defaults to `20`.
 
 ## Request Body
 
@@ -38,11 +40,29 @@ Yes
 ```json
 {
   "success": true,
-  "message": "...",
-  "data": [ ... ],
-  "pagination": { ... }
+  "data": [
+    {
+      "_id": "...",
+      "title": "New match invitation",
+      "message": "...",
+      "isRead": false,
+      "createdAt": "2026-05-13T12:34:56.789Z"
+    }
+  ],
+  "pagination": {
+    "total": 42,
+    "page": 1,
+    "limit": 20,
+    "totalPages": 3
+  }
 }
 ```
+
+## Implementation Notes
+
+- The endpoint only returns notifications belonging to the authenticated user.
+- The query uses `req.nextUrl.searchParams` to read URL parameters.
+- Results are returned in descending order by `createdAt`.
 
 ## Imports
 
@@ -53,5 +73,4 @@ Yes
 
 ## Notes
 
-- This endpoint is protected and requires valid authentication.
-- Supports pagination and optional search filters.
+- The route supports search and pagination for notification feed rendering.
