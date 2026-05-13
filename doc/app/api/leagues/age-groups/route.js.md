@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Returns API data for the endpoint.
+Retrieve age group details for a specific league.
 
 ## File Location
 
@@ -18,13 +18,14 @@ No
 
 ## Behavior
 
-- Connects to the database using `connectDB()` whenever present.
-- Parses query parameters from the request URL.
-- Looks up a specific document by its ID.
+- Connects to MongoDB using `connectDB()`.
+- Reads the required `league` query parameter.
+- Finds the league by ID and populates its `age_groups` field.
+- Returns the selected league document with `age_groups`.
 
 ## Query Parameters
 
-- `q`
+- `league` (required): league ID to retrieve age group details for.
 
 ## Request Body
 
@@ -34,11 +35,21 @@ No
 
 ```json
 {
-  "success": true,
-  "message": "...",
-  "data": ...
+  "leagues": {
+    "_id": "...",
+    "age_groups": [
+      { "_id": "...", "age_group": "U12" },
+      { "_id": "...", "age_group": "U14" }
+    ]
+  }
 }
 ```
+
+## Implementation Notes
+
+- The handler calls `Leagues.findById(...)` and populates `age_groups`.
+- It does not perform authentication.
+- If the query parameter is missing or invalid, the response may be empty or an error from Mongoose.
 
 ## Imports
 
@@ -47,3 +58,5 @@ No
 - `import AgeGroups from '@/lib/models/AgeGroups';`
 
 ## Notes
+
+- This route returns a league-centric `age_groups` payload rather than a flat age group list.
