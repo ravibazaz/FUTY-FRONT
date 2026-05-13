@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Returns API data for the endpoint.
+Retrieve all users whose `account_type` is `Manager`.
 
 ## File Location
 
@@ -18,7 +18,9 @@ No
 
 ## Behavior
 
-- Connects to the database using `connectDB()` whenever present.
+- Connects to MongoDB using `connectDB()`.
+- Queries the `Users` collection where `account_type` equals `Manager`.
+- Returns a JSON payload containing the raw `managers` array.
 
 ## Query Parameters
 
@@ -32,11 +34,23 @@ No
 
 ```json
 {
-  "success": true,
-  "message": "...",
-  "data": ...
+  "managers": [
+    {
+      "_id": "...",
+      "name": "Jane",
+      "surname": "Doe",
+      "account_type": "Manager",
+      "team_id": "..."
+    }
+  ]
 }
 ```
+
+## Implementation Notes
+
+- The endpoint is public and does not require authentication.
+- It returns unpaginated results for all manager users.
+- The handler uses `Response.json(...)` rather than `NextResponse`.
 
 ## Imports
 
@@ -44,3 +58,5 @@ No
 - `import Users from '@/lib/models/Users';`
 
 ## Notes
+
+- Clients should paginate or filter results if the manager user set grows large.

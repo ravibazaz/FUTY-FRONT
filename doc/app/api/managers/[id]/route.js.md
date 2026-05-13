@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Returns API data for the endpoint.
+Retrieve details for a specific manager user by ID.
 
 ## File Location
 
@@ -18,10 +18,11 @@ Yes
 
 ## Behavior
 
-- Connects to the database using `connectDB()` whenever present.
-- Protects the route with `protectApiRoute(req)` and returns authentication errors.
-- Returns structured JSON response to the client.
-- Looks up a specific document by its ID.
+- Validates the request with `protectApiRoute(req)`.
+- Connects to MongoDB using `connectDB()`.
+- Reads the `id` route parameter.
+- Queries `Users.findById(id)` and populates the manager's team, club, league, and age groups.
+- Returns the manager document in the response.
 
 ## Query Parameters
 
@@ -36,10 +37,25 @@ Yes
 ```json
 {
   "success": true,
-  "message": "...",
-  "data": ...
+  "message": "Welcome to the Manager List!",
+  "data": {
+    "_id": "...",
+    "name": "Jane",
+    "surname": "Doe",
+    "team_id": {
+      "name": "A Team",
+      "club": { "label": "AC", "name": "A Club", "image": "...", "league": { "label": "PL", "title": "Premier League" } },
+      "age_groups": [ { "_id": "...", "label": "U18", "age_group": "Under 18" } ]
+    }
+  }
 }
 ```
+
+## Implementation Notes
+
+- The route is protected and will return auth errors for unauthenticated access.
+- It populates nested references for `team_id.club` and `team_id.age_groups`.
+- The response already strips `__v` from the returned document.
 
 ## Imports
 
@@ -54,4 +70,4 @@ Yes
 
 ## Notes
 
-- This endpoint is protected and requires valid authentication.
+- This endpoint is designed for authenticated user profile detail retrieval.

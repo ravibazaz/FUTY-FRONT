@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Returns API data for the endpoint.
+Clear authentication cookies and log the user out.
 
 ## File Location
 
@@ -18,8 +18,9 @@ No
 
 ## Behavior
 
-- Connects to the database using `connectDB()` whenever present.
-- Returns structured JSON response to the client.
+- Returns a JSON success response.
+- Clears the `auth_token` and `user_id` cookies by setting them with `maxAge: 0`.
+- Uses `NextResponse.json(...)` to build the response.
 
 ## Query Parameters
 
@@ -33,9 +34,7 @@ No
 
 ```json
 {
-  "success": true,
-  "message": "...",
-  "data": ...
+  "success": true
 }
 ```
 
@@ -44,3 +43,6 @@ No
 - `import { NextResponse } from "next/server";`
 
 ## Notes
+
+- This route performs logout by invalidating cookies.
+- No database access or authentication middleware is executed in the handler.
