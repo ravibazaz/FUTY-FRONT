@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Returns API data for the endpoint.
+Update score details for a friendly match after acceptance.
 
 ## File Location
 
@@ -18,39 +18,57 @@ Yes
 
 ## Behavior
 
-- Connects to the database using `connectDB()` whenever present.
-- Protects the route with `protectApiRoute(req)` and returns authentication errors.
-- Reads JSON request body with `await req.json()`.
-- Returns structured JSON response to the client.
-- Looks up a specific document by its ID.
-
-## Query Parameters
-
-- None
+- Validates the user with `protectApiRoute(req)`.
+- Connects to MongoDB using `connectDB()`.
+- Parses JSON payload from the request.
+- Verifies the authenticated user exists in the `Users` collection.
+- Updates the friendly document by `_id` with:
+  - `created_by_user_score`
+  - `accepted_by_user_score`
+- Returns a JSON success response.
 
 ## Request Body
 
-- Request JSON body
+- JSON object containing:
+  - `_id`: ID of the friendly document
+  - `created_by_user_score`: score value for the creator
+  - `accepted_by_user_score`: score value for the acceptor
 
 ## Response Example
+
+Success:
 
 ```json
 {
   "success": true,
-  "message": "...",
-  "data": ...
+  "message": "Friendly Score Updated"
 }
 ```
+
+Failure if user is missing:
+
+```json
+{
+  "success": false,
+  "message": "User does not exists"
+}
+```
+
+## Implementation Notes
+
+- There is no validation on the score values; the request body is trusted as-is.
+- The endpoint does not confirm whether the current user is related to the friendly.
+- It only updates score fields on the target friendly document.
 
 ## Imports
 
 - `import { NextResponse } from "next/server";`
 - `import { connectDB } from "@/lib/db";`
 - `import { protectApiRoute } from "@/lib/middleware";`
-- `import { z } from "zod";`
 - `import Friendlies from "@/lib/models/Friendlies";`
 - `import Users from "@/lib/models/Users";`
 
 ## Notes
 
-- This endpoint is protected and requires valid authentication.
+- This route is protected and requires authentication.
+- Score updates are applied directly without range checking.

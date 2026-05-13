@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Returns API data for the endpoint.
+Retrieve all friendly match requests from the database.
 
 ## File Location
 
@@ -18,7 +18,9 @@ No
 
 ## Behavior
 
-- Connects to the database using `connectDB()` whenever present.
+- Calls `connectDB()` to ensure a MongoDB connection.
+- Uses the `Friendlies` Mongoose model to query all friendly documents.
+- Returns a JSON object with the raw `friendlies` array.
 
 ## Query Parameters
 
@@ -32,11 +34,27 @@ No
 
 ```json
 {
-  "success": true,
-  "message": "...",
-  "data": ...
+  "friendlies": [
+    {
+      "_id": "...",
+      "name": "Weekend Friendly",
+      "date": "2026-05-15",
+      "time": "14:00",
+      "ground_id": "...",
+      "team_id": "...",
+      "manager_id": "...",
+      "league_id": "...",
+      "created_by_user": "..."
+    }
+  ]
 }
 ```
+
+## Implementation Notes
+
+- The endpoint uses `Response.json(...)` instead of `NextResponse`.
+- No filter, pagination, or population is applied; it returns the raw documents from `Friendlies`.
+- If the underlying collection has many records, this endpoint may return a large payload.
 
 ## Imports
 
@@ -44,3 +62,6 @@ No
 - `import Friendlies from '@/lib/models/Friendlies';`
 
 ## Notes
+
+- This route is intentionally public and does not perform authorization.
+- Consumers should handle large result sets carefully.

@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Returns API data for the endpoint.
+Create a new friendly match request for the authenticated user.
 
 ## File Location
 
@@ -18,28 +18,56 @@ Yes
 
 ## Behavior
 
-- Connects to the database using `connectDB()` whenever present.
-- Protects the route with `protectApiRoute(req)` and returns authentication errors.
-- Reads form data from the request.
-- Returns structured JSON response to the client.
-
-## Query Parameters
-
-- None
+- Uses `protectApiRoute(req)` to validate the authenticated user.
+- Parses multipart `FormData` from the request.
+- Converts form entries into a plain object and collects any `images` fields.
+- Validates required fields using the `TournamentSchema` Zod schema.
+- Creates a new `Friendlies` document with `created_by_user` set to the current user.
+- Returns a JSON success/failure response.
 
 ## Request Body
 
-- FormData body
+- Multipart `FormData`
+- Required fields:
+  - `name`: Friendly title
+  - `date`: Date string
+  - `time`: Time string
+  - `description`: Description string
+  - `ground_id`: Ground object ID
+  - `team_id`: Team object ID
+  - `manager_id`: Manager object ID
+  - `league_id`: League object ID
+- Optional field:
+  - `images`: one or more file entries (currently parsed but not persisted in the implementation)
 
 ## Response Example
+
+Success:
 
 ```json
 {
   "success": true,
-  "message": "...",
-  "data": ...
+  "message": "Successfully added friendlys!"
 }
 ```
+
+Validation error:
+
+```json
+{
+  "success": false,
+  "message": {
+    "name": "Friendly Title is required",
+    "date": "Date is required"
+  }
+}
+```
+
+## Implementation Notes
+
+- The schema currently validates text fields only; image handling is present in commented code and is not active.
+- `rawData` is stored directly in the new document alongside `created_by_user`.
+- The route returns HTTP 200 for both success and validation/error responses.
 
 ## Imports
 
@@ -54,4 +82,5 @@ Yes
 
 ## Notes
 
-- This endpoint is protected and requires valid authentication.
+- This endpoint is protected and requires authentication.
+- The current implementation does not persist uploaded image files.
