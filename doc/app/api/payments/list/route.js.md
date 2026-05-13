@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Returns API data for the endpoint.
+Retrieve tournament payment orders for the authenticated user.
 
 ## File Location
 
@@ -18,9 +18,11 @@ Yes
 
 ## Behavior
 
-- Connects to the database using `connectDB()` whenever present.
-- Protects the route with `protectApiRoute(req)` and returns authentication errors.
-- Returns structured JSON response to the client.
+- Validates the request with `protectApiRoute(req)`.
+- Connects to MongoDB with `connectDB()`.
+- Queries `TournamentOrderHistories` for orders created by the current user.
+- Populates the `tournament_Id` reference for each order.
+- Returns the list of payment orders.
 
 ## Query Parameters
 
@@ -35,11 +37,27 @@ Yes
 ```json
 {
   "success": true,
-  "message": "...",
-  "data": [ ... ],
-  "pagination": { ... }
+  "message": "Welcome to the Tournament Payment details!",
+  "data": [
+    {
+      "_id": "...",
+      "amount": 100,
+      "currency": "gbp",
+      "status": "pending",
+      "tournament_Id": {
+        "_id": "...",
+        "name": "..."
+      }
+    }
+  ]
 }
 ```
+
+## Implementation Notes
+
+- The endpoint returns all orders for the authenticated user without pagination.
+- It uses `.populate('tournament_Id')` to include tournament details.
+- No search or filtering is implemented beyond the current user scope.
 
 ## Imports
 
@@ -50,5 +68,4 @@ Yes
 
 ## Notes
 
-- This endpoint is protected and requires valid authentication.
-- Supports pagination and optional search filters.
+- This route is protected and only returns orders belonging to the authenticated user.

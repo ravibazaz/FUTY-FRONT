@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Returns API data for the endpoint.
+Retrieve the status of a tournament payment order.
 
 ## File Location
 
@@ -18,27 +18,29 @@ No
 
 ## Behavior
 
-- Connects to the database using `connectDB()` whenever present.
-- Reads JSON request body with `await req.json()`.
-- Looks up a specific document by its ID.
-
-## Query Parameters
-
-- None
+- Reads `orderId` from the JSON request body.
+- Connects to MongoDB using `connectDB()`.
+- Finds the `TournamentOrderHistories` record by ID.
+- Returns the order status.
 
 ## Request Body
 
-- Request JSON body
+- JSON object containing:
+  - `orderId` (required): ID of the payment order
 
 ## Response Example
 
 ```json
 {
-  "success": true,
-  "message": "...",
-  "data": ...
+  "status": "pending"
 }
 ```
+
+## Implementation Notes
+
+- This endpoint does not authenticate the calling user.
+- It returns only the `status` field from the order document.
+- If the order ID is invalid, the response may contain `null` or throw an error.
 
 ## Imports
 
@@ -46,3 +48,5 @@ No
 - `import TournamentOrderHistories from "@/lib/models/TournamentOrderHistories";`
 
 ## Notes
+
+- Because authentication is not enforced, callers should treat this endpoint as public status lookup.

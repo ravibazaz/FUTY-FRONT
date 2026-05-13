@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Returns API data for the endpoint.
+Create a Stripe payment intent for a tournament order.
 
 ## File Location
 
@@ -18,29 +18,37 @@ Yes
 
 ## Behavior
 
-- Connects to the database using `connectDB()` whenever present.
-- Protects the route with `protectApiRoute(req)` and returns authentication errors.
-- Reads JSON request body with `await req.json()`.
-- Returns structured JSON response to the client.
-- Looks up a specific document by its ID.
-
-## Query Parameters
-
-- None
+- Validates the authenticated user with `protectApiRoute(req)`.
+- Reads `tournament_Id` from the JSON request body.
+- Fetches the tournament price from the `Tournaments` collection.
+- Creates a pending `TournamentOrderHistories` record with `created_by_user_Id`.
+- Creates a Stripe payment intent for the entry fee amount using GBP currency.
+- Saves the Stripe `paymentIntentId` on the order record.
+- Returns the Stripe `client_secret` and the newly created order ID.
 
 ## Request Body
 
-- Request JSON body
+- JSON object containing:
+  - `tournament_Id` (required): ID of the tournament being paid for
 
 ## Response Example
 
 ```json
 {
   "success": true,
-  "message": "...",
-  "data": ...
+  "message": "Payment Intent generated",
+  "data": {
+    "clientSecret": "...",
+    "orderId": "..."
+  }
 }
 ```
+
+## Implementation Notes
+
+- The amount is derived from `tournamentprice.cost_per_team_entry * 100` and sent to Stripe in minor units.
+- The created order is stored with `status: "pending"` before payment completion.
+- Errors return a JSON response with HTTP status `400`.
 
 ## Imports
 
@@ -53,4 +61,4 @@ Yes
 
 ## Notes
 
-- This endpoint is protected and requires valid authentication.
+- This route requires authentication and uses Stripe for payment intent creation.
