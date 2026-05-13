@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Returns API data for the endpoint.
+Retrieves a list of all users with account type "Player" from the database.
 
 ## File Location
 
@@ -18,29 +18,54 @@ No
 
 ## Behavior
 
-- Connects to the database using `connectDB()` whenever present.
+- Establishes database connection using `connectDB()`.
+- Queries the `Users` collection for all documents where `account_type` equals "Player".
+- Returns the results as a JSON array of player objects.
 
 ## Query Parameters
 
-- None
+None
 
 ## Request Body
 
-- None
+None
 
-## Response Example
+## Response
+
+### Success Response (200)
 
 ```json
 {
-  "success": true,
-  "message": "...",
-  "data": ...
+  "players": [
+    {
+      "_id": "string",
+      "name": "string",
+      "surname": "string",
+      "email": "string",
+      "account_type": "Player",
+      "profile_image": "string",
+      // ... other user fields
+    }
+  ]
 }
 ```
 
-## Imports
+### Error Responses
 
-- `import { connectDB } from '@/lib/db';`
-- `import Users from '@/lib/models/Users';`
+- **500 Internal Server Error**: Database connection or query failure
 
-## Notes
+## Implementation Details
+
+- Uses Mongoose `Users.find()` with filter `{ account_type: "Player" }`.
+- Returns raw player objects without population of related data.
+- No pagination implemented - returns all matching players.
+
+## Security Notes
+
+- Public endpoint with no authentication required.
+- Returns potentially sensitive user data - consider if this should be protected.
+
+## Usage Notes
+
+- This endpoint provides basic player listing without detailed relationships.
+- For paginated, searchable, or populated player data, use `/api/players/list` instead.
