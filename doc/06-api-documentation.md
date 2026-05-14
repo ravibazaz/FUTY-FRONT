@@ -8,7 +8,7 @@ The Futy League Management System provides a comprehensive REST API for managing
 
 ### Base URL
 ```
-https://api.futy-league.com
+https://futy-api.makeitlive.info
 ```
 
 ### Authentication

@@ -6,46 +6,31 @@ The Futy League Management System includes a comprehensive admin panel for platf
 
 ## Admin Architecture
 
-### Admin User Roles
+### Admin User Role
 
-- **Super Admin**: Full system access, user management, system configuration
-- **League Admin**: League-specific management, tournament oversight
-- **Content Admin**: Content management, announcements, media approval
+- **Admin**: Full system access including user management, league management, tournament oversight, content moderation, system configuration, financial tracking, analytics, and platform settings.
 
 ### Access Control
 
 ```javascript
-// Admin role hierarchy
-const ADMIN_ROLES = {
-  SUPER_ADMIN: 'super_admin',
-  LEAGUE_ADMIN: 'league_admin',
-  CONTENT_ADMIN: 'content_admin'
-};
+// Admin role
+const ADMIN_ROLE = 'Admin';
 
 // Permission matrix
-const ADMIN_PERMISSIONS = {
-  [ADMIN_ROLES.SUPER_ADMIN]: [
-    'user.manage',
-    'league.manage',
-    'team.manage',
-    'tournament.manage',
-    'system.settings',
-    'content.manage',
-    'reports.view',
-    'audit.view'
-  ],
-  [ADMIN_ROLES.LEAGUE_ADMIN]: [
-    'tournament.manage',
-    'team.approve',
-    'reports.view',
-    'content.manage'
-  ],
-  [ADMIN_ROLES.CONTENT_ADMIN]: [
-    'content.manage',
-    'media.approve',
-    'announcements.create'
-  ]
-};
+const ADMIN_PERMISSIONS = [
+  'user.manage',
+  'league.manage',
+  'team.manage',
+  'tournament.manage',
+  'system.settings',
+  'content.manage',
+  'media.approve',
+  'announcements.create',
+  'reports.view',
+  'audit.view',
+  'financial.manage',
+  'analytics.view'
+];
 ```
 
 ## Core Admin Features

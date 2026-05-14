@@ -26,10 +26,10 @@ Before installing the Futy League Management System, ensure your development env
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-organization/futy-league-management.git
+git clone https://github.com/ravibazaz/FUTY-FRONT.git
 
 # Navigate to the project directory
-cd futy-league-management
+cd FUTY-FRONT
 
 # Verify the clone
 ls -la
