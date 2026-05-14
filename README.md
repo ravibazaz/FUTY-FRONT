@@ -221,7 +221,7 @@ For support, issues, or questions:
 1. Check the comprehensive documentation in `/doc` folder
 2. Review API documentation in [doc/06-api-documentation.md](doc/06-api-documentation.md)
 3. Check environment configuration in [doc/07-environment-variables.md](doc/07-environment-variables.md)
-4. Contact the development team
+4. Contact the development 2
 
 ## 📋 Project Status
 
