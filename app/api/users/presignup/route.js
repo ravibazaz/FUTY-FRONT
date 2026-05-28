@@ -13,7 +13,12 @@ export const UserSchema = z.object({
   password: z.string().nonempty("Password is required").min(7, "Password must be at least 7 character"),
   confirm_password: z.string().min(7, "Confirm password must be at least 7 characters long"),
   name: z.string().nonempty("Name is required").min(2, "Name must be at least 2 character"),
-  telephone: z.string().nonempty("Telephone is required").min(2, "Telephone must be at least 2 character"),
+  telephone: z.string()
+    .trim()
+    .min(10, { message: "Telephone must be at least 10 digits." })
+    .max(11, { message: "Telephone must be at most 11 digits." })
+    .regex(/^\d+$/, { message: "Digits only (0–9)" }),
+  // telephone: z.string().nonempty("Telephone is required").min(2, "Telephone must be at least 2 character"),
   account_type: z.string().nonempty("Account Type is required").min(2, "Account Type must be at least 2 character"),
   fcmtoken: z.string().optional(),
   pre_signup_team: z.string().optional(),
