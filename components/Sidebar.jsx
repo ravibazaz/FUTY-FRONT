@@ -78,10 +78,31 @@ export default function Sidebar() {
                                     </Link>
                                 </div>
                             </li>
- 
-                            <li className="nav-item">
-                                <Link prefetch={false} className={`nav-link ${pathname.startsWith('/admin/referees') ? 'active' : ''}`} href="/admin/referees"><span className="link-text">Referees</span></Link>
+
+
+                            <li className="nav-item with-submenu" >
+                                <a className="nav-link collapsed" href="#submenu5" data-bs-toggle="collapse" role="button" aria-expanded="false" >
+                                    <span className="link-text">Referees</span>
+                                </a>
+                                <div className="collapse submenu" id="submenu5">
+                                    <Link
+                                        prefetch={false}
+                                        className={`nav-link ${pathname.startsWith('/admin/referees') ? 'active' : ''}`}
+                                        href="/admin/referees"
+                                    >
+                                        Signup
+                                    </Link>
+                                    <Link
+                                        prefetch={false}
+                                        className={`nav-link ${pathname.startsWith('/admin/prereferees') ? 'active' : ''}`}
+                                        href="/admin/prereferees"
+                                    >
+                                        Pre Signup
+                                    </Link>
+                                </div>
                             </li>
+ 
+   
                             <li className="nav-item">
                                 <Link prefetch={false} className={`nav-link ${pathname.startsWith('/admin/players') ? 'active' : ''}`} href="/admin/players"><span className="link-text">Players</span></Link>
                             </li>

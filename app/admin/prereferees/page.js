@@ -24,7 +24,7 @@ export default function FanTable() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const res = await fetch("/api/referees/signup");
+        const res = await fetch("/api/referees/presignup");
         const result = await res.json();
         setReferees(result.referees || []);
       } catch (err) {
@@ -94,7 +94,7 @@ export default function FanTable() {
       <main className="main-body col-md-9 col-lg-9 col-xl-10">
         <div className="body-top d-flex flex-wrap justify-content-between align-items-center gap-20 mb-10">
           <div className="top-left">
-            <p className="top-breadcrumb mb-0">{'> Referees'}</p>
+            <p className="top-breadcrumb mb-0">{'> Referees - Pre Signup'}</p>
           </div>
           <div className="top-right d-flex justify-content-between align-items-center gap-10">
             <Link prefetch={false} className="btn btn-common" href="/admin/referees/new">New Referee</Link>
@@ -105,7 +105,7 @@ export default function FanTable() {
         </div>
         <div className="body-title-bar d-flex flex-wrap justify-content-between align-items-center gap-20 mb-10">
           <div className="body-title-bar-left d-flex flex-wrap align-items-center gap-20-70">
-            <h1 className="page-title">Referees</h1>
+            <h1 className="page-title">Referees - Pre Signup</h1>
           </div>
         </div>
 
