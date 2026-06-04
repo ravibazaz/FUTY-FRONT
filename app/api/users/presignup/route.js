@@ -20,6 +20,7 @@ export const UserSchema = z.object({
     .regex(/^\d+$/, { message: "Digits only (0–9)" }),
   // telephone: z.string().nonempty("Telephone is required").min(2, "Telephone must be at least 2 character"),
   account_type: z.string().nonempty("Account Type is required").min(2, "Account Type must be at least 2 character"),
+  country_code: z.string().nonempty("Country Code is required").min(2, "Country Code must be at least 2 character"),
   fcmtoken: z.string().optional(),
   pre_signup_team: z.string().optional(),
   pre_signup_age_group: z.string().optional(),
@@ -58,6 +59,7 @@ export async function POST(req) {
     const surname = data.surname;
     const telephone = data.telephone;
     const account_type = data.account_type;
+    const country_code = data.country_code;
     const fcmtoken = data.fcmtoken;
     const pre_signup_team = data.pre_signup_team;
     const pre_signup_age_group = data.pre_signup_age_group;
@@ -123,7 +125,7 @@ export async function POST(req) {
       await client.messages.create({
         body: `Your Login OTP is ${randomNumber}`,
         from: process.env.TWILIO_PHONE_NUMBER,
-        to: '+91' + telephone,
+        to: country_code + telephone,
       });
 
 
@@ -161,6 +163,7 @@ export async function POST(req) {
         surname,
         telephone,
         account_type,
+        country_code,
         fcmtoken,
         pre_signup_age_group,
         pre_signup_team,
@@ -171,6 +174,31 @@ export async function POST(req) {
       });
 
       await User.findByIdAndUpdate(newuser._id, { login_code: randomNumber });
+
+      try {
+        const message = `<p>Dear Admin,<br><br>A new pre signup has been made in Futy app.Please check email : ${email} and account type : ${account_type} </p>`;
+        const subject = "Pre Registration";
+        const res = await fetch(process.env.BREVO_REST_URL, {
+          method: "POST",
+          headers: {
+            "accept": "application/json",
+            "api-key": process.env.BREVO_API_KEY,
+            "content-type": "application/json",
+          },
+          body: JSON.stringify({
+            sender: { email: process.env.BREVO_MAIL_FROM, name: process.env.MAIL_FROM_NAME },
+            to: [{ email: process.env.THE_FRIENDLY_SUPPORT }],
+            subject: subject,
+            htmlContent: `<p>${message}</p>`,
+          }),
+        });
+        // return NextResponse.json({ success: true });
+      } catch (error) {
+        console.error("Email error:", error);
+        //return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+      }
+
+
       return NextResponse.json({
         success: true,
         data: {
@@ -183,7 +211,7 @@ export async function POST(req) {
 
       // return NextResponse.json({ success: true });
     } catch (error) {
-      console.error("SMS sending failed:", error);
+      // console.error("SMS sending failed:", error);
       return NextResponse.json(
         {
           success: false,
@@ -195,7 +223,7 @@ export async function POST(req) {
     }
 
   } catch (err) {
-    console.error("Signup error:", err);
+    // console.error("Signup error:", err);
     return NextResponse.json(
       {
         success: false,

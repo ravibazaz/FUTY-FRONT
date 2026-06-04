@@ -7,7 +7,12 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import twilio from "twilio";
 export const UserSchema = z.object({
-  telephone: z.string().nonempty("Telephone is required").min(2, "Telephone must be at least 2 character"),
+  telephone: z.string()
+    .trim()
+    .min(10, { message: "Telephone must be at least 10 digits." })
+    .max(11, { message: "Telephone must be at most 11 digits." })
+    .regex(/^\d+$/, { message: "Digits only (0–9)" }),
+  country_code: z.string().nonempty("Country Code is required").min(2, "Country Code must be at least 2 character"),
 });
 
 const client = twilio(
@@ -52,7 +57,7 @@ export async function POST(req) {
       await client.messages.create({
         body: `Your Login OTP is ${randomNumber}`,
         from: process.env.TWILIO_PHONE_NUMBER,
-        to: '+91'+ result.data.telephone+'',
+        to: result.data.country_code + result.data.telephone + '',
       });
 
       await User.findByIdAndUpdate(user._id, { login_code: randomNumber, isVerified: false, isActive: false });
@@ -63,7 +68,7 @@ export async function POST(req) {
       });
       // return NextResponse.json({ success: true });
     } catch (error) {
-      console.error("SMS sending failed:", error);
+     // console.error("SMS sending failed:", error);
       return NextResponse.json(
         {
           success: false,
@@ -71,12 +76,12 @@ export async function POST(req) {
         },
         { status: 200 }
       );
-      
+
     }
 
 
   } catch (err) {
-    console.error("Login error:", err);
+   // console.error("Login error:", err);
     return NextResponse.json(
       {
         success: false,
