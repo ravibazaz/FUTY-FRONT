@@ -46,9 +46,9 @@ export default function Sidebar() {
                                     <Link
                                         prefetch={false}
                                         className={`nav-link ${pathname === "/admin/teams/invitationmanagers" ||
-                                                pathname.startsWith("/admin/teams/invitationmanagers/")
-                                                ? "active"
-                                                : ""
+                                            pathname.startsWith("/admin/teams/invitationmanagers/")
+                                            ? "active"
+                                            : ""
                                             }`}
                                         href="/admin/teams/invitationmanagers"
                                     >
@@ -56,12 +56,29 @@ export default function Sidebar() {
                                     </Link>
                                 </div>
                             </li>
-                            {/* <li className="nav-item">
-                                <Link prefetch={false} className={`nav-link ${pathname.startsWith('/admin/teams') ? 'active' : ''}`} href="/admin/teams"><span className="link-text">Teams</span></Link>
-                            </li> */}
-                            <li className="nav-item">
-                                <Link prefetch={false} className={`nav-link ${pathname.startsWith('/admin/managers') ? 'active' : ''}`} href="/admin/managers"><span className="link-text">Managers</span></Link>
+
+                            <li className="nav-item with-submenu" >
+                                <a className="nav-link collapsed" href="#submenu5" data-bs-toggle="collapse" role="button" aria-expanded="false" >
+                                    <span className="link-text">Managers</span>
+                                </a>
+                                <div className="collapse submenu" id="submenu5">
+                                    <Link
+                                        prefetch={false}
+                                        className={`nav-link ${pathname.startsWith('/admin/managers') ? 'active' : ''}`}
+                                        href="/admin/managers"
+                                    >
+                                        Signup
+                                    </Link>
+                                    <Link
+                                        prefetch={false}
+                                        className={`nav-link ${pathname.startsWith('/admin/premanagers') ? 'active' : ''}`}
+                                        href="/admin/premanagers"
+                                    >
+                                        Pre Signup
+                                    </Link>
+                                </div>
                             </li>
+ 
                             <li className="nav-item">
                                 <Link prefetch={false} className={`nav-link ${pathname.startsWith('/admin/referees') ? 'active' : ''}`} href="/admin/referees"><span className="link-text">Referees</span></Link>
                             </li>
@@ -98,7 +115,7 @@ export default function Sidebar() {
                                 </a>
                                 <div className="collapse submenu" id="submenu2">
                                     <Link prefetch={false} className={`nav-link ${pathname.startsWith('/admin/stores') ? 'active' : ''}`} href="/admin/stores" >Products</Link>
-                                     <Link prefetch={false} className={`nav-link ${pathname.startsWith('/admin/vendors') ? 'active' : ''}`} href="/admin/vendors"  >Vendors</Link>
+                                    <Link prefetch={false} className={`nav-link ${pathname.startsWith('/admin/vendors') ? 'active' : ''}`} href="/admin/vendors"  >Vendors</Link>
                                     <Link prefetch={false} className={`nav-link ${pathname.startsWith('/admin/categories') ? 'active' : ''}`} href="/admin/categories"  >Categories</Link>
 
                                 </div>
