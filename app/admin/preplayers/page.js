@@ -1,14 +1,12 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import DeleteLeagueButton from "@/components/DeleteLeagueButton"; // adjust path
-import { deleteLeague } from "@/actions/leaguesActions";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Swal from "sweetalert2";
+import { deletePlayer } from "@/actions/playersActions";
 import DeleteButton from "@/components/DeleteButton";
-import { deleteFans } from "@/actions/fansActions";
 const Toast = Swal.mixin({
   toast: true,
   position: "top-end",
@@ -22,13 +20,13 @@ const Toast = Swal.mixin({
 });
 
 export default function FanTable() {
-  const [fans, setFans] = useState([]);
+  const [players, setPlayers] = useState([]);
   useEffect(() => {
     async function fetchData() {
       try {
-        const res = await fetch("/api/fans/signup");
+        const res = await fetch("/api/players/presignup");
         const result = await res.json();
-        setFans(result.fans || []);
+        setPlayers(result.players || []);
       } catch (err) {
         console.error("Failed to load data:", err);
       }
@@ -52,7 +50,7 @@ export default function FanTable() {
   }, []);
 
   useEffect(() => {
-    if (typeof window !== "undefined" && window.$ && fans.length > 0) {
+    if (typeof window !== "undefined" && window.$ && players.length > 0) {
       const $ = window.$;
 
       // Destroy if already exists
@@ -88,7 +86,7 @@ export default function FanTable() {
         }
       };
     }
-  }, [fans]);
+  }, [players]);
 
 
   return (
@@ -96,10 +94,10 @@ export default function FanTable() {
       <main className="main-body col-md-9 col-lg-9 col-xl-10">
         <div className="body-top d-flex flex-wrap justify-content-between align-items-center gap-20 mb-10">
           <div className="top-left">
-            <p className="top-breadcrumb mb-0">{'> Fans'}</p>
+            <p className="top-breadcrumb mb-0">{'> Players - Pre Signup'}</p>
           </div>
           <div className="top-right d-flex justify-content-between align-items-center gap-10">
-            <Link prefetch={false} className="btn btn-common" href="/admin/fans/new">New Fans</Link>
+            <Link prefetch={false} className="btn btn-common" href="/admin/players/new">New Player</Link>
             <a href="#">
               <Image src="/images/icon-setting.svg" width={33} height={33} alt="Settings" />
             </a>
@@ -107,7 +105,7 @@ export default function FanTable() {
         </div>
         <div className="body-title-bar d-flex flex-wrap justify-content-between align-items-center gap-20 mb-10">
           <div className="body-title-bar-left d-flex flex-wrap align-items-center gap-20-70">
-            <h1 className="page-title">Fans</h1>
+            <h1 className="page-title">Players  - Pre Signup</h1>
           </div>
         </div>
 
@@ -118,31 +116,37 @@ export default function FanTable() {
               <thead>
                 <tr>
                   <th scope="col">Name</th>
-                  {/* <th scope="col">Team</th> */}
+                  {/* <th scope="col">Team</th>
+                    <th scope="col">Club</th>
+                    <th scope="col">League</th> */}
                   <th scope="col">Phone</th>
                   <th scope="col">Email</th>
+                  <th scope="col">Friendleys</th>
                   <th scope="col">Last Activity</th>
                   <th scope="col">Action</th>
                 </tr>
               </thead>
               <tbody>
-                {fans.length > 0 ? (
-                  fans.map((l, index) => (
+                {players.length > 0 ? (
+                  players.map((l, index) => (
                     <tr key={l._id}>
                       <td className="text-nowrap user-active">
-                        <Link prefetch={false}
-                          href={`/admin/fans/${l._id}/view`}
+                        <Link prefetch={false} 
+                          href={`/admin/players/${l._id}/view`}
                         >
                           {l.name}
                         </Link>
                       </td>
-                      {/* <td className="text-nowrap"><a href="teams-single.php">Pegasus U14</a></td> */}
+                      {/* <td className="text-nowrap"><a href="teams-single.php">Pegasus U14</a></td>
+                        <td className="text-nowrap"><a href="clubs-single.php">Pegasus FC</a></td>
+                        <td className="text-nowrap"><a href="leagues-single.php">Peter Housman</a></td> */}
                       <td className="text-nowrap"><a href="tel:+44 07453 234258">{l.telephone}</a></td>
                       <td className="text-nowrap"><a href="mailto:csb9900@gmail.com">{l.email}</a></td>
-                      <td className="text-nowrap">12 Nov</td>
+                      <td className="text-nowrap"><a href="#">6</a></td>
+                      <td className="text-nowrap">1 Nov</td>
                       <td className="text-nowrap">
                         <Link prefetch={false} className="text-green"
-                          href={`/admin/fans/${l._id}/edit`}
+                          href={`/admin/players/${l._id}/edit`}
                         >
                           Edit
                         </Link>
@@ -151,7 +155,7 @@ export default function FanTable() {
                         {/* Hidden Form for Server Action POST */}
                         <form
                           id={`delete-form-${l._id}`}
-                          action={deleteFans.bind(null, l._id)}
+                          action={deletePlayer.bind(null, l._id)}
                         />
 
                       </td>
@@ -159,7 +163,7 @@ export default function FanTable() {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan="5" className="text-center">Loading...</td>
+                    <td colSpan="9" className="text-center">Loading...</td>
                   </tr>
                 )}
               </tbody>
