@@ -7,6 +7,7 @@ import { z } from "zod";
 import { v4 as uuidv4 } from "uuid";
 import path from "path";
 import { promises as fs } from "fs";
+import twilio from "twilio"
 import PlayerInvitations from "@/lib/models/PlayerInvitations";
 import FanInvitations from "@/lib/models/FanInvitations";
 import ManagerInvitations from "@/lib/models/ManagerInvitations";
@@ -15,8 +16,13 @@ export const UserSchema = z.object({
   password: z.string().nonempty("Password is required").min(7, "Password must be at least 7 character"),
   confirm_password: z.string().min(7, "Confirm password must be at least 7 characters long"),
   name: z.string().nonempty("Name is required").min(2, "Name must be at least 2 character"),
-  telephone: z.string().nonempty("Telephone is required").min(2, "Telephone must be at least 2 character"),
+  telephone: z.string()
+    .trim()
+    .min(10, { message: "Telephone must be at least 10 digits." })
+    .max(11, { message: "Telephone must be at most 11 digits." })
+    .regex(/^\d+$/, { message: "Digits only (0–9)" }),
   account_type: z.string().nonempty("Account Type is required").min(2, "Account Type must be at least 2 character"),
+  country_code: z.string().nonempty("Country Code is required").min(2, "Country Code must be at least 2 character"),
   invitation_code: z.string().optional(),
   fcmtoken: z.string().optional(),
 }).refine((data) => data.password === data.confirm_password, {
@@ -35,6 +41,11 @@ export const UserSchema = z.object({
   }
 });
 
+const client = twilio(
+  process.env.TWILIO_ACCOUNT_SID,
+  process.env.TWILIO_AUTH_TOKEN
+);
+
 export async function POST(req) {
   try {
     const data = await req.json();
@@ -44,6 +55,7 @@ export async function POST(req) {
     const name = data.name;
     const surname = data.surname;
     const telephone = data.telephone;
+    const country_code = data.country_code;
     const account_type = data.account_type;
     const invitation_code = data.invitation_code;
     const fcmtoken = data.fcmtoken;
@@ -133,6 +145,17 @@ export async function POST(req) {
       );
     }
 
+    const existing_mobile = await User.findOne({ telephone: result.data.telephone });
+    if (existing_mobile) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "This telephone already exists",
+        },
+        { status: 200 }
+      );
+    }
+
     // Save to /public/uploads
     let uploadtype = "";
     if (account_type == "Manager")
@@ -141,7 +164,6 @@ export async function POST(req) {
       uploadtype = "uploads/fans";
     if (account_type == "Refreee")
       uploadtype = "uploads/referees";
-
 
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -154,9 +176,26 @@ export async function POST(req) {
       name,
       surname,
       telephone,
+      country_code,
       account_type,
       fcmtoken
     });
+
+
+    const min = 10000;
+    const max = 99999;
+    const randomNumber = Math.floor(Math.random() * (max - min + 1)) + min;
+
+    try {
+      await client.messages.create({
+        body: `Your Login OTP is ${randomNumber}`,
+        from: process.env.TWILIO_PHONE_NUMBER,
+        to: country_code + telephone,
+      });
+
+    } catch (error) {
+      console.error("SMS sending failed:", error);
+    }
 
 
     try {
@@ -171,10 +210,6 @@ export async function POST(req) {
       //   },
       // });
 
-      const min = 10000;
-      const max = 99999;
-
-      const randomNumber = Math.floor(Math.random() * (max - min + 1)) + min;
       // console.log(randomNumber);
 
       // Send mail
@@ -203,7 +238,6 @@ export async function POST(req) {
         }),
       });
 
-
       const data = await res.json();
 
       if (!res.ok) {
@@ -217,7 +251,7 @@ export async function POST(req) {
           'Login Code': randomNumber,
           isVerified: false
         },
-        message: "User created successfully. Please check login code in email.",
+        message: "User created successfully. Please check login code in email or mobile",
       });
 
       // return NextResponse.json({ success: true });
@@ -225,6 +259,7 @@ export async function POST(req) {
       console.error("Email error:", error);
       //return NextResponse.json({ success: false, error: error.message }, { status: 500 });
     }
+
 
   } catch (err) {
     console.error("Signup error:", err);
