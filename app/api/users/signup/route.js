@@ -22,7 +22,6 @@ export const UserSchema = z.object({
     .max(11, { message: "Telephone must be at most 11 digits." })
     .regex(/^\d+$/, { message: "Digits only (0–9)" }),
   account_type: z.string().nonempty("Account Type is required").min(2, "Account Type must be at least 2 character"),
-  country_code: z.string().nonempty("Country Code is required").min(2, "Country Code must be at least 2 character"),
   invitation_code: z.string().optional(),
   fcmtoken: z.string().optional(),
 }).refine((data) => data.password === data.confirm_password, {
@@ -55,7 +54,7 @@ export async function POST(req) {
     const name = data.name;
     const surname = data.surname;
     const telephone = data.telephone;
-    const country_code = data.country_code;
+    const country_code = data.country_code ? data.country_code : '+44';
     const account_type = data.account_type;
     const invitation_code = data.invitation_code;
     const fcmtoken = data.fcmtoken;
@@ -64,7 +63,8 @@ export async function POST(req) {
     let team_id = null;
 
 
-    //console.log(data.invitation_code);
+    // console.log(data.country_code);
+    // return;
 
     const result = UserSchema.safeParse(data);
     //console.log(data);

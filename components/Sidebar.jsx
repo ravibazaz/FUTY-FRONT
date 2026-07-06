@@ -57,30 +57,23 @@ export default function Sidebar() {
                                 </div>
                             </li>
 
-                            <li className="nav-item with-submenu" >
-                                <a className="nav-link collapsed" href="#submenu5" data-bs-toggle="collapse" role="button" aria-expanded="false" >
-                                    <span className="link-text">Managers</span>
-                                </a>
-                                <div className="collapse submenu" id="submenu5">
-                                    <Link
-                                        prefetch={false}
-                                        className={`nav-link ${pathname.startsWith('/admin/managers') ? 'active' : ''}`}
-                                        href="/admin/managers"
-                                    >
-                                        Signup
-                                    </Link>
-                                    <Link
-                                        prefetch={false}
-                                        className={`nav-link ${pathname.startsWith('/admin/premanagers') ? 'active' : ''}`}
-                                        href="/admin/premanagers"
-                                    >
-                                        Pre Signup
-                                    </Link>
-                                </div>
+                            <li className="nav-item">
+                                <Link prefetch={false} className={`nav-link ${pathname.startsWith('/admin/managers') ? 'active' : ''}`} href="/admin/managers"><span className="link-text">Managers</span></Link>
+                            </li>
+
+                            <li className="nav-item">
+                                <Link prefetch={false} className={`nav-link ${pathname.startsWith('/admin/referees') ? 'active' : ''}`} href="/admin/referees"><span className="link-text">Referees</span></Link>
                             </li>
 
 
-                            <li className="nav-item with-submenu" >
+                            <li className="nav-item">
+                                <Link prefetch={false} className={`nav-link ${pathname.startsWith('/admin/players') ? 'active' : ''}`} href="/admin/players"><span className="link-text">Players</span></Link>
+                            </li>
+
+
+
+
+                            {/* <li className="nav-item with-submenu" >
                                 <a className="nav-link collapsed" href="#submenu6" data-bs-toggle="collapse" role="button" aria-expanded="false" >
                                     <span className="link-text">Referees</span>
                                 </a>
@@ -100,9 +93,9 @@ export default function Sidebar() {
                                         Pre Signup
                                     </Link>
                                 </div>
-                            </li>
+                            </li> */}
 
-                            <li className="nav-item with-submenu" >
+                            {/* <li className="nav-item with-submenu" >
                                 <a className="nav-link collapsed" href="#submenu7" data-bs-toggle="collapse" role="button" aria-expanded="false" >
                                     <span className="link-text">Players</span>
                                 </a>
@@ -122,9 +115,9 @@ export default function Sidebar() {
                                         Pre Signup
                                     </Link>
                                 </div>
-                            </li>
+                            </li> */}
 
-                            <li className="nav-item with-submenu" >
+                            {/* <li className="nav-item with-submenu" >
                                 <a className="nav-link collapsed" href="#submenu8" data-bs-toggle="collapse" role="button" aria-expanded="false" >
                                     <span className="link-text">Fans</span>
                                 </a>
@@ -144,10 +137,10 @@ export default function Sidebar() {
                                         Pre Signup
                                     </Link>
                                 </div>
-                            </li>
-                            {/* <li className="nav-item">
-                                <Link prefetch={false} className={`nav-link ${pathname.startsWith('/admin/fans') ? 'active' : ''}`} href="/admin/fans"><span className="link-text">Fans</span></Link>
                             </li> */}
+                            <li className="nav-item">
+                                <Link prefetch={false} className={`nav-link ${pathname.startsWith('/admin/fans') ? 'active' : ''}`} href="/admin/fans"><span className="link-text">Fans</span></Link>
+                            </li>
 
                             <li className="nav-item with-submenu" >
                                 <a className="nav-link collapsed" href="#submenu3" data-bs-toggle="collapse" role="button" aria-expanded="false" >

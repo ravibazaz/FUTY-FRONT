@@ -26,7 +26,7 @@ export default function FanTable() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const res = await fetch("/api/fans/signup");
+        const res = await fetch("/api/fans");
         const result = await res.json();
         setFans(result.fans || []);
       } catch (err) {

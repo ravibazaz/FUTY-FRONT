@@ -12,12 +12,15 @@ export async function POST(req) {
         "content-type": "application/json",
       },
       body: JSON.stringify({
-        sender: { email: "info@makeitlive.info", name: "FUTY" },
+        sender: { email: "Futty@outrightsolutions.net", name: "FUTY" },
         to: [{ email: to }],
         subject,
         htmlContent: `<p>${message}</p>`,
       }),
     });
+
+   // console.log(process.env.BREVO_API_KEY);
+    
 
     const data = await res.json();
 

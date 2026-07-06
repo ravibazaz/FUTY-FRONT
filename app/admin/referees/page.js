@@ -24,7 +24,7 @@ export default function FanTable() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const res = await fetch("/api/referees/signup");
+        const res = await fetch("/api/referees");
         const result = await res.json();
         setReferees(result.referees || []);
       } catch (err) {
