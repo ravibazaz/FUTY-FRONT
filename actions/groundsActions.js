@@ -209,6 +209,6 @@ export async function deleteGround(id) {
     })
   }
   await Grounds.findByIdAndDelete(id);
-  cookieStore.set("toastMessage", "Deleted");
-  redirect("/admin/grounds");
+ // cookieStore.set("toastMessage", "Deleted");
+  //redirect("/admin/grounds");
 }

@@ -2,10 +2,9 @@
 
 import { useEffect, useRef } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Swal from "sweetalert2";
-import { deleteGround } from "@/actions/groundsActions";
+import { deleteAdvert } from "@/actions/advertsActions";
 
 const Toast = Swal.mixin({
   toast: true,
@@ -22,7 +21,7 @@ const Toast = Swal.mixin({
 export default function StoreTable() {
   const tableRef = useRef(null);
   const dtInstance = useRef(null);
-  const router = useRouter();
+
   // Toast shown after redirect back from create/edit pages
   useEffect(() => {
     const toastMessage = document.cookie
@@ -54,7 +53,7 @@ export default function StoreTable() {
       searching: true,
       searchDelay: 500, // debounce: waits 500ms after typing stops before querying DB
       ajax: {
-        url: "/api/grounds",
+        url: "/api/adds",
         type: "GET",
       },
       language: { searchPlaceholder: "Search" },
@@ -62,30 +61,21 @@ export default function StoreTable() {
         {
           data: "name",
           render: function (data, type, row) {
-            return `<a href="#" class="ground-view-link" data-href="/admin/grounds/${row._id}/view">${data}</a>`;
+            return `<a href="/admin/adverts/${row._id}/view">${data}</a>`;
           },
         },
-        {
-          data: null,
-          render: function (data, type, row) {
-            return `Basingstoke`;
-          },
-        },
-        {
-          data: null,
-          render: function (data, type, row) {
-            return `Hampshire`;
-          },
-        },
-        { data: "pin" },
+        { data: "date" },
+        { data: "time" },
+        { data: "end_date" },
+        { data: "end_time" },
         {
           data: null,
           orderable: false,
           searchable: false,
           render: function (data, type, row) {
             return `
-              <a href="#" class="text-green ground-edit-link" data-href="/admin/grounds/${row._id}/edit">Edit</a>
-              <button type="button" class="btn-delete-ground btn-common-text ps-2" style="color: red;" data-id="${row._id}">Delete</button>
+              <a class="text-green" href="/admin/adverts/${row._id}/edit">Edit</a>
+              <button type="button" class="btn-delete-advert btn-common-text ps-2" style="color: red;" data-id="${row._id}">Delete</button>
             `;
           },
         },
@@ -110,25 +100,13 @@ export default function StoreTable() {
 
     dtInstance.current = table;
 
-    // Client-side navigation for View link (no full page reload)
-    $(currentTable).on("click", ".ground-view-link", function (e) {
-      e.preventDefault();
-      router.push($(this).data("href"));
-    });
-
-        // Client-side navigation for Edit link (no full page reload)
-    $(currentTable).on("click", ".ground-edit-link", function (e) {
-      e.preventDefault();
-      router.push($(this).data("href"));
-    });
-
-    // Delete: SweetAlert confirm on this page -> on "Yes" -> deleteGround() -> reload table
-    $(currentTable).on("click", ".btn-delete-ground", async function () {
+    // Delete: SweetAlert confirm on this page -> on "Yes" -> deleteAdvert() -> reload table
+    $(tableRef.current).on("click", ".btn-delete-advert", async function () {
       const id = $(this).data("id");
 
       const result = await Swal.fire({
         title: "Are you sure?",
-        text: "This ground will be permanently deleted.",
+        text: "This advert will be permanently deleted.",
         icon: "warning",
         showCancelButton: true,
         confirmButtonText: "Yes, delete it",
@@ -137,38 +115,36 @@ export default function StoreTable() {
 
       if (result.isConfirmed) {
         try {
-          await deleteGround(id);
+          await deleteAdvert(id);
           table.ajax.reload(null, false); // refresh table, keep current page/search state
-          Toast.fire({ icon: "success", title: "ground deleted successfully" });
+          Toast.fire({ icon: "success", title: "Advert deleted successfully" });
         } catch (err) {
           console.error("Delete failed:", err);
-          Swal.fire("Error", "Failed to delete the ground.", "error");
+          Swal.fire("Error", "Failed to delete the advert.", "error");
         }
       }
     });
 
     return () => {
       $(document).off("click", ".btn-search-reset");
-      $(currentTable).off("click", ".ground-view-link");
-      $(currentTable).off("click", ".ground-edit-link");
-      $(currentTable).off("click", ".btn-delete-ground");
+      $(tableRef.current).off("click", ".btn-delete-advert");
       if (dtInstance.current) {
         dtInstance.current.destroy();
         dtInstance.current = null;
-
+       
       }
     };
-  }, [router]);
+  }, []);
 
   return (
     <main className="main-body col-md-9 col-lg-9 col-xl-10">
       <div className="body-top d-flex flex-wrap justify-content-between align-items-center gap-20 mb-10">
         <div className="top-left">
-          <p className="top-breadcrumb mb-0">{"> Grounds"}</p>
+          <p className="top-breadcrumb mb-0">{"> Adverts"}</p>
         </div>
         <div className="top-right d-flex justify-content-between align-items-center gap-10">
-          <Link prefetch={false} className="btn btn-common" href="/admin/grounds/new">
-            New Ground
+          <Link prefetch={false} className="btn btn-common" href="/admin/adverts/new">
+            New Advert
           </Link>
           <a href="#">
             <Image src="/images/icon-setting.svg" width={33} height={33} alt="Settings" />
@@ -178,7 +154,7 @@ export default function StoreTable() {
 
       <div className="body-title-bar d-flex flex-wrap justify-content-between align-items-center gap-20 mb-10">
         <div className="body-title-bar-left d-flex flex-wrap align-items-center gap-20-70">
-          <h1 className="page-title">Grounds</h1>
+          <h1 className="page-title">Adverts</h1>
         </div>
       </div>
 
@@ -187,10 +163,11 @@ export default function StoreTable() {
           <table id="example" ref={tableRef} className="table">
             <thead>
               <tr>
-                <th scope="col">Name</th>
-                <th scope="col">Town</th>
-                <th scope="col">County</th>
-                <th scope="col">Postcode</th>
+                <th scope="col">Advert Title</th>
+                <th scope="col">Start Date</th>
+                <th scope="col">Start Time</th>
+                <th scope="col">End Date</th>
+                <th scope="col">End Time</th>
                 <th scope="col">Action</th>
               </tr>
             </thead>

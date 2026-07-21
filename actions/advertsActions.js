@@ -193,6 +193,6 @@ export async function deleteAdvert(id) {
     });
   }
   await Adverts.findByIdAndDelete(id);
-  cookieStore.set("toastMessage", "Deleted");
-  redirect("/admin/adverts");
+ cookieStore.set("toastMessage", "Deleted");
+ redirect("/admin/adverts");
 }
