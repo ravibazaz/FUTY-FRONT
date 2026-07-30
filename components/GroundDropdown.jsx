@@ -14,7 +14,7 @@ export default function GroundDropdown(props) {
   useEffect(() => {
     const fetchClubs = async () => {
       try {
-        const response = await fetch("/api/grounds");
+        const response = await fetch("/api/grounds/sitedropdown");
         const data = await response.json();
         setGrounds(data.grounds);
       } catch (error) {

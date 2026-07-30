@@ -62,7 +62,7 @@ export default function StoreTable() {
         {
           data: "name",
           render: function (data, type, row) {
-            return `<a href="#" class="ground-view-link" data-href="/admin/grounds/${row._id}/view">${data}</a>`;
+            return `<a href="/admin/grounds/${row._id}/view" class="ground-view-link" data-href="/admin/grounds/${row._id}/view">${data}</a>`;
           },
         },
         {
@@ -77,14 +77,20 @@ export default function StoreTable() {
             return `Hampshire`;
           },
         },
-        { data: "pin" },
+        {
+          data: "pin",
+          render: function (data, type, row) {
+            return data ? data : ``;
+          },
+          defaultContent: "", // fallback if `pin` key doesn't exist at all
+        },
         {
           data: null,
           orderable: false,
           searchable: false,
           render: function (data, type, row) {
             return `
-              <a href="#" class="text-green ground-edit-link" data-href="/admin/grounds/${row._id}/edit">Edit</a>
+              <a href="/admin/grounds/${row._id}/edit" class="text-green ground-edit-link" data-href="/admin/grounds/${row._id}/edit">Edit</a>
               <button type="button" class="btn-delete-ground btn-common-text ps-2" style="color: red;" data-id="${row._id}">Delete</button>
             `;
           },
@@ -116,7 +122,7 @@ export default function StoreTable() {
       router.push($(this).data("href"));
     });
 
-        // Client-side navigation for Edit link (no full page reload)
+    // Client-side navigation for Edit link (no full page reload)
     $(currentTable).on("click", ".ground-edit-link", function (e) {
       e.preventDefault();
       router.push($(this).data("href"));
